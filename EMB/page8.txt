@@ -1,0 +1,3554 @@
+/* Desktop - 8 */
+
+position: relative;
+width: 1440px;
+height: 2619px;
+
+background: linear-gradient(90deg, #E5F1FB 0%, #F2F2FF 100%);
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Back to interview */
+
+position: absolute;
+width: 120px;
+height: 21px;
+left: 1092px;
+top: 22px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Continue */
+
+position: absolute;
+width: 56px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Arrow 1 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 13px;
+height: 0px;
+left: 1074px;
+top: 32px;
+
+border: 1px solid #5B6983;
+transform: rotate(-180deg);
+
+
+/* Line 16 */
+
+position: absolute;
+width: 184px;
+height: 0px;
+left: 2400px;
+top: 438px;
+
+border: 1px solid #FFFFFF;
+transform: rotate(90deg);
+
+
+/* Line 17 */
+
+position: absolute;
+width: 184px;
+height: 0px;
+left: 2629px;
+top: 438px;
+
+border: 1px solid #FFFFFF;
+transform: rotate(90deg);
+
+
+/* Line 18 */
+
+position: absolute;
+width: 184px;
+height: 0px;
+left: 2856px;
+top: 438px;
+
+border: 1px solid #FFFFFF;
+transform: rotate(90deg);
+
+
+/* Rectangle 40 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 913px;
+height: 168px;
+left: 426px;
+top: 263px;
+
+background: linear-gradient(90deg, rgba(108, 161, 250, 0.14) 0%, rgba(157, 143, 250, 0.14) 100%);
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 64 */
+
+position: absolute;
+width: 276px;
+height: 44px;
+left: 109px;
+top: 343px;
+
+background: #FFFFFF;
+border-radius: 15px;
+
+
+/* Welcome */
+
+position: absolute;
+width: 69px;
+height: 21px;
+left: 156px;
+top: 160px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Voice interview */
+
+position: absolute;
+width: 110px;
+height: 21px;
+left: 156px;
+top: 208px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Requirements */
+
+position: absolute;
+width: 101px;
+height: 21px;
+left: 156px;
+top: 256px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Documents */
+
+position: absolute;
+width: 84px;
+height: 21px;
+left: 156px;
+top: 305px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* AI summary */
+
+position: absolute;
+width: 87px;
+height: 21px;
+left: 156px;
+top: 354px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* 06 */
+
+position: absolute;
+width: 14px;
+height: 15px;
+left: 126px;
+top: 405px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #6D7A91;
+
+
+
+/* 07 */
+
+position: absolute;
+width: 13px;
+height: 15px;
+left: 126px;
+top: 452px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #6D7A91;
+
+
+
+/* Review */
+
+position: absolute;
+width: 51px;
+height: 21px;
+left: 156px;
+top: 402px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Sign & submit */
+
+position: absolute;
+width: 100px;
+height: 21px;
+left: 156px;
+top: 450px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Frame 1 */
+
+position: absolute;
+width: 276px;
+height: 92px;
+left: 109px;
+top: 515px;
+
+
+
+/* Rectangle 55 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 276px;
+height: 92px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 20px;
+
+
+/* Our AI guides you step by step. You can edit anything before submitting. */
+
+position: absolute;
+width: 233px;
+height: 36px;
+left: 16px;
+top: 37px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Need hands? */
+
+position: absolute;
+width: 83px;
+height: 18px;
+left: 17px;
+top: 15px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* STEP 5 . AI SUMMARY */
+
+position: absolute;
+width: 176px;
+height: 18px;
+left: 426px;
+top: 107px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.24em;
+
+color: #138DD8;
+
+
+
+/* Your AI-generated summary */
+
+position: absolute;
+width: 563px;
+height: 54px;
+left: 425px;
+top: 125px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 36px;
+line-height: 54px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* A complete recommendation, BRD draft, and project scope generated from your conversation and uploads. Edit anything before submitting. */
+
+position: absolute;
+width: 683px;
+height: 48px;
+left: 426px;
+top: 183px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 24px;
+
+color: #5B6983;
+
+
+
+/* Ellipse 37 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 120px;
+top: 158px;
+
+background: #138DD8;
+
+
+/* Ellipse 38 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 120px;
+top: 206px;
+
+background: #138DD8;
+
+
+/* Ellipse 39 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 120px;
+top: 254px;
+
+background: #138DD8;
+
+
+/* Ellipse 40 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 120px;
+top: 302px;
+
+background: #138DD8;
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 121px;
+top: 351px;
+
+background: #101834;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.89%;
+right: 90.56%;
+top: 10.04%;
+bottom: 89.73%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.89%;
+right: 90.56%;
+top: 11.87%;
+bottom: 87.9%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.89%;
+right: 90.56%;
+top: 8.21%;
+bottom: 91.56%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.89%;
+right: 90.56%;
+top: 6.38%;
+bottom: 93.39%;
+
+background: #FFFFFF;
+
+
+/* Rectangle 56 */
+
+position: absolute;
+width: 49px;
+height: 49px;
+left: 450px;
+top: 295px;
+
+background: #ECF3FC;
+border-radius: 22px;
+
+
+/* Application Recommendation · Draft v1 */
+
+position: absolute;
+width: 350px;
+height: 17px;
+left: 514px;
+top: 287px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+letter-spacing: 0.12em;
+text-transform: uppercase;
+
+color: #138DD8;
+
+
+
+/* Inventory Management System - Northbank Hospital */
+
+position: absolute;
+width: 683px;
+height: 27px;
+left: 514px;
+top: 307px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Generated in 12 seconds . 8 sections . 4 documents analysed */
+
+position: absolute;
+width: 683px;
+height: 18px;
+left: 514px;
+top: 334px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5F6C86;
+
+
+
+/* Group 124 */
+
+position: absolute;
+width: 83px;
+height: 37px;
+left: 450px;
+top: 368px;
+
+
+
+/* Rectangle 57 */
+
+position: absolute;
+width: 83px;
+height: 37px;
+left: 450px;
+top: 368px;
+
+background: #FFFFFF;
+border-radius: 12px;
+
+
+/* Edit */
+
+position: absolute;
+width: 26px;
+height: 21px;
+left: 479px;
+top: 376px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Group 123 */
+
+position: absolute;
+width: 140px;
+height: 37px;
+left: 543px;
+top: 368px;
+
+
+
+/* Rectangle 58 */
+
+position: absolute;
+width: 140px;
+height: 37px;
+left: 543px;
+top: 368px;
+
+background: #FFFFFF;
+border-radius: 12px;
+
+
+/* Export Word */
+
+position: absolute;
+width: 85px;
+height: 21px;
+left: 575px;
+top: 376px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Group 122 */
+
+position: absolute;
+width: 155px;
+height: 37px;
+left: 691px;
+top: 368px;
+
+
+
+/* Rectangle 59 */
+
+position: absolute;
+width: 155px;
+height: 37px;
+left: 691px;
+top: 368px;
+
+background: #101834;
+border-radius: 12px;
+
+
+/* Download PDF */
+
+position: absolute;
+width: 101px;
+height: 21px;
+left: 718px;
+top: 376px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Rectangle 60 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 219px;
+height: 94px;
+left: 426px;
+top: 455px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 24px;
+
+
+/* Rectangle 61 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 219px;
+height: 94px;
+left: 657px;
+top: 455px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 24px;
+
+
+/* Rectangle 62 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 219px;
+height: 94px;
+left: 888px;
+top: 455px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 24px;
+
+
+/* Rectangle 63 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 219px;
+height: 94px;
+left: 1119px;
+top: 455px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 24px;
+
+
+/* REQUIREMENTS */
+
+position: absolute;
+width: 105px;
+height: 17px;
+left: 446px;
+top: 475px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #5F6C86;
+
+
+
+/* MODULES */
+
+position: absolute;
+width: 105px;
+height: 17px;
+left: 678px;
+top: 475px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #5F6C86;
+
+
+
+/* INTEGRATIONS */
+
+position: absolute;
+width: 105px;
+height: 17px;
+left: 910px;
+top: 475px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #5F6C86;
+
+
+
+/* EST . TIMELINE */
+
+position: absolute;
+width: 105px;
+height: 17px;
+left: 1142px;
+top: 475px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #5F6C86;
+
+
+
+/* 42 */
+
+position: absolute;
+width: 30px;
+height: 36px;
+left: 447px;
+top: 495px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 36px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 5 */
+
+position: absolute;
+width: 16px;
+height: 36px;
+left: 679px;
+top: 495px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 36px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 4 */
+
+position: absolute;
+width: 17px;
+height: 36px;
+left: 911px;
+top: 495px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 36px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 5.5 mo */
+
+position: absolute;
+width: 84px;
+height: 36px;
+left: 1143px;
+top: 495px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 36px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 135 */
+
+position: absolute;
+width: 913px;
+height: 386px;
+left: 426px;
+top: 579px;
+
+
+
+/* Group 134 */
+
+position: absolute;
+width: 913px;
+height: 386px;
+left: 426px;
+top: 579px;
+
+
+
+/* Rectangle 65 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 889px;
+top: 579px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 131 */
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 426px;
+top: 579px;
+
+
+
+/* Rectangle 64 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 426px;
+top: 579px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 130 */
+
+position: absolute;
+width: 379px;
+height: 156px;
+left: 461px;
+top: 604px;
+
+
+
+/* Inventory & Operations Management System — a unified web + mobile platform to digitise patient flow, billing, and inventory across both facilities. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 461px;
+top: 651px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Recommended application */
+
+position: absolute;
+width: 249px;
+height: 27px;
+left: 509px;
+top: 608px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 461px;
+top: 604px;
+
+background: #ECF3FC;
+
+
+/* Group 129 */
+
+position: absolute;
+width: 215px;
+height: 23px;
+left: 461px;
+top: 737px;
+
+
+
+/* Group 128 */
+
+position: absolute;
+width: 43px;
+height: 23px;
+left: 461px;
+top: 737px;
+
+
+
+/* Rectangle 66 */
+
+position: absolute;
+width: 43px;
+height: 23px;
+left: 461px;
+top: 737px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Web */
+
+position: absolute;
+width: 28px;
+height: 23px;
+left: 469px;
+top: 737px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 127 */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 511px;
+top: 737px;
+
+
+
+/* Rectangle 67 */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 511px;
+top: 737px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* ios */
+
+position: absolute;
+width: 17px;
+height: 23px;
+left: 522px;
+top: 737px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 126 */
+
+position: absolute;
+width: 61px;
+height: 23px;
+left: 556px;
+top: 737px;
+
+
+
+/* Rectangle 68 */
+
+position: absolute;
+width: 61px;
+height: 23px;
+left: 556px;
+top: 737px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Android */
+
+position: absolute;
+width: 48px;
+height: 23px;
+left: 563px;
+top: 737px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 125 */
+
+position: absolute;
+width: 52px;
+height: 23px;
+left: 624px;
+top: 737px;
+
+
+
+/* Rectangle 69 */
+
+position: absolute;
+width: 52px;
+height: 23px;
+left: 624px;
+top: 737px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Tablet */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 631px;
+top: 737px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 130 */
+
+position: absolute;
+width: 379px;
+height: 116px;
+left: 915px;
+top: 604px;
+
+
+
+/* Manual paperwork, slow patient onboarding, no unified appointment view, no real-time visibility for admins, and a growing compliance burden. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 915px;
+top: 651px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Business Problem */
+
+position: absolute;
+width: 160px;
+height: 27px;
+left: 963px;
+top: 608px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 915px;
+top: 604px;
+
+background: #ECF3FC;
+
+
+/* Group 133 */
+
+position: absolute;
+width: 913px;
+height: 164px;
+left: 426px;
+top: 801px;
+
+
+
+/* Rectangle 70 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 164px;
+left: 426px;
+top: 801px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Rectangle 71 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 164px;
+left: 889px;
+top: 801px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 132 */
+
+position: absolute;
+width: 842px;
+height: 116px;
+left: 461px;
+top: 825px;
+
+
+
+/* Replace paper workflows with a digital intake + records system, automate scheduling and approvals, and surface a real-time admin dashboard. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 461px;
+top: 872px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Intake → triage → consult → tests → discharge; multi-level approval for insurance; auto-routing for lab results. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 924px;
+top: 872px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Proposed solution */
+
+position: absolute;
+width: 163px;
+height: 27px;
+left: 509px;
+top: 829px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Suggested workflows */
+
+position: absolute;
+width: 193px;
+height: 27px;
+left: 972px;
+top: 829px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 461px;
+top: 825px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 42 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 924px;
+top: 825px;
+
+background: #ECF3FC;
+
+
+/* material-symbols:recommend */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 467px;
+top: 610px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 64.17%;
+right: 34.59%;
+top: 23.44%;
+bottom: 75.95%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 32.78%;
+right: 66.25%;
+top: 31.81%;
+bottom: 67.43%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 64.86%;
+right: 34.03%;
+top: 31.88%;
+bottom: 67.51%;
+
+background: #138DD8;
+
+
+/* Group 136 */
+
+position: absolute;
+width: 913px;
+height: 386px;
+left: 426px;
+top: 981px;
+
+
+
+/* Group 134 */
+
+position: absolute;
+width: 913px;
+height: 386px;
+left: 426px;
+top: 981px;
+
+
+
+/* Rectangle 65 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 889px;
+top: 981px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 131 */
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 426px;
+top: 981px;
+
+
+
+/* Rectangle 64 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 206px;
+left: 426px;
+top: 981px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 130 */
+
+position: absolute;
+width: 379px;
+height: 156px;
+left: 461px;
+top: 1006px;
+
+
+
+/* Inventory & Operations Management System — a unified web + mobile platform to digitise patient flow, billing, and inventory across both facilities. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 461px;
+top: 1053px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Recommended application */
+
+position: absolute;
+width: 249px;
+height: 27px;
+left: 509px;
+top: 1010px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 461px;
+top: 1006px;
+
+background: #ECF3FC;
+
+
+/* Group 129 */
+
+position: absolute;
+width: 215px;
+height: 23px;
+left: 461px;
+top: 1139px;
+
+
+
+/* Group 128 */
+
+position: absolute;
+width: 43px;
+height: 23px;
+left: 461px;
+top: 1139px;
+
+
+
+/* Rectangle 66 */
+
+position: absolute;
+width: 43px;
+height: 23px;
+left: 461px;
+top: 1139px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Web */
+
+position: absolute;
+width: 28px;
+height: 23px;
+left: 469px;
+top: 1139px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 127 */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 511px;
+top: 1139px;
+
+
+
+/* Rectangle 67 */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 511px;
+top: 1139px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* ios */
+
+position: absolute;
+width: 17px;
+height: 23px;
+left: 522px;
+top: 1139px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 126 */
+
+position: absolute;
+width: 61px;
+height: 23px;
+left: 556px;
+top: 1139px;
+
+
+
+/* Rectangle 68 */
+
+position: absolute;
+width: 61px;
+height: 23px;
+left: 556px;
+top: 1139px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Android */
+
+position: absolute;
+width: 48px;
+height: 23px;
+left: 563px;
+top: 1139px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 125 */
+
+position: absolute;
+width: 52px;
+height: 23px;
+left: 624px;
+top: 1139px;
+
+
+
+/* Rectangle 69 */
+
+position: absolute;
+width: 52px;
+height: 23px;
+left: 624px;
+top: 1139px;
+
+background: #EBF4FE;
+border-radius: 13px;
+
+
+/* Tablet */
+
+position: absolute;
+width: 38px;
+height: 23px;
+left: 631px;
+top: 1139px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #3D445D;
+
+
+
+/* Group 130 */
+
+position: absolute;
+width: 379px;
+height: 116px;
+left: 915px;
+top: 1006px;
+
+
+
+/* Manual paperwork, slow patient onboarding, no unified appointment view, no real-time visibility for admins, and a growing compliance burden. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 915px;
+top: 1053px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Business Problem */
+
+position: absolute;
+width: 160px;
+height: 27px;
+left: 963px;
+top: 1010px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 915px;
+top: 1006px;
+
+background: #ECF3FC;
+
+
+/* Group 133 */
+
+position: absolute;
+width: 913px;
+height: 164px;
+left: 426px;
+top: 1203px;
+
+
+
+/* Rectangle 70 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 164px;
+left: 426px;
+top: 1203px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Rectangle 71 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 450px;
+height: 164px;
+left: 889px;
+top: 1203px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* Group 132 */
+
+position: absolute;
+width: 842px;
+height: 116px;
+left: 461px;
+top: 1227px;
+
+
+
+/* Replace paper workflows with a digital intake + records system, automate scheduling and approvals, and surface a real-time admin dashboard. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 461px;
+top: 1274px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Intake → triage → consult → tests → discharge; multi-level approval for insurance; auto-routing for lab results. */
+
+position: absolute;
+width: 379px;
+height: 69px;
+left: 924px;
+top: 1274px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 23px;
+/* or 164% */
+
+color: #5B6983;
+
+
+
+/* Proposed solution */
+
+position: absolute;
+width: 163px;
+height: 27px;
+left: 509px;
+top: 1231px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Suggested workflows */
+
+position: absolute;
+width: 193px;
+height: 27px;
+left: 972px;
+top: 1231px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 41 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 461px;
+top: 1227px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 42 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 924px;
+top: 1227px;
+
+background: #ECF3FC;
+
+
+/* material-symbols:recommend */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 467px;
+top: 1012px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 64.17%;
+right: 34.59%;
+top: 38.79%;
+bottom: 60.61%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 32.78%;
+right: 66.25%;
+top: 47.16%;
+bottom: 52.08%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 64.86%;
+right: 34.03%;
+top: 47.23%;
+bottom: 52.16%;
+
+background: #138DD8;
+
+
+/* Group 147 */
+
+position: absolute;
+width: 914px;
+height: 565px;
+left: 428px;
+top: 1383px;
+
+
+
+/* Rectangle 72 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 914px;
+height: 565px;
+left: 428px;
+top: 1383px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 24px;
+
+
+/* Group 146 */
+
+position: absolute;
+width: 910px;
+height: 514px;
+left: 428px;
+top: 1422px;
+
+
+
+/* Auto-drafted by Aria · click to open, edit, and export */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 465px;
+top: 1422px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1487px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1558px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1629px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1700px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1771px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1842px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* 18 pages · generated just now */
+
+position: absolute;
+width: 379px;
+height: 23px;
+left: 497px;
+top: 1913px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #5B6983;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1471px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1542px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1613px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1684px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1755px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1826px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Business Requirement Document (BRD) */
+
+position: absolute;
+width: 392px;
+height: 21px;
+left: 496px;
+top: 1897px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Line 7 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1455px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 8 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1526px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 9 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1597px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 10 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1668px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 11 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1739px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 12 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1810px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 13 */
+
+position: absolute;
+width: 910px;
+height: 0px;
+left: 428px;
+top: 1881px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Ellipse 43 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1471px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 44 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1542px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 45 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1613px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 46 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1684px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 47 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1755px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 48 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1826px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 49 */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 445px;
+top: 1897px;
+
+background: #ECF3FC;
+
+
+/* Group 139 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1475px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1475px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1475px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1475px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1475px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 140 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1546px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1546px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1546px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1549px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1546px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1546px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1549px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 141 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1617px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1617px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1617px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1620px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1617px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1617px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1620px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 142 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1688px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1688px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1688px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1691px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1688px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1688px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1691px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 143 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1759px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1759px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1759px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1762px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1759px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1759px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1762px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 144 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1830px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1830px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1830px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1833px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1830px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1830px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1833px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 145 */
+
+position: absolute;
+width: 122px;
+height: 29px;
+left: 1202px;
+top: 1901px;
+
+
+
+/* Group 138 */
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1901px;
+
+
+
+/* Rectangle 73 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 49px;
+height: 29px;
+left: 1202px;
+top: 1901px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* PDF */
+
+position: absolute;
+width: 22px;
+height: 23px;
+left: 1216px;
+top: 1904px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Group 137 */
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1901px;
+
+
+
+/* Rectangle 74 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 56px;
+height: 29px;
+left: 1268px;
+top: 1901px;
+
+background: #EBF4FE;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Word */
+
+position: absolute;
+width: 32px;
+height: 23px;
+left: 1280px;
+top: 1904px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 23px;
+/* identical to box height, or 192% */
+
+color: #000000;
+
+
+
+/* Generated documents */
+
+position: absolute;
+width: 185px;
+height: 23px;
+left: 465px;
+top: 1399px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 23px;
+/* identical to box height, or 144% */
+
+color: #000000;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 56.55%;
+bottom: 42.84%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 59.26%;
+bottom: 40.13%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 61.97%;
+bottom: 37.42%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 64.68%;
+bottom: 34.71%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 67.39%;
+bottom: 32%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 70.1%;
+bottom: 29.29%;
+
+background: #138DD8;
+
+
+/* Vector */
+
+position: absolute;
+left: 31.67%;
+right: 67.36%;
+top: 72.81%;
+bottom: 26.58%;
+
+background: #138DD8;
+
+
+/* Group 154 */
+
+position: absolute;
+width: 913px;
+height: 64px;
+left: 428px;
+top: 1979px;
+
+
+
+/* Previous */
+
+position: absolute;
+width: 60px;
+height: 21px;
+left: 466px;
+top: 2014px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Save draft */
+
+position: absolute;
+width: 73px;
+height: 21px;
+left: 1041px;
+top: 2014px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Arrow 2 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 13px;
+height: 0px;
+left: 448px;
+top: 2024px;
+
+border: 1px solid #5B6983;
+transform: rotate(-180deg);
+
+
+/* Line 2 */
+
+position: absolute;
+width: 847px;
+height: 0px;
+left: 428px;
+top: 1979px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Group 104 */
+
+position: absolute;
+width: 202px;
+height: 40px;
+left: 1139px;
+top: 2003px;
+
+
+
+/* Rectangle 32 */
+
+position: absolute;
+width: 202px;
+height: 40px;
+left: 1139px;
+top: 2003px;
+
+background: #101834;
+border-radius: 13px;
+
+
+/* Continue to Review */
+
+position: absolute;
+width: 138px;
+height: 21px;
+left: 1171px;
+top: 2013px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* 05 */
+
+position: absolute;
+width: 14px;
+height: 15px;
+left: 126px;
+top: 356px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #FFFFFF;
+

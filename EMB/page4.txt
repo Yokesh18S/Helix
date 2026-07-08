@@ -1,0 +1,1315 @@
+/* Desktop - 3 */
+
+position: relative;
+width: 1440px;
+height: 879px;
+
+background: #F6F7FE;
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Group 62 */
+
+position: absolute;
+width: 1433.7px;
+height: 781px;
+left: calc(50% - 1433.7px/2 - 0.15px);
+top: 19px;
+
+
+
+/* Requirements will appear here as you answer Aria's questions. */
+
+position: absolute;
+width: 229px;
+height: 36px;
+left: 1122px;
+top: 390px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+text-align: center;
+
+color: #90A5BA;
+
+
+
+/* Group 58 */
+
+position: absolute;
+width: 14.86px;
+height: 14.59px;
+left: 1396px;
+top: 96px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 96.94%;
+right: 2.02%;
+top: 10.92%;
+bottom: 87.42%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 97.11%;
+right: 2.02%;
+top: 11.18%;
+bottom: 87.42%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 96.94%;
+right: 2.02%;
+top: 10.92%;
+bottom: 87.42%;
+
+border: 1.3px solid #000000;
+
+
+/* Exit */
+
+position: absolute;
+width: 27px;
+height: 24px;
+left: 1379px;
+top: 22px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #0F192E;
+
+
+
+/* of 12 */
+
+position: absolute;
+width: 34px;
+height: 21px;
+left: 1145px;
+top: 25px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Q1 */
+
+position: absolute;
+width: 20px;
+height: 30px;
+left: 1113px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+
+color: #000000;
+
+
+
+/* Tap the mic to answer */
+
+position: absolute;
+width: 157px;
+height: 21px;
+left: 447px;
+top: 654px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #90A5BB;
+
+
+
+/* Group 31 */
+
+position: absolute;
+width: 107px;
+height: 107px;
+left: 466px;
+top: 525px;
+
+
+
+/* Group 13 */
+
+position: absolute;
+width: 107px;
+height: 107px;
+left: 466px;
+top: 525px;
+
+
+
+/* Ellipse 3 */
+
+position: absolute;
+width: 82.31px;
+height: 82.31px;
+left: 478.35px;
+top: 537.35px;
+
+background: #EFEAFE;
+
+
+/* Ellipse 5 */
+
+position: absolute;
+width: 107px;
+height: 107px;
+left: 466px;
+top: 525px;
+
+background: rgba(239, 234, 254, 0.36);
+
+
+/* Ellipse 4 */
+
+position: absolute;
+width: 59.26px;
+height: 59.26px;
+left: 489.87px;
+top: 548.87px;
+
+background: linear-gradient(136.7deg, #945AF6 15.55%, #CE4EC2 85.75%);
+
+
+/* ic:outline-keyboard-voice */
+
+position: absolute;
+width: 27.16px;
+height: 27.16px;
+left: 505.51px;
+top: 564.51px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 12.5%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Vector 5 */
+
+position: absolute;
+width: 398px;
+height: 0px;
+left: 1038.5px;
+top: 137px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Group 61 */
+
+position: absolute;
+width: 1433.7px;
+height: 697.5px;
+left: 3px;
+top: 62px;
+
+
+
+/* Vector 6 */
+
+position: absolute;
+width: 398.7px;
+height: 0px;
+left: 1038px;
+top: 682.5px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Vector 4 */
+
+position: absolute;
+width: 0px;
+height: 254.5px;
+left: 1037.5px;
+top: 505px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Vector 3 */
+
+position: absolute;
+width: 1034.5px;
+height: 442.5px;
+left: 3px;
+top: 62px;
+
+border: 1px solid #D4DCE8;
+
+
+/* QUESTION 1 OF 12 */
+
+position: absolute;
+width: 133px;
+height: 18px;
+left: 461px;
+top: 102px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.18em;
+
+color: #90A5BA;
+
+
+
+/* Replay question */
+
+position: absolute;
+width: 114px;
+height: 21px;
+left: 480px;
+top: 190px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* What does your business do? */
+
+position: absolute;
+width: 476px;
+height: 48px;
+left: 286px;
+top: 131px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 32px;
+line-height: 48px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Group 52 */
+
+position: absolute;
+width: 150px;
+height: 28px;
+left: 288px;
+top: 20px;
+
+
+
+/* Rectangle 17 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 150px;
+height: 28px;
+left: 288px;
+top: 20px;
+
+background: #FFFFFF;
+border: 1px solid #F5F6F9;
+border-radius: 18px;
+
+
+/* Group 51 */
+
+position: absolute;
+width: 127px;
+height: 18px;
+left: 300px;
+top: 25px;
+
+
+
+/* Group 3 */
+
+position: absolute;
+width: 117px;
+height: 18px;
+left: 310px;
+top: 25px;
+
+
+
+/* Insighta is listening */
+
+position: absolute;
+width: 117px;
+height: 18px;
+left: 310px;
+top: 25px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 8 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 300px;
+top: 31px;
+
+background: #00C951;
+
+
+/* charm:sound-up */
+
+position: absolute;
+width: 16px;
+height: 16px;
+left: 461px;
+top: 192px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 7.81%;
+top: 17.19%;
+bottom: 17.19%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 48.44%;
+top: 17.19%;
+bottom: 17.19%;
+
+border: 1.5px solid #90A5BA;
+
+
+/* Vector */
+
+position: absolute;
+left: 67.19%;
+right: 7.81%;
+top: 20.31%;
+bottom: 20.31%;
+
+border: 1.5px solid #90A5BA;
+
+
+/* Group 54 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 233px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 233px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* Group 55 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 291px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 291px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 241px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 299px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* Group 53 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 233px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 233px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* Hi! I'm Insighta. Let's start with a simple one. */
+
+position: absolute;
+width: 264px;
+height: 18px;
+left: 115px;
+top: 244px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 56 */
+
+position: absolute;
+width: 352px;
+height: 40px;
+left: 99px;
+top: 291px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 291px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* What does your business do? */
+
+position: absolute;
+width: 336px;
+height: 18px;
+left: 115px;
+top: 302px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 10 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 441px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 11 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 450px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 12 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 459px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 13 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 468px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 14 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 477px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 15 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 486px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 16 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 495px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 17 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 504px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 18 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 513px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 19 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 522px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 20 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 531px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 21 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 540px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 22 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 549px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 23 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 558px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 24 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 567px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 25 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 576px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 26 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 585px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Ellipse 27 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 594px;
+top: 636px;
+
+background: #D0D5DD;
+
+
+/* Group 63 */
+
+position: absolute;
+width: 340px;
+height: 36px;
+left: 354px;
+top: 691px;
+
+
+
+/* Rectangle 19 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 135px;
+height: 36px;
+left: 354px;
+top: 691px;
+
+background: #FFFFFF;
+border: 1px solid #E7EDF5;
+border-radius: 23px;
+
+
+/* Rectangle 20 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 90px;
+height: 36px;
+left: 501px;
+top: 691px;
+
+background: #FFFFFF;
+border: 1px solid #E7EDF5;
+border-radius: 23px;
+
+
+/* Rectangle 21 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 90px;
+height: 36px;
+left: 604px;
+top: 691px;
+
+background: #FFFFFF;
+border: 1px solid #E7EDF5;
+border-radius: 23px;
+
+
+/* Type instead */
+
+position: absolute;
+width: 78px;
+height: 18px;
+left: 393px;
+top: 700px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Pause */
+
+position: absolute;
+width: 37px;
+height: 18px;
+left: 540px;
+top: 700px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Skip */
+
+position: absolute;
+width: 26px;
+height: 18px;
+left: 643px;
+top: 700px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* mdi:text */
+
+position: absolute;
+width: 15px;
+height: 15px;
+left: 370px;
+top: 703px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 25%;
+bottom: 25%;
+
+background: #000000;
+
+
+/* material-symbols:pause-rounded */
+
+position: absolute;
+width: 19px;
+height: 19px;
+left: 516px;
+top: 699px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 25%;
+right: 25%;
+top: 20.83%;
+bottom: 20.83%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 43.4%;
+right: 55.9%;
+top: 80.2%;
+bottom: 18.77%;
+
+background: #000000;
+
+
+/* Group 57 */
+
+position: absolute;
+width: 160px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+
+
+/* Rectangle 22 */
+
+position: absolute;
+width: 160px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+background: #E1E8F1;
+border-radius: 8px;
+
+
+/* Rectangle 23 */
+
+position: absolute;
+width: 13px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+background: #6466FA;
+border-radius: 8px;
+
+
+/* LIVE EXTRACTION */
+
+position: absolute;
+width: 119px;
+height: 18px;
+left: 1062px;
+top: 78px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.11em;
+
+color: #93A5BB;
+
+
+
+/* 0 requirements captured */
+
+position: absolute;
+width: 217px;
+height: 26px;
+left: 1062px;
+top: 96px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 17px;
+line-height: 26px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 60 */
+
+position: absolute;
+width: 366px;
+height: 45px;
+left: 1055px;
+top: 755px;
+
+
+
+/* Rectangle 24 */
+
+position: absolute;
+width: 366px;
+height: 45px;
+left: 1055px;
+top: 755px;
+
+background: #90A5BA;
+border-radius: 26px;
+
+
+/* Group 59 */
+
+position: absolute;
+width: 219px;
+height: 21px;
+left: 1129px;
+top: 767px;
+
+
+
+/* Generate requirement form */
+
+position: absolute;
+width: 195px;
+height: 21px;
+left: 1153px;
+top: 767px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Polygon 2 */
+
+position: absolute;
+width: 15px;
+height: 15px;
+left: 1129px;
+top: 770px;
+
+border: 2px solid #FFFFFF;
+border-radius: 2px;
+transform: rotate(90deg);

@@ -1,0 +1,1455 @@
+/* Desktop - 6 */
+
+position: relative;
+width: 1440px;
+height: 1136px;
+
+background: linear-gradient(90deg, #EBF4FD 0%, #F5F5FF 100%);
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 1 */
+
+position: absolute;
+width: 264px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+
+
+/* Home */
+
+position: absolute;
+width: 48px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Start Interview */
+
+position: absolute;
+width: 116px;
+height: 24px;
+left: 429px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Admin */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 568px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Sign in */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 1169px;
+top: 16px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 123px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Group 39 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: calc(50% - 242px/2);
+top: 122px;
+
+
+
+/* Group 5 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: calc(50% - 242px/2);
+top: 122px;
+
+
+
+/* Rectangle 3 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: 599px;
+top: 122px;
+
+background: #FFFFFF;
+border-radius: 23px;
+
+
+/* Group 4 */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+
+
+/* Group 3 */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+
+
+/* Meet your AI consultant */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 638px;
+top: 129px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+background: #FFFFFF;
+border: 2px solid #475569;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #475569;
+
+
+/* Group 106 */
+
+position: absolute;
+width: 890px;
+height: 86px;
+left: calc(50% - 890px/2);
+top: 182px;
+
+
+
+/* Which best describes your situation? */
+
+position: absolute;
+width: 890px;
+height: 71px;
+left: calc(50% - 890px/2);
+top: 182px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 48px;
+line-height: 86px;
+/* or 179% */
+
+color: #000000;
+
+
+
+/* situation */
+
+position: absolute;
+width: 212px;
+height: 86px;
+left: calc(50% - 212px/2 + 308px);
+top: 182px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 48px;
+line-height: 86px;
+/* identical to box height, or 179% */
+text-align: center;
+
+background: linear-gradient(104.56deg, #6BA1FA 9.61%, #9D8FFA 83.04%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-fill-color: transparent;
+
+
+
+/* Pick a path so Aria knows what to ask. She'll guide you through a voice or text conversation and generate your requirements, BRD automatically. */
+
+position: absolute;
+width: 710px;
+height: 58px;
+left: calc(50% - 710px/2);
+top: 268px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 29px;
+/* or 161% */
+text-align: center;
+
+color: #64748B;
+
+
+
+/* Group 113 */
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 233px;
+top: 381px;
+
+
+
+/* Rectangle 33 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 233px;
+top: 381px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* I have an idea and want to build a newapplication from scratch */
+
+position: absolute;
+width: 253px;
+height: 42px;
+left: 264px;
+top: 515px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+
+color: #5B6983;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 264px;
+top: 409px;
+
+background: linear-gradient(90deg, #6DA0F9 0%, #9D8FFA 100%);
+border-radius: 28px;
+
+
+/* New application idea */
+
+position: absolute;
+width: 194px;
+height: 27px;
+left: 264px;
+top: 478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Group 110 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 264px;
+top: 580px;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 264px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Concept */
+
+position: absolute;
+width: 44px;
+height: 15px;
+left: 271px;
+top: 583px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 111 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 328px;
+top: 580px;
+
+
+
+/* Rectangle 38 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 328px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* MVP */
+
+position: absolute;
+width: 22px;
+height: 15px;
+left: 337px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 112 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 374px;
+top: 580px;
+
+
+
+/* Rectangle 39 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 374px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Product */
+
+position: absolute;
+width: 40px;
+height: 15px;
+left: 381px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Start interview */
+
+position: absolute;
+width: 102px;
+height: 21px;
+left: 264px;
+top: 622px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #138DD8;
+
+
+
+/* Arrow 4 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 9px;
+height: 0px;
+left: 374px;
+top: 633px;
+
+border: 1.8px solid #138DD8;
+
+
+/* Group 114 */
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 562px;
+top: 381px;
+
+
+
+/* Rectangle 33 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 562px;
+top: 381px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* I have an idea and want to build a newapplication from scratch */
+
+position: absolute;
+width: 253px;
+height: 42px;
+left: 593px;
+top: 515px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+
+color: #5B6983;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 593px;
+top: 409px;
+
+background: linear-gradient(90deg, #6DA0F9 0%, #9D8FFA 100%);
+border-radius: 28px;
+
+
+/* Existing Business */
+
+position: absolute;
+width: 156px;
+height: 27px;
+left: 593px;
+top: 478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Group 110 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 593px;
+top: 580px;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 593px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Concept */
+
+position: absolute;
+width: 44px;
+height: 15px;
+left: 600px;
+top: 583px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 111 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 657px;
+top: 580px;
+
+
+
+/* Rectangle 38 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 657px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* MVP */
+
+position: absolute;
+width: 22px;
+height: 15px;
+left: 666px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 112 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 703px;
+top: 580px;
+
+
+
+/* Rectangle 39 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 703px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Product */
+
+position: absolute;
+width: 40px;
+height: 15px;
+left: 710px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Start interview */
+
+position: absolute;
+width: 102px;
+height: 21px;
+left: 593px;
+top: 622px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #138DD8;
+
+
+
+/* Arrow 4 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 9px;
+height: 0px;
+left: 703px;
+top: 633px;
+
+border: 1.8px solid #138DD8;
+
+
+/* Group 115 */
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 891px;
+top: 381px;
+
+
+
+/* Rectangle 33 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 315px;
+height: 290px;
+left: 891px;
+top: 381px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 26px;
+
+
+/* I have an idea and want to build a newapplication from scratch */
+
+position: absolute;
+width: 253px;
+height: 42px;
+left: 922px;
+top: 515px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+
+color: #5B6983;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 922px;
+top: 409px;
+
+background: linear-gradient(90deg, #6DA0F9 0%, #9D8FFA 100%);
+border-radius: 28px;
+
+
+/* Existing Application */
+
+position: absolute;
+width: 181px;
+height: 27px;
+left: 922px;
+top: 478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Group 110 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 922px;
+top: 580px;
+
+
+
+/* Rectangle 37 */
+
+position: absolute;
+width: 57px;
+height: 22px;
+left: 922px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Concept */
+
+position: absolute;
+width: 44px;
+height: 15px;
+left: 929px;
+top: 583px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 111 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 986px;
+top: 580px;
+
+
+
+/* Rectangle 38 */
+
+position: absolute;
+width: 39px;
+height: 22px;
+left: 986px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* MVP */
+
+position: absolute;
+width: 22px;
+height: 15px;
+left: 995px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 112 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 1032px;
+top: 580px;
+
+
+
+/* Rectangle 39 */
+
+position: absolute;
+width: 54px;
+height: 22px;
+left: 1032px;
+top: 580px;
+
+background: #EBF4FE;
+border-radius: 16px;
+
+
+/* Product */
+
+position: absolute;
+width: 40px;
+height: 15px;
+left: 1039px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Start interview */
+
+position: absolute;
+width: 102px;
+height: 21px;
+left: 922px;
+top: 622px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #138DD8;
+
+
+
+/* Arrow 4 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 9px;
+height: 0px;
+left: 1032px;
+top: 633px;
+
+border: 1.8px solid #138DD8;
+
+
+/* Group 116 */
+
+position: absolute;
+width: 655px;
+height: 107px;
+left: calc(50% - 655px/2 + 0.5px);
+top: 715px;
+
+
+
+/* Group 44 */
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 393px;
+top: 715px;
+
+
+
+/* Rectangle 12 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 393px;
+top: 715px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 43 */
+
+position: absolute;
+width: 61px;
+height: 74px;
+left: 466px;
+top: 732px;
+
+
+
+/* Est time */
+
+position: absolute;
+width: 56px;
+height: 21px;
+left: 469px;
+top: 761px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* >10 mins */
+
+position: absolute;
+width: 61px;
+height: 21px;
+left: 466px;
+top: 785px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* mingcute:time-line */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 485px;
+top: 732px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 0.78%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 50.32%;
+right: 46.2%;
+top: 96.43%;
+bottom: 0.78%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Rectangle 13 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 617px;
+top: 715px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 45 */
+
+position: absolute;
+width: 64px;
+height: 74px;
+left: 689px;
+top: 732px;
+
+
+
+/* Question */
+
+position: absolute;
+width: 64px;
+height: 21px;
+left: 689px;
+top: 761px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* 12 core */
+
+position: absolute;
+width: 49px;
+height: 21px;
+left: 696px;
+top: 785px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* stash:question */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 709px;
+top: 732px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 38.54%;
+right: 38.55%;
+top: 30.21%;
+bottom: 29.17%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 13.54%;
+right: 13.54%;
+top: 13.54%;
+bottom: 13.54%;
+
+background: #000000;
+
+
+/* Group 48 */
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 841px;
+top: 715px;
+
+
+
+/* Rectangle 14 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 841px;
+top: 715px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 47 */
+
+position: absolute;
+width: 67px;
+height: 69px;
+left: 911px;
+top: 734px;
+
+
+
+/* Privacy */
+
+position: absolute;
+width: 52px;
+height: 21px;
+left: 918px;
+top: 758px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* Encryped */
+
+position: absolute;
+width: 67px;
+height: 21px;
+left: 911px;
+top: 782px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 64.61%;
+bottom: 34.08%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 64.61%;
+bottom: 34.08%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 64.61%;
+bottom: 34.08%;
+
+border: 1.5px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 65.39%;
+right: 34.19%;
+top: 65.04%;
+bottom: 34.61%;
+
+border: 1.5px solid #000000;
