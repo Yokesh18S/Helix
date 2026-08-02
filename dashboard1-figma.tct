@@ -1,0 +1,2282 @@
+/* Desktop - 1 */
+
+position: relative;
+width: 1440px;
+height: 1944px;
+
+background: #E9EDF6;
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #EEF1F8;
+
+
+/* Group 1 */
+
+position: absolute;
+width: 264px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+
+
+/* Home */
+
+position: absolute;
+width: 48px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Start Interview */
+
+position: absolute;
+width: 116px;
+height: 24px;
+left: 429px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Admin */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 568px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Sign in */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 1169px;
+top: 16px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 10 minutes 12 questions No signup required for the demo */
+
+position: absolute;
+width: 383px;
+height: 20px;
+left: calc(50% - 383px/2 + 0.5px);
+top: 680px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 20px;
+/* identical to box height */
+
+color: #64748B;
+
+
+
+/* Have a 10-minute voice conversation with our AI business consultant. It listens, asks the right follow-ups, and auto-generates a complete requirement document — no forms to fill. */
+
+position: absolute;
+width: 637px;
+height: 87px;
+left: calc(50% - 637px/2 + 0.5px);
+top: 478px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 29px;
+/* or 161% */
+text-align: center;
+
+color: #64748B;
+
+
+
+/* Your AI consultant is ready when you are. */
+
+position: absolute;
+width: 315px;
+height: 21px;
+left: 573px;
+top: 1734px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #64748B;
+
+
+
+/* HOW IT WORKS */
+
+position: absolute;
+width: 123px;
+height: 18px;
+left: 669px;
+top: 1228px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.13em;
+
+color: #64748B;
+
+
+
+/* Stop filling forms. Start a conversation. */
+
+position: absolute;
+width: 704px;
+height: 42px;
+left: 378px;
+top: 1685px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 28px;
+line-height: 42px;
+/* identical to box height */
+text-align: center;
+
+color: #000000;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 123px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Group 28 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 595px;
+top: 1788px;
+
+
+
+/* Group 9 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 595px;
+top: 1788px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 595px;
+top: 1788px;
+
+background: #1E293B;
+border-radius: 32px;
+
+
+/* Group 8 */
+
+position: absolute;
+width: 171px;
+height: 20px;
+left: 635px;
+top: 1805px;
+
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 144px;
+height: 20px;
+left: 662px;
+top: 1805px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #FFFFFF;
+
+
+
+/* weui:mike-filled */
+
+position: absolute;
+width: 18px;
+height: 18px;
+left: 635px;
+top: 1806px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #FFFFFF;
+
+
+/* Group 5 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: calc(50% - 242px/2);
+top: 133px;
+
+
+
+/* Rectangle 3 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: 599px;
+top: 133px;
+
+background: #FFFFFF;
+border-radius: 23px;
+
+
+/* Group 4 */
+
+position: absolute;
+width: 200px;
+height: 18px;
+left: 622px;
+top: 142px;
+
+
+
+/* Group 3 */
+
+position: absolute;
+width: 182px;
+height: 18px;
+left: 640px;
+top: 142px;
+
+
+
+/* New Voice-first AI consultant */
+
+position: absolute;
+width: 182px;
+height: 18px;
+left: 640px;
+top: 142px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* Ellipse 1 */
+
+position: absolute;
+width: 2px;
+height: 2px;
+left: 670px;
+top: 150px;
+
+background: #6B7A90;
+
+
+/* Vector */
+
+position: absolute;
+left: 43.19%;
+right: 55.9%;
+top: 7.51%;
+bottom: 91.87%;
+
+background: #64748B;
+
+
+/* Group 38 */
+
+position: absolute;
+width: 565px;
+height: 258px;
+left: 438px;
+top: 192px;
+
+
+
+/* Just talk. We’ll write the requirements. */
+
+position: absolute;
+width: 565px;
+height: 258px;
+left: calc(50% - 565px/2 + 0.5px);
+top: 192px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 80px;
+line-height: 86px;
+/* or 108% */
+text-align: center;
+
+color: #000000;
+
+
+
+/* talk */
+
+position: absolute;
+width: 149px;
+height: 86px;
+left: calc(50% - 149px/2 + 84.5px);
+top: 192px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 80px;
+line-height: 86px;
+/* identical to box height, or 108% */
+text-align: center;
+
+background: linear-gradient(104.56deg, #6BA1FA 9.61%, #9D8FFA 83.04%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-fill-color: transparent;
+
+
+
+/* Group 34 */
+
+position: absolute;
+width: 517px;
+height: 54px;
+left: calc(50% - 517px/2 + 0.5px);
+top: 608px;
+
+
+
+/* Group 7 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 462px;
+top: 608px;
+
+
+
+/* Group 9 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 462px;
+top: 608px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 462px;
+top: 608px;
+
+background: #1E293B;
+border-radius: 32px;
+
+
+/* Group 8 */
+
+position: absolute;
+width: 171px;
+height: 20px;
+left: 502px;
+top: 625px;
+
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 144px;
+height: 20px;
+left: 529px;
+top: 625px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #FFFFFF;
+
+
+
+/* weui:mike-filled */
+
+position: absolute;
+width: 18px;
+height: 18px;
+left: 502px;
+top: 626px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #FFFFFF;
+
+
+/* Group 12 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 728px;
+top: 608px;
+
+
+
+/* Group 8 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 728px;
+top: 608px;
+
+
+
+/* Group 9 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 728px;
+top: 608px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 728px;
+top: 608px;
+
+background: #FFFFFF;
+border-radius: 32px;
+
+
+/* Group 11 */
+
+position: absolute;
+width: 110px;
+height: 20px;
+left: 799px;
+top: 625px;
+
+
+
+/* Group 8 */
+
+position: absolute;
+width: 83px;
+height: 20px;
+left: 826px;
+top: 625px;
+
+
+
+/* See Tutorial */
+
+position: absolute;
+width: 83px;
+height: 20px;
+left: 826px;
+top: 625px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #1E293B;
+
+
+
+/* Group 10 */
+
+position: absolute;
+width: 16px;
+height: 16px;
+left: 799px;
+top: 627px;
+
+
+
+/* Ellipse 2 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 16px;
+height: 16px;
+left: 799px;
+top: 627px;
+
+border: 1.5px solid #1E293B;
+
+
+/* Polygon 1 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 804px;
+top: 632px;
+
+background: #1E293B;
+border: 1px solid #1E293B;
+transform: rotate(90deg);
+
+
+/* Group 16 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 196px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 196px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* ic:outline-keyboard-voice */
+
+position: absolute;
+width: 21px;
+height: 21px;
+left: 205px;
+top: 1383px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 12.5%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Group 20 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+
+
+/* Group 17 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* tabler:brain */
+
+position: absolute;
+width: 19px;
+height: 19px;
+left: 486px;
+top: 1383px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 12.5%;
+bottom: 12.5%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 54.17%;
+bottom: 12.5%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 70.83%;
+right: 12.5%;
+top: 37.5%;
+bottom: 33.33%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 20.83%;
+top: 12.5%;
+bottom: 33.33%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 50%;
+top: 12.5%;
+bottom: 31.25%;
+
+border: 2px solid #000000;
+
+
+/* Group 18 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 756px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 756px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* f7:doc-text */
+
+position: absolute;
+width: 17px;
+height: 17px;
+left: 766px;
+top: 1384px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 14.8%;
+right: 14.8%;
+top: 5.13%;
+bottom: 5.13%;
+
+background: #000000;
+
+
+/* Talk */
+
+position: absolute;
+width: 39px;
+height: 27px;
+left: 195px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+text-align: center;
+
+color: #000000;
+
+
+
+/* Extract */
+
+position: absolute;
+width: 64px;
+height: 27px;
+left: 474px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Generate */
+
+position: absolute;
+width: 86px;
+height: 27px;
+left: 756px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Sign & submit */
+
+position: absolute;
+width: 128px;
+height: 27px;
+left: 1036px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 10-15 voice questions in a natural conversation */
+
+position: absolute;
+width: 180px;
+height: 42px;
+left: 195px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* AI captures requirements live as you speak */
+
+position: absolute;
+width: 207px;
+height: 42px;
+left: 474px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* A polished BRD is drafted automatically */
+
+position: absolute;
+width: 176px;
+height: 42px;
+left: 756px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* Review, e-sign and send to your team. */
+
+position: absolute;
+width: 214px;
+height: 42px;
+left: 1036px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* 01 */
+
+position: absolute;
+width: 14px;
+height: 21px;
+left: 391px;
+top: 1373px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 02 */
+
+position: absolute;
+width: 18px;
+height: 21px;
+left: 670px;
+top: 1373px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 03 */
+
+position: absolute;
+width: 18px;
+height: 21px;
+left: 949px;
+top: 1372px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 04 */
+
+position: absolute;
+width: 19px;
+height: 21px;
+left: 1228px;
+top: 1372px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* Group 22 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+
+
+/* Group 21 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+background: #EFF6FF;
+
+
+/* tdesign:secured */
+
+position: absolute;
+width: 17px;
+height: 17px;
+left: 1047px;
+top: 1385px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+border: 1.5px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 34.05%;
+right: 30.6%;
+top: 34.76%;
+bottom: 41.67%;
+
+border: 1.5px solid #000000;
+
+
+/* Group 27 */
+
+position: absolute;
+width: 1098px;
+height: 182px;
+left: 171px;
+top: 1349px;
+
+
+
+/* Rectangle 5 */
+
+position: absolute;
+width: 258px;
+height: 182px;
+left: 171px;
+top: 1349px;
+
+background: #FFFFFF;
+border-radius: 28px;
+
+
+/* Rectangle 6 */
+
+position: absolute;
+width: 258px;
+height: 182px;
+left: 451px;
+top: 1349px;
+
+background: #FFFFFF;
+border-radius: 28px;
+
+
+/* Rectangle 7 */
+
+position: absolute;
+width: 258px;
+height: 182px;
+left: 731px;
+top: 1349px;
+
+background: #FFFFFF;
+border-radius: 28px;
+
+
+/* Rectangle 8 */
+
+position: absolute;
+width: 258px;
+height: 182px;
+left: 1011px;
+top: 1349px;
+
+background: #FFFFFF;
+border-radius: 28px;
+
+
+/* Group 23 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 196px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 196px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* ic:outline-keyboard-voice */
+
+position: absolute;
+width: 21px;
+height: 21px;
+left: 205px;
+top: 1383px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 12.5%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Group 24 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+
+
+/* Group 17 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 477px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* tabler:brain */
+
+position: absolute;
+width: 19px;
+height: 19px;
+left: 486px;
+top: 1383px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 12.5%;
+bottom: 12.5%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 54.17%;
+bottom: 12.5%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 70.83%;
+right: 12.5%;
+top: 37.5%;
+bottom: 33.33%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 20.83%;
+top: 12.5%;
+bottom: 33.33%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 50%;
+top: 12.5%;
+bottom: 31.25%;
+
+border: 2px solid #000000;
+
+
+/* Group 25 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 756px;
+top: 1374px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 756px;
+top: 1374px;
+
+background: #EFF6FF;
+
+
+/* f7:doc-text */
+
+position: absolute;
+width: 17px;
+height: 17px;
+left: 766px;
+top: 1384px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 14.8%;
+right: 14.8%;
+top: 5.13%;
+bottom: 5.13%;
+
+background: #000000;
+
+
+/* Talk */
+
+position: absolute;
+width: 39px;
+height: 27px;
+left: 195px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+text-align: center;
+
+color: #000000;
+
+
+
+/* Extract */
+
+position: absolute;
+width: 64px;
+height: 27px;
+left: 474px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Generate */
+
+position: absolute;
+width: 86px;
+height: 27px;
+left: 756px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Sign & submit */
+
+position: absolute;
+width: 128px;
+height: 27px;
+left: 1036px;
+top: 1427px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 27px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* 10-15 voice questions in a natural conversation */
+
+position: absolute;
+width: 180px;
+height: 42px;
+left: 195px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* AI captures requirements live as you speak */
+
+position: absolute;
+width: 207px;
+height: 42px;
+left: 474px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* A polished BRD is drafted automatically */
+
+position: absolute;
+width: 176px;
+height: 42px;
+left: 756px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* Review, e-sign and send to your team. */
+
+position: absolute;
+width: 214px;
+height: 42px;
+left: 1036px;
+top: 1465px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #94A3B8;
+
+
+
+/* 01 */
+
+position: absolute;
+width: 14px;
+height: 21px;
+left: 391px;
+top: 1373px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 02 */
+
+position: absolute;
+width: 18px;
+height: 21px;
+left: 670px;
+top: 1373px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 03 */
+
+position: absolute;
+width: 18px;
+height: 21px;
+left: 949px;
+top: 1372px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* 04 */
+
+position: absolute;
+width: 19px;
+height: 21px;
+left: 1228px;
+top: 1372px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* Group 26 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+
+
+/* Group 21 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+
+
+/* Ellipse 6 */
+
+position: absolute;
+width: 38px;
+height: 38px;
+left: 1037px;
+top: 1375px;
+
+background: #EFF6FF;
+
+
+/* tdesign:secured */
+
+position: absolute;
+width: 17px;
+height: 17px;
+left: 1047px;
+top: 1385px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 6.25%;
+bottom: 6.25%;
+
+border: 1.5px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 34.05%;
+right: 30.6%;
+top: 34.76%;
+bottom: 41.67%;
+
+border: 1.5px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 50px;
+height: 50px;
+left: 696px;
+top: 1628px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+background: rgba(255, 255, 255, 0.16);
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.5px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1.6px solid #000000;
+
+
+/* Group 30 */
+
+position: absolute;
+width: 1099px;
+height: 312px;
+left: calc(50% - 1099px/2 + 0.5px);
+top: 1583px;
+
+
+
+/* Rectangle 9 */
+
+position: absolute;
+width: 1099px;
+height: 312px;
+left: 171px;
+top: 1583px;
+
+background: #F1F5F9;
+border-radius: 14px;
+
+
+/* Group 29 */
+
+position: absolute;
+width: 704px;
+height: 214px;
+left: 369px;
+top: 1632px;
+
+
+
+/* Your AI consultant is ready when you are. */
+
+position: absolute;
+width: 315px;
+height: 21px;
+left: 564px;
+top: 1738px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #64748B;
+
+
+
+/* Stop filling forms. Start a conversation. */
+
+position: absolute;
+width: 704px;
+height: 42px;
+left: 369px;
+top: 1689px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 28px;
+line-height: 42px;
+/* identical to box height */
+text-align: center;
+
+color: #000000;
+
+
+
+/* Group 28 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 596px;
+top: 1792px;
+
+
+
+/* Group 9 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 596px;
+top: 1792px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 251px;
+height: 54px;
+left: 596px;
+top: 1792px;
+
+background: #1E293B;
+border-radius: 32px;
+
+
+/* Group 8 */
+
+position: absolute;
+width: 171px;
+height: 20px;
+left: 636px;
+top: 1809px;
+
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 144px;
+height: 20px;
+left: 663px;
+top: 1809px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+
+color: #FFFFFF;
+
+
+
+/* weui:mike-filled */
+
+position: absolute;
+width: 18px;
+height: 18px;
+left: 636px;
+top: 1810px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #FFFFFF;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 50px;
+height: 50px;
+left: 696px;
+top: 1632px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+background: rgba(255, 255, 255, 0.16);
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 2px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 2px solid #000000;
+
+
+/* From conversation to BRD in four steps */
+
+position: absolute;
+width: 704px;
+height: 51px;
+left: calc(50% - 704px/2);
+top: 1252px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 34px;
+line-height: 51px;
+/* identical to box height */
+text-align: center;
+
+color: #000000;
+
+
+
+/* Group 33 */
+
+position: absolute;
+width: 740px;
+height: 426px;
+left: calc(50% - 740px/2);
+top: 738px;
+
+
+
+/* Rectangle 4 */
+
+position: absolute;
+width: 740px;
+height: 426px;
+left: 350px;
+top: 738px;
+
+background: #FFFFFF;
+border-radius: 16px;
+
+
+/* Group 32 */
+
+position: absolute;
+width: 587px;
+height: 322.24px;
+left: 427px;
+top: 790px;
+
+
+
+/* LIVE VOICE MODE */
+
+position: absolute;
+width: 123px;
+height: 18px;
+left: 659px;
+top: 935px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.13em;
+
+color: #64748B;
+
+
+
+/* "Tell me about your business — what do you do, and what would you like to automate?" */
+
+position: absolute;
+width: 587px;
+height: 72px;
+left: 427px;
+top: 961px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 24px;
+line-height: 36px;
+text-align: center;
+
+color: #000000;
+
+
+
+/* Group 15 */
+
+position: absolute;
+width: 145.67px;
+height: 57.24px;
+left: 648px;
+top: 1055px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 45%;
+right: 51.56%;
+top: 54.27%;
+bottom: 42.79%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 46.73%;
+right: 53.11%;
+top: 57.12%;
+bottom: 42.79%;
+
+background: linear-gradient(180deg, #88B3F9 0%, #629BF8 100%);
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 45%;
+right: 51.56%;
+top: 54.27%;
+bottom: 43.18%;
+
+background: linear-gradient(180deg, #88B3F9 0%, #629BF8 100%);
+
+
+/* Vector */
+
+position: absolute;
+left: 48.89%;
+right: 48.01%;
+top: 54.42%;
+bottom: 43.28%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 52.01%;
+right: 44.88%;
+top: 54.42%;
+bottom: 43.28%;
+
+
+
+/* Group 31 */
+
+position: absolute;
+width: 130px;
+height: 130px;
+left: 656px;
+top: 790px;
+
+
+
+/* Group 13 */
+
+position: absolute;
+width: 130px;
+height: 130px;
+left: 656px;
+top: 790px;
+
+
+
+/* Ellipse 3 */
+
+position: absolute;
+width: 100px;
+height: 100px;
+left: 671px;
+top: 805px;
+
+background: #EFEAFE;
+
+
+/* Ellipse 5 */
+
+position: absolute;
+width: 130px;
+height: 130px;
+left: 656px;
+top: 790px;
+
+background: rgba(239, 234, 254, 0.36);
+
+
+/* Ellipse 4 */
+
+position: absolute;
+width: 72px;
+height: 72px;
+left: 685px;
+top: 819px;
+
+background: linear-gradient(136.7deg, #945AF6 15.55%, #CE4EC2 85.75%);
+
+
+/* ic:outline-keyboard-voice */
+
+position: absolute;
+width: 33px;
+height: 33px;
+left: 704px;
+top: 838px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 12.5%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+

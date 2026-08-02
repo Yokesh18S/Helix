@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+/* Voice pulse animation */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0.4; }
+  100% { transform: scale(0.8); opacity: 0.8; }
+}
+
+.voice-pulse {
+  animation: pulse-ring 1.5s ease-in-out infinite;
+}
+
+/* Speaking waveform animation */
+@keyframes wave {
+  0%, 100% { height: 8px; }
+  50% { height: 20px; }
+}
+
+.speaking-wave {
+  animation: wave 0.6s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(104.56deg, #6BA1FA 9.61%, #9D8FFA 83.04%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mic recording glow */
+@keyframes recording-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(148, 90, 246, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(148, 90, 246, 0.6); }
+}
+
+.recording-glow {
+  animation: recording-glow 1.5s ease-in-out infinite;
+}
+
