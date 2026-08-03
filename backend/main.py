@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
 from typing import List, Optional
 import os
@@ -10,6 +12,16 @@ import json
 import shutil
 import uuid
 import random
+import logging
+import traceback
+
+# ============ LOGGING SETUP ============
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+logger = logging.getLogger("helix.api")
 
 from database import engine, get_db, Base
 from models import User, Application, InterviewSession
@@ -52,6 +64,43 @@ app.add_middleware(
 
 # Create uploads directory
 os.makedirs("uploads", exist_ok=True)
+
+
+# ============ GLOBAL EXCEPTION HANDLERS ============
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Catch-all: log full stack trace internally, return safe JSON to client."""
+    request_id = str(uuid.uuid4())[:8]
+    logger.error(
+        "[%s] Unhandled exception on %s %s\n%s",
+        request_id,
+        request.method,
+        request.url.path,
+        traceback.format_exc(),
+    )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "An internal server error occurred. Please try again.",
+            "request_id": request_id,
+        },
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Return structured 422 for Pydantic validation failures."""
+    logger.warning(
+        "Validation error on %s %s: %s",
+        request.method,
+        request.url.path,
+        exc.errors(),
+    )
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 
 
 # ============ AUTH ROUTES ============
@@ -219,20 +268,23 @@ def create_application(
     db: Session = Depends(get_db),
     request: Request = None,
 ):
+    request_id = str(uuid.uuid4())[:8]
+    logger.info("[%s] POST /api/applications — guest_token=%s", request_id, bool(app_data.guest_token))
+
     # Try to get authenticated user (optional for guest mode)
     current_user = None
     auth_header = request.headers.get("Authorization") if request else None
     if auth_header and auth_header.startswith("Bearer "):
         try:
-            from auth import get_current_user as _get_current_user
             from auth import decode_token
             token = auth_header.split(" ", 1)[1]
             current_user = decode_token(token, db)
-        except Exception:
-            pass
+            if current_user:
+                logger.info("[%s] Authenticated user id=%s", request_id, current_user.id)
+        except Exception as e:
+            logger.warning("[%s] Token decode failed: %s", request_id, e)
 
     if current_user:
-        # Authenticated user
         application = Application(
             user_id=current_user.id,
             project_name=app_data.project_name,
@@ -242,6 +294,7 @@ def create_application(
     else:
         # Guest mode — require guest_token
         if not app_data.guest_token:
+            logger.warning("[%s] Rejected: no guest_token and no auth token", request_id)
             raise HTTPException(status_code=400, detail="guest_token required for unauthenticated access")
         application = Application(
             user_id=None,
@@ -251,10 +304,51 @@ def create_application(
             is_guest=True,
         )
 
-    db.add(application)
-    db.commit()
-    db.refresh(application)
-    return ApplicationResponse.model_validate(application)
+    # Retry loop to handle reference_number uniqueness collisions
+    max_retries = 5
+    for attempt in range(1, max_retries + 1):
+        try:
+            db.add(application)
+            db.commit()
+            db.refresh(application)
+            logger.info(
+                "[%s] Application created id=%s ref=%s (attempt %d)",
+                request_id, application.id, application.reference_number, attempt,
+            )
+            return ApplicationResponse.model_validate(application)
+        except IntegrityError as ie:
+            db.rollback()
+            error_str = str(ie.orig) if ie.orig else str(ie)
+            if "reference_number" in error_str and attempt < max_retries:
+                logger.warning(
+                    "[%s] reference_number collision on attempt %d — retrying with new ref",
+                    request_id, attempt,
+                )
+                # Generate a new reference number and retry
+                from models import generate_ref
+                application.reference_number = generate_ref()
+                # Re-add to session after rollback
+                db.add(application)
+                continue
+            # Non-recoverable IntegrityError or exhausted retries
+            logger.error(
+                "[%s] IntegrityError after %d attempt(s): %s",
+                request_id, attempt, error_str,
+            )
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to create application due to a database conflict. Please try again. (request_id={request_id})",
+            )
+        except Exception as exc:
+            db.rollback()
+            logger.error(
+                "[%s] Unexpected error creating application:\n%s",
+                request_id, traceback.format_exc(),
+            )
+            raise HTTPException(
+                status_code=500,
+                detail=f"An unexpected error occurred. Please try again. (request_id={request_id})",
+            ) from exc
 
 
 @app.get("/api/applications", response_model=List[ApplicationResponse])

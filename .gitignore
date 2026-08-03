@@ -6,7 +6,7 @@ __pycache__/
 *.pyo
 
 # Database
-*.db
+# *.db  — insighta.db is intentionally tracked in version control
 
 # Environment
 .env

@@ -6,7 +6,7 @@ import uuid
 
 
 def generate_ref():
-    return f"REQ-{datetime.now().year}-{uuid.uuid4().hex[:6].upper()}"
+    return f"REQ-{datetime.now().year}-{uuid.uuid4().hex[:12].upper()}"
 
 
 class User(Base):
