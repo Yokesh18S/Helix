@@ -1,0 +1,1141 @@
+/* Desktop - 2 */
+
+position: relative;
+width: 1440px;
+height: 1136px;
+
+background: linear-gradient(90deg, #E8F3FC 0%, #F6F6FF 100%);
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 1 */
+
+position: absolute;
+width: 264px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+
+
+/* Home */
+
+position: absolute;
+width: 48px;
+height: 24px;
+left: 358px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Start Interview */
+
+position: absolute;
+width: 116px;
+height: 24px;
+left: 429px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Admin */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 568px;
+top: 21px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #9BAABD;
+
+
+
+/* Sign in */
+
+position: absolute;
+width: 54px;
+height: 24px;
+left: 1169px;
+top: 16px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 171px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 123px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Group 39 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: calc(50% - 242px/2);
+top: 122px;
+
+
+
+/* Group 5 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: calc(50% - 242px/2);
+top: 122px;
+
+
+
+/* Rectangle 3 */
+
+position: absolute;
+width: 242px;
+height: 36px;
+left: 599px;
+top: 122px;
+
+background: #FFFFFF;
+border-radius: 23px;
+
+
+/* Group 4 */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+
+
+/* Group 3 */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+
+
+/* Meet your AI consultant */
+
+position: absolute;
+width: 143px;
+height: 18px;
+left: 672px;
+top: 131px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 638px;
+top: 129px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+background: #FFFFFF;
+border: 2px solid #475569;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #475569;
+
+
+/* Group 38 */
+
+position: absolute;
+width: 670px;
+height: 228px;
+left: calc(50% - 670px/2);
+top: 182px;
+
+
+
+/* Group 41 */
+
+position: absolute;
+width: 670px;
+height: 228px;
+left: calc(50% - 670px/2);
+top: 182px;
+
+
+
+/* Let's understand your */
+
+position: absolute;
+width: 670px;
+height: 86px;
+left: calc(50% - 670px/2);
+top: 182px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 62px;
+line-height: 86px;
+/* identical to box height, or 139% */
+
+color: #000000;
+
+
+
+/* Group 40 */
+
+position: absolute;
+width: 559px;
+height: 86px;
+left: 441px;
+top: 253px;
+
+
+
+/* business in  */
+
+position: absolute;
+width: 364px;
+height: 86px;
+left: calc(50% - 364px/2 - 97px);
+top: 253px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 62px;
+line-height: 86px;
+/* identical to box height, or 139% */
+
+color: #000000;
+
+
+
+/* 10–15 */
+
+position: absolute;
+width: 178px;
+height: 86px;
+left: calc(50% - 178px/2 + 191px);
+top: 253px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 62px;
+line-height: 86px;
+/* identical to box height, or 139% */
+text-align: center;
+
+background: linear-gradient(104.56deg, #6BA1FA 9.61%, #9D8FFA 83.04%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-fill-color: transparent;
+
+
+
+/* questions */
+
+position: absolute;
+width: 308px;
+height: 86px;
+left: calc(50% - 308px/2);
+top: 324px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 800;
+font-size: 62px;
+line-height: 86px;
+/* identical to box height, or 139% */
+text-align: center;
+
+background: linear-gradient(104.56deg, #6BA1FA 9.61%, #9D8FFA 83.04%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-fill-color: transparent;
+
+
+
+/* I'm insighta, your AI business consultant. I'll ask you a few questions — answer by voice or by typing. I'll extract requirements as you speak and generate a complete BRD at the end. */
+
+position: absolute;
+width: 710px;
+height: 87px;
+left: calc(50% - 710px/2);
+top: 425px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 29px;
+/* or 161% */
+text-align: center;
+
+color: #64748B;
+
+
+
+/* You can switch between voice and text at any time during the interview. */
+
+position: absolute;
+width: 487px;
+height: 18px;
+left: calc(50% - 487px/2 + 0.5px);
+top: 1014px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.06em;
+
+color: #94A3B8;
+
+
+
+/* Group 50 */
+
+position: absolute;
+width: 719px;
+height: 438px;
+left: 361px;
+top: 544px;
+
+
+
+/* Rectangle 10 */
+
+position: absolute;
+width: 719px;
+height: 438px;
+left: calc(50% - 719px/2 + 0.5px);
+top: 544px;
+
+background: #FFFFFF;
+border-radius: 13px;
+
+
+/* Group 42 */
+
+position: absolute;
+width: 57px;
+height: 57px;
+left: 393px;
+top: 581px;
+
+
+
+/* Rectangle 11 */
+
+position: absolute;
+width: 57px;
+height: 57px;
+left: 393px;
+top: 581px;
+
+background: linear-gradient(153.89deg, #6E64F2 8.39%, #A157F7 91.61%);
+border-radius: 14px;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 31px;
+height: 31px;
+left: 406px;
+top: 594px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 2px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* INSIGHTA . AI CONSULTANT */
+
+position: absolute;
+width: 146px;
+height: 15px;
+left: 672px;
+top: 567px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.06em;
+
+color: #6B7A90;
+
+
+
+/* Group 44 */
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 393px;
+top: 688px;
+
+
+
+/* Rectangle 12 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 393px;
+top: 688px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 43 */
+
+position: absolute;
+width: 61px;
+height: 74px;
+left: 466px;
+top: 705px;
+
+
+
+/* Est time */
+
+position: absolute;
+width: 56px;
+height: 21px;
+left: 469px;
+top: 734px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* >10 mins */
+
+position: absolute;
+width: 61px;
+height: 21px;
+left: 466px;
+top: 758px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* mingcute:time-line */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 485px;
+top: 705px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 0.78%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 50.32%;
+right: 46.2%;
+top: 96.43%;
+bottom: 0.78%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.33%;
+
+background: #000000;
+
+
+/* Rectangle 13 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 617px;
+top: 688px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 45 */
+
+position: absolute;
+width: 64px;
+height: 74px;
+left: 689px;
+top: 705px;
+
+
+
+/* Question */
+
+position: absolute;
+width: 64px;
+height: 21px;
+left: 689px;
+top: 734px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* 12 core */
+
+position: absolute;
+width: 49px;
+height: 21px;
+left: 696px;
+top: 758px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* stash:question */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 709px;
+top: 705px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 38.54%;
+right: 38.55%;
+top: 30.21%;
+bottom: 29.17%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 13.54%;
+right: 13.54%;
+top: 13.54%;
+bottom: 13.54%;
+
+background: #000000;
+
+
+/* "Hi! I'll guide you through a quick discovery conversation. Ready when you are." */
+
+position: absolute;
+width: 589px;
+height: 65px;
+left: 466px;
+top: 584px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 30px;
+text-align: center;
+
+color: #0F172A;
+
+
+
+/* Group 48 */
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 841px;
+top: 688px;
+
+
+
+/* Rectangle 14 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 207px;
+height: 107px;
+left: 841px;
+top: 688px;
+
+background: #FAFBFC;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Group 47 */
+
+position: absolute;
+width: 67px;
+height: 69px;
+left: 911px;
+top: 707px;
+
+
+
+/* Privacy */
+
+position: absolute;
+width: 52px;
+height: 21px;
+left: 918px;
+top: 731px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #6B7A90;
+
+
+
+/* Encryped */
+
+position: absolute;
+width: 67px;
+height: 21px;
+left: 911px;
+top: 755px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 62.24%;
+bottom: 36.45%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 62.24%;
+bottom: 36.45%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 65.14%;
+right: 33.98%;
+top: 62.24%;
+bottom: 36.45%;
+
+border: 1.5px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 65.39%;
+right: 34.19%;
+top: 62.66%;
+bottom: 36.98%;
+
+border: 1.5px solid #000000;
+
+
+/* Group 49 */
+
+position: absolute;
+width: 653px;
+height: 141px;
+left: 394px;
+top: 817px;
+
+
+
+/* Rectangle 15 */
+
+position: absolute;
+width: 319px;
+height: 141px;
+left: 394px;
+top: 817px;
+
+background: #1E293B;
+border-radius: 32px;
+
+
+/* Rectangle 16 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 319px;
+height: 141px;
+left: 728px;
+top: 817px;
+
+background: #FFFFFF;
+border: 1px solid #E2E8F0;
+border-radius: 32px;
+
+
+/* Start voice interview */
+
+position: absolute;
+width: 265px;
+height: 33px;
+left: 418px;
+top: 882px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 22px;
+line-height: 33px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Start text interview */
+
+position: absolute;
+width: 269px;
+height: 33px;
+left: 752px;
+top: 882px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 22px;
+line-height: 33px;
+/* identical to box height */
+
+color: #0F172A;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 29.17%;
+right: 70.21%;
+top: 74.56%;
+bottom: 24.38%;
+
+background: #FFFFFF;
+
+
+/* RECOMMENDED */
+
+position: absolute;
+width: 103px;
+height: 18px;
+left: 439px;
+top: 844px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #94A3B8;
+
+
+
+/* ALTERNATIVE */
+
+position: absolute;
+width: 88px;
+height: 18px;
+left: 773px;
+top: 844px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.08em;
+
+color: #94A3B8;
+
+
+
+/* Faster . most natural */
+
+position: absolute;
+width: 128px;
+height: 18px;
+left: 418px;
+top: 920px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #94A3B8;
+
+
+
+/* Type at your own pace */
+
+position: absolute;
+width: 138px;
+height: 18px;
+left: 752px;
+top: 920px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #0F172A;
+

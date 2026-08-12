@@ -1,0 +1,1760 @@
+/* Desktop - 7 */
+
+position: relative;
+width: 1440px;
+height: 1634px;
+
+background: linear-gradient(90deg, #E5F1FB 0%, #F2F2FF 100%);
+
+
+/* Rectangle 55 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 276px;
+height: 92px;
+left: 98px;
+top: 515px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 20px;
+
+
+/* Rectangle 54 */
+
+position: absolute;
+width: 276px;
+height: 44px;
+left: 98px;
+top: 293px;
+
+background: #FFFFFF;
+border-radius: 15px;
+
+
+/* Welcome */
+
+position: absolute;
+width: 69px;
+height: 21px;
+left: 145px;
+top: 160px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Voice interview */
+
+position: absolute;
+width: 110px;
+height: 21px;
+left: 145px;
+top: 208px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Requirements */
+
+position: absolute;
+width: 101px;
+height: 21px;
+left: 145px;
+top: 256px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Documents */
+
+position: absolute;
+width: 84px;
+height: 21px;
+left: 145px;
+top: 305px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* AI summary */
+
+position: absolute;
+width: 87px;
+height: 21px;
+left: 145px;
+top: 354px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* 05 */
+
+position: absolute;
+width: 14px;
+height: 15px;
+left: 115px;
+top: 356px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #6D7A91;
+
+
+
+/* 06 */
+
+position: absolute;
+width: 14px;
+height: 15px;
+left: 115px;
+top: 405px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #6D7A91;
+
+
+
+/* 07 */
+
+position: absolute;
+width: 13px;
+height: 15px;
+left: 115px;
+top: 452px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #6D7A91;
+
+
+
+/* Review */
+
+position: absolute;
+width: 51px;
+height: 21px;
+left: 145px;
+top: 402px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Sign & submit */
+
+position: absolute;
+width: 100px;
+height: 21px;
+left: 145px;
+top: 450px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Our AI guides you step by step. You can edit anything before submitting. */
+
+position: absolute;
+width: 233px;
+height: 36px;
+left: 114px;
+top: 552px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Need hands? */
+
+position: absolute;
+width: 83px;
+height: 18px;
+left: 115px;
+top: 530px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Rectangle 46 */
+
+position: absolute;
+width: 915px;
+height: 197px;
+left: 414px;
+top: 439px;
+
+background: #FFFFFF;
+border: 2px dashed #AFD2F1;
+border-radius: 25px;
+
+
+/* PDF . DOCX . XLSX . JPG . PNG . MP4 . MOV . up to 50MB each */
+
+position: absolute;
+width: 391px;
+height: 20px;
+left: 672px;
+top: 577px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 13px;
+line-height: 20px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Drag & drop files, or click to browse */
+
+position: absolute;
+width: 285px;
+height: 24px;
+left: 735px;
+top: 549px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Rectangle 40 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 415px;
+top: 265px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 43 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 415px;
+top: 347px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 41 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 724px;
+top: 265px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 44 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 724px;
+top: 347px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 42 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 1033px;
+top: 265px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 45 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 297px;
+height: 68px;
+left: 1033px;
+top: 347px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 19px;
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Back to interview */
+
+position: absolute;
+width: 120px;
+height: 21px;
+left: 1092px;
+top: 22px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Continue */
+
+position: absolute;
+width: 56px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Arrow 1 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 13px;
+height: 0px;
+left: 1074px;
+top: 32px;
+
+border: 1px solid #5B6983;
+transform: rotate(-180deg);
+
+
+/* Screenshots */
+
+position: absolute;
+width: 89px;
+height: 21px;
+left: 480px;
+top: 279px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Wireframes */
+
+position: absolute;
+width: 84px;
+height: 21px;
+left: 788px;
+top: 279px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* PDFs */
+
+position: absolute;
+width: 34px;
+height: 21px;
+left: 1097px;
+top: 279px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* User feedback */
+
+position: absolute;
+width: 103px;
+height: 21px;
+left: 1097px;
+top: 361px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Videos */
+
+position: absolute;
+width: 49px;
+height: 21px;
+left: 788px;
+top: 361px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Requirement docs */
+
+position: absolute;
+width: 131px;
+height: 21px;
+left: 480px;
+top: 361px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Existing app screens */
+
+position: absolute;
+width: 122px;
+height: 18px;
+left: 480px;
+top: 299px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Sketches or Figma exports */
+
+position: absolute;
+width: 158px;
+height: 18px;
+left: 788px;
+top: 299px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Briefs, BRDs, manuals */
+
+position: absolute;
+width: 127px;
+height: 18px;
+left: 1097px;
+top: 299px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Surveys, tickets, reviews */
+
+position: absolute;
+width: 142px;
+height: 18px;
+left: 1097px;
+top: 381px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Screen recordings, walkthrough */
+
+position: absolute;
+width: 190px;
+height: 18px;
+left: 788px;
+top: 381px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Word, Notion, Confluence */
+
+position: absolute;
+width: 151px;
+height: 18px;
+left: 480px;
+top: 381px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* STEP 4 DOCUMENTS */
+
+position: absolute;
+width: 167px;
+height: 18px;
+left: 415px;
+top: 107px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.24em;
+
+color: #138DD8;
+
+
+
+/* Upload supporting documents */
+
+position: absolute;
+width: 563px;
+height: 54px;
+left: 414px;
+top: 125px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 36px;
+line-height: 54px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Optional. Add screenshots, wireframes, PDFs, requirement docs, videos, or user feedback. Aria will read them to enrich your requirements and UX brief. */
+
+position: absolute;
+width: 683px;
+height: 48px;
+left: 415px;
+top: 183px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 24px;
+
+color: #5B6983;
+
+
+
+/* Ellipse 31 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 433px;
+top: 282px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 32 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 741px;
+top: 282px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 33 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 1050px;
+top: 282px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 34 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 1050px;
+top: 364px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 35 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 741px;
+top: 364px;
+
+background: #ECF3FC;
+
+
+/* Ellipse 36 */
+
+position: absolute;
+width: 34px;
+height: 34px;
+left: 433px;
+top: 364px;
+
+background: #ECF3FC;
+
+
+/* Rectangle 47 */
+
+position: absolute;
+width: 56px;
+height: 56px;
+left: 844px;
+top: 482px;
+
+background: #ECF3FC;
+border-radius: 22px;
+
+
+/* Group 121 */
+
+position: absolute;
+width: 914px;
+height: 481px;
+left: 415px;
+top: 662px;
+
+
+
+/* Rectangle 48 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 913px;
+height: 375px;
+left: 415px;
+top: 662px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 25px;
+
+
+/* Patient_Intake_Form_v3.pdf */
+
+position: absolute;
+width: 208px;
+height: 21px;
+left: 488px;
+top: 764px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Patient_Intake_Form_v3.pdf */
+
+position: absolute;
+width: 208px;
+height: 21px;
+left: 488px;
+top: 837px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* OPD_Workflow.png */
+
+position: absolute;
+width: 138px;
+height: 21px;
+left: 488px;
+top: 910px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Uer_Feedback_Q3.csv */
+
+position: absolute;
+width: 164px;
+height: 21px;
+left: 488px;
+top: 983px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* 4 files . grouped by category */
+
+position: absolute;
+width: 178px;
+height: 18px;
+left: 436px;
+top: 708px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* 1.4 MB . uploaded 2 mins ago */
+
+position: absolute;
+width: 179px;
+height: 18px;
+left: 489px;
+top: 783px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Preview */
+
+position: absolute;
+width: 47px;
+height: 18px;
+left: 1254px;
+top: 773px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Preview */
+
+position: absolute;
+width: 47px;
+height: 18px;
+left: 1254px;
+top: 846px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Preview */
+
+position: absolute;
+width: 47px;
+height: 18px;
+left: 1254px;
+top: 919px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Preview */
+
+position: absolute;
+width: 47px;
+height: 18px;
+left: 1254px;
+top: 992px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* 1.4 MB . uploaded 2 mins ago */
+
+position: absolute;
+width: 179px;
+height: 18px;
+left: 489px;
+top: 856px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* 1.4 MB . uploaded 2 mins ago */
+
+position: absolute;
+width: 179px;
+height: 18px;
+left: 489px;
+top: 929px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* 1.4 MB . uploaded 2 mins ago */
+
+position: absolute;
+width: 179px;
+height: 18px;
+left: 489px;
+top: 1002px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Uploaded files */
+
+position: absolute;
+width: 121px;
+height: 24px;
+left: 435px;
+top: 682px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #000000;
+
+
+
+/* Line 3 */
+
+position: absolute;
+width: 914px;
+height: 0px;
+left: 415px;
+top: 746px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 4 */
+
+position: absolute;
+width: 914px;
+height: 0px;
+left: 415px;
+top: 819px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 5 */
+
+position: absolute;
+width: 914px;
+height: 0px;
+left: 415px;
+top: 892px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Line 6 */
+
+position: absolute;
+width: 914px;
+height: 0px;
+left: 415px;
+top: 965px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Rectangle 49 */
+
+position: absolute;
+width: 256px;
+height: 38px;
+left: 1053px;
+top: 685px;
+
+background: #FCFEFF;
+border: 1px solid #DCE5EF;
+border-radius: 12px;
+
+
+/* Search files..... */
+
+position: absolute;
+width: 100px;
+height: 21px;
+left: 1090px;
+top: 694px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #5B6983;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 73.96%;
+right: 25.07%;
+top: 42.59%;
+bottom: 56.55%;
+
+background: #5B6983;
+
+
+/* Rectangle 50 */
+
+position: absolute;
+width: 40px;
+height: 40px;
+left: 432px;
+top: 762px;
+
+background: #ECF3FC;
+border-radius: 17px;
+
+
+/* Rectangle 51 */
+
+position: absolute;
+width: 40px;
+height: 40px;
+left: 432px;
+top: 835px;
+
+background: #ECF3FC;
+border-radius: 17px;
+
+
+/* Rectangle 52 */
+
+position: absolute;
+width: 40px;
+height: 40px;
+left: 432px;
+top: 908px;
+
+background: #ECF3FC;
+border-radius: 17px;
+
+
+/* Rectangle 53 */
+
+position: absolute;
+width: 40px;
+height: 40px;
+left: 432px;
+top: 981px;
+
+background: #ECF3FC;
+border-radius: 17px;
+
+
+/* Group 117 */
+
+position: absolute;
+width: 64px;
+height: 20px;
+left: 733px;
+top: 764px;
+
+
+
+/* Rectangle 51 */
+
+position: absolute;
+width: 64px;
+height: 20px;
+left: 733px;
+top: 764px;
+
+background: #EBF4FE;
+border-radius: 3px;
+
+
+/* FORMS */
+
+position: absolute;
+width: 41px;
+height: 15px;
+left: 745px;
+top: 767px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.15em;
+
+color: #5B6983;
+
+
+
+/* Group 118 */
+
+position: absolute;
+width: 73px;
+height: 20px;
+left: 733px;
+top: 837px;
+
+
+
+/* Rectangle 51 */
+
+position: absolute;
+width: 73px;
+height: 20px;
+left: 733px;
+top: 837px;
+
+background: #EBF4FE;
+border-radius: 3px;
+
+
+/* REPORTS */
+
+position: absolute;
+width: 53px;
+height: 15px;
+left: 745px;
+top: 840px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.15em;
+
+color: #5B6983;
+
+
+
+/* Group 119 */
+
+position: absolute;
+width: 97px;
+height: 20px;
+left: 693px;
+top: 910px;
+
+
+
+/* Rectangle 51 */
+
+position: absolute;
+width: 97px;
+height: 20px;
+left: 693px;
+top: 910px;
+
+background: #EBF4FE;
+border-radius: 3px;
+
+
+/* WORKFLOWS */
+
+position: absolute;
+width: 76px;
+height: 15px;
+left: 705px;
+top: 913px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.15em;
+
+color: #5B6983;
+
+
+
+/* Group 120 */
+
+position: absolute;
+width: 81px;
+height: 20px;
+left: 693px;
+top: 983px;
+
+
+
+/* Rectangle 51 */
+
+position: absolute;
+width: 81px;
+height: 20px;
+left: 693px;
+top: 983px;
+
+background: #EBF4FE;
+border-radius: 3px;
+
+
+/* FEEDBACK */
+
+position: absolute;
+width: 61px;
+height: 15px;
+left: 705px;
+top: 986px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.15em;
+
+color: #5B6983;
+
+
+
+/* Previous */
+
+position: absolute;
+width: 60px;
+height: 21px;
+left: 454px;
+top: 1114px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Save draft */
+
+position: absolute;
+width: 73px;
+height: 21px;
+left: 1029px;
+top: 1114px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Arrow 2 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 13px;
+height: 0px;
+left: 436px;
+top: 1124px;
+
+border: 1px solid #5B6983;
+transform: rotate(-180deg);
+
+
+/* Line 2 */
+
+position: absolute;
+width: 847px;
+height: 0px;
+left: 416px;
+top: 1079px;
+
+border: 1px solid #DCE5EF;
+
+
+/* Group 104 */
+
+position: absolute;
+width: 202px;
+height: 40px;
+left: 1127px;
+top: 1103px;
+
+
+
+/* Rectangle 32 */
+
+position: absolute;
+width: 202px;
+height: 40px;
+left: 1127px;
+top: 1103px;
+
+background: #101834;
+border-radius: 13px;
+
+
+/* Generate AI summary */
+
+position: absolute;
+width: 156px;
+height: 21px;
+left: 1150px;
+top: 1113px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Ellipse 37 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 109px;
+top: 158px;
+
+background: #138DD8;
+
+
+/* Ellipse 38 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 109px;
+top: 206px;
+
+background: #138DD8;
+
+
+/* Ellipse 39 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 109px;
+top: 254px;
+
+background: #138DD8;
+
+
+/* Ellipse 40 */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 109px;
+top: 302px;
+
+background: #101834;
+
+
+/* 04 */
+
+position: absolute;
+width: 14px;
+height: 15px;
+left: 114px;
+top: 307px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: #FFFFFF;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.12%;
+right: 91.32%;
+top: 16.1%;
+bottom: 83.54%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.12%;
+right: 91.32%;
+top: 13.16%;
+bottom: 86.47%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.12%;
+right: 91.32%;
+top: 10.22%;
+bottom: 89.41%;
+
+background: #FFFFFF;
