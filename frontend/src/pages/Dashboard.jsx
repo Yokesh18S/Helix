@@ -81,13 +81,7 @@ export default function Dashboard() {
   };
 
   const getActionLink = (app) => {
-    // Always allow viewing requirements (read-only for submitted)
-    switch (app.status) {
-      case 'draft': return `/interview`;
-      case 'in_progress': return `/requirements/${app.id}`;
-      case 'submitted': return `/requirements/${app.id}`;
-      default: return `/requirements/${app.id}`;
-    }
+    return `/requirements/${app.id}`;
   };
 
   if (loading) {

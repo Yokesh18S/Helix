@@ -63,6 +63,22 @@ export const applicationsAPI = {
   upload: (id, formData) => api.post(`/applications/${id}/upload`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
+  // PDF download — returns blob for browser save-as
+  downloadPdf: (id, lang = null) => {
+    const token = localStorage.getItem('helix_token');
+    const guestToken = localStorage.getItem('helix_guest_token');
+    const langParam = lang ? `&lang=${encodeURIComponent(lang)}` : '';
+    const guestParam = guestToken ? `&guest_token=${encodeURIComponent(guestToken)}` : '';
+    const url = `${API_BASE}/applications/${id}/pdf?${langParam}${guestParam}`;
+    return fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }).then((res) => {
+      if (!res.ok) throw new Error('PDF download failed');
+      return res.blob();
+    });
+  },
+  // Send PDF via email
+  sendEmail: (id) => api.post(`/applications/${id}/send-email`),
 };
 
 // Interview API (Adaptive Engine)
@@ -80,13 +96,28 @@ export const interviewAPI = {
     guestApi.post(`/interview/process-text?application_id=${applicationId}&guest_token=${guestToken}`, data),
   getSessions: (appId) => api.get(`/interview/${appId}/sessions`),
   // Claim guest session after login/register
-  claimGuestSession: (guestToken) => api.post('/interview/claim', { guest_token: guestToken }),
+  claimGuestSession: (guestToken, applicationId = null) =>
+    api.post('/interview/claim', { guest_token: guestToken, application_id: applicationId }),
 };
 
 // Requirements API
 export const requirementsAPI = {
-  generate: (data) => api.post('/requirements/generate', data),
-  generateGuest: (data) => guestApi.post('/requirements/generate', data),
+  generate: (data) => {
+    const guestToken = localStorage.getItem('helix_guest_token');
+    const payload = { ...data };
+    if (guestToken && !payload.guest_token) {
+      payload.guest_token = guestToken;
+    }
+    return api.post('/requirements/generate', payload);
+  },
+  generateGuest: (data) => {
+    const guestToken = localStorage.getItem('helix_guest_token');
+    const payload = { ...data };
+    if (guestToken && !payload.guest_token) {
+      payload.guest_token = guestToken;
+    }
+    return guestApi.post('/requirements/generate', payload);
+  },
 };
 
 // Admin API

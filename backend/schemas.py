@@ -93,6 +93,7 @@ class ApplicationResponse(BaseModel):
     ai_summary: Optional[str] = None
     requirements_json: Optional[Dict[str, Any]] = None
     total_requirements_captured: int = 0
+    language_context: Optional[Dict[str, Any]] = None
     signature_data: Optional[str] = None
     signer_email: Optional[str] = None
     documents: Optional[List[str]] = None
@@ -140,17 +141,20 @@ class VoiceProcessResponse(BaseModel):
     reasoning: Optional[str] = None
     targeted_fields: Optional[List[str]] = None
     language_code: Optional[str] = None
+    language_context: Optional[Dict[str, Any]] = None
 
 
 class GenerateRequirementsRequest(BaseModel):
     application_id: int
     guest_token: Optional[str] = None  # for guest sessions
+    doc_language_preference: Optional[str] = None  # "user_lang" or "english" or specific language name
 
 
 # ============ GUEST CLAIM SCHEMA ============
 
 class ClaimGuestSessionRequest(BaseModel):
-    guest_token: str
+    guest_token: Optional[str] = None
+    application_id: Optional[int] = None
 
 
 class ClaimGuestSessionResponse(BaseModel):

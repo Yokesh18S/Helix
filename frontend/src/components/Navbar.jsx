@@ -47,27 +47,6 @@ export default function Navbar() {
 
       {/* Auth Section */}
       <div className="flex items-center gap-4">
-        {/* Global Speaker Toggle */}
-        <button
-          onClick={() => {
-            if (voiceEnabled) {
-              window.speechSynthesis.cancel();
-            }
-            setVoiceEnabled(!voiceEnabled);
-          }}
-          className={`p-2 rounded-full border transition-all mr-2 ${
-            voiceEnabled
-              ? 'border-green-200 bg-green-50 hover:bg-green-100 text-green-600'
-              : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-400'
-          }`}
-          title={voiceEnabled ? 'Mute speaker' : 'Unmute speaker'}
-        >
-          {voiceEnabled ? (
-            <Volume2 className="w-4 h-4" />
-          ) : (
-            <VolumeX className="w-4 h-4" />
-          )}
-        </button>
         {user ? (
           <>
             <Link

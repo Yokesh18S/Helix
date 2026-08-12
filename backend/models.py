@@ -6,7 +6,7 @@ import uuid
 
 
 def generate_ref():
-    return f"REQ-{datetime.now().year}-{uuid.uuid4().hex[:12].upper()}"
+    return f"REQ-{datetime.now().year}-{uuid.uuid4().hex[:6].upper()}"
 
 
 class User(Base):
@@ -60,10 +60,11 @@ class Application(Base):
     scalability_needs = Column(Text, nullable=True)
     security_requirements = Column(Text, nullable=True)
 
-    # AI-extracted data
+    # AI-extracted data & Language Memory
     ai_summary = Column(Text, nullable=True)
     requirements_json = Column(JSON, nullable=True)
     total_requirements_captured = Column(Integer, default=0)
+    language_context = Column(JSON, nullable=True)  # Locked language context, speaking style, formality, etc.
 
     # Signature
     signature_data = Column(Text, nullable=True)  # Base64 signature

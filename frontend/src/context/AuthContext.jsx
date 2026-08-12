@@ -22,24 +22,26 @@ export function AuthProvider({ children }) {
    * and transfer it to the authenticated user's account.
    * Returns the claimed application_id or null.
    */
-  const claimGuestSession = async () => {
-    const guestToken = localStorage.getItem('helix_pending_guest_token');
-    if (!guestToken) return null;
+  const claimGuestSession = async (specificAppId = null) => {
+    const guestToken = localStorage.getItem('helix_pending_guest_token') || localStorage.getItem('helix_guest_token');
+    const pendingAppId = localStorage.getItem('helix_pending_app_id');
+    const appIdToClaim = specificAppId || (pendingAppId ? parseInt(pendingAppId, 10) : null);
+    if (!guestToken && !appIdToClaim) return null;
 
     try {
-      const res = await interviewAPI.claimGuestSession(guestToken);
-      const claimedAppId = res.data.application_id;
+      const res = await interviewAPI.claimGuestSession(guestToken, appIdToClaim);
+      const claimedAppId = res.data.application_id || appIdToClaim;
       // Clean up guest tokens
       localStorage.removeItem('helix_pending_guest_token');
       localStorage.removeItem('helix_guest_token');
       localStorage.removeItem('helix_pending_app_id');
       return claimedAppId;
     } catch (err) {
-      console.warn('Guest session claim failed (may already be claimed):', err.response?.data);
+      console.warn('Guest session claim warning:', err.response?.data);
       localStorage.removeItem('helix_pending_guest_token');
       localStorage.removeItem('helix_guest_token');
       localStorage.removeItem('helix_pending_app_id');
-      return null;
+      return appIdToClaim;
     }
   };
 

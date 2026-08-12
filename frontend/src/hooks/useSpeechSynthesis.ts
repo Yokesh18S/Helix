@@ -52,9 +52,18 @@ export function useSpeechSynthesis() {
     setIsSpeaking(false);
   }, []);
 
-  const speak = useCallback((text: string, onEnd?: () => void) => {
+  const speak = useCallback((text: string, langCodeOrCb?: string | (() => void), onEnd?: () => void) => {
+    let langCode = 'en-US';
+    let cb = onEnd;
+
+    if (typeof langCodeOrCb === 'function') {
+      cb = langCodeOrCb;
+    } else if (typeof langCodeOrCb === 'string') {
+      langCode = langCodeOrCb;
+    }
+
     if (!voiceEnabled) {
-      if (onEnd) onEnd();
+      if (cb) cb();
       return;
     }
 
@@ -64,66 +73,66 @@ export function useSpeechSynthesis() {
 
     if (!synthRef.current) {
       console.warn('[SpeechSynth] speak() called but synthesis not available.');
-      if (onEnd) onEnd();
+      if (cb) cb();
       return;
     }
 
-    console.log(`[SpeechSynth] speak(): "${text.substring(0, 60)}..."`);
+    console.log(`[SpeechSynth] speak(${langCode}): "${text.substring(0, 60)}..."`);
 
-    // Set isSpeaking to true immediately to prevent keep-alive microphone restart race conditions
     setIsSpeaking(true);
 
     onEndCallbackRef.current = null;
     activeUtteranceRef.current = null;
     synthRef.current.cancel();
 
-    // Small delay to ensure the synthesis engine fully resets after cancel()
     speakTimeoutRef.current = setTimeout(() => {
       if (!synthRef.current) {
         setIsSpeaking(false);
-        if (onEnd) onEnd();
+        if (cb) cb();
         return;
       }
 
-      // ── TTS preprocessing ────────────────────────────────────────────────
-      // 1. Space out any 10-digit phone number so each digit is spoken
-      //    individually: "9332567854" → "9 3 3 2 5 6 7 8 5 4"
       let spokenText = text.replace(/\b(\d{10})\b/g, (match) =>
         match.split('').join(' ')
       );
-      // 2. Pronounce bare "0" as "zero" (prevents "oh" ambiguity)
-      spokenText = spokenText.replace(/\b0\b/g, 'zero');
-      const utterance = new SpeechSynthesisUtterance(spokenText);
-      activeUtteranceRef.current = utterance;
-      onEndCallbackRef.current = onEnd || null;
+      spokenText = spokenText
+        .replace(/\b0\b/g, 'zero')
+        .replace(/[*_#`~]/g, '')
+        .replace(/\//g, ' or ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-      // GC Prevention - keep reference in window global Set so garbage collection won't cut off speech
+      const utterance = new SpeechSynthesisUtterance(spokenText);
+      utterance.lang = langCode;
+      activeUtteranceRef.current = utterance;
+      onEndCallbackRef.current = cb || null;
+
       if (typeof window !== 'undefined') {
         const w = window as any;
         w._activeUtterances = w._activeUtterances || new Set();
         w._activeUtterances.add(utterance);
       }
 
-      // Select best melodious female voice
       const allVoices = synthRef.current.getVoices();
+      const langPrefix = langCode.split('-')[0].toLowerCase();
+
+      // Select sweet, natural female voice
       const selectedVoice =
-        allVoices.find((v) => v.name.toLowerCase().includes('samantha')) ||
-        allVoices.find((v) => v.name.toLowerCase().includes('victoria')) ||
-        allVoices.find((v) => v.name.toLowerCase().includes('karen')) ||
-        allVoices.find((v) => v.name.toLowerCase().includes('moira')) ||
-        allVoices.find((v) => v.name.toLowerCase().includes('google uk english female')) ||
-        allVoices.find((v) => v.name.toLowerCase().includes('google us english')) ||
-        allVoices.find((v) => v.lang === 'en-US' && v.name.toLowerCase().includes('natural')) ||
-        allVoices.find((v) => v.lang === 'en-US') ||
+        allVoices.find((v) => v.lang.toLowerCase().startsWith(langPrefix) && /natural|neural|online|female|jenny|aria|sonia|swara|neerja|samantha|victoria|karen|moira/i.test(v.name)) ||
+        allVoices.find((v) => v.lang.toLowerCase().startsWith(langPrefix) && !/male|david|mark|george|stefan|ravi/i.test(v.name)) ||
+        allVoices.find((v) => /jenny.*natural|aria.*natural|sonia.*natural/i.test(v.name)) ||
+        allVoices.find((v) => /google uk english female|google us english/i.test(v.name)) ||
+        allVoices.find((v) => /samantha|victoria|karen|moira|zira/i.test(v.name)) ||
+        allVoices.find((v) => v.lang.toLowerCase() === langCode.toLowerCase()) ||
         allVoices[0];
 
       if (selectedVoice) {
         utterance.voice = selectedVoice;
-        console.log(`[SpeechSynth] Using voice: "${selectedVoice.name}"`);
+        console.log(`[SpeechSynth] Selected natural female voice: "${selectedVoice.name}" (${selectedVoice.lang})`);
       }
 
-      utterance.rate = 0.96;  // calm, pleasant, sweet cadence
-      utterance.pitch = 1.12; // warm, cheerful melody tone
+      utterance.rate = 0.93;   // Sweet, natural human pace
+      utterance.pitch = 1.16;  // Warm, cheerful female melody tone
       utterance.volume = 1.0;
 
       utterance.onstart = () => {

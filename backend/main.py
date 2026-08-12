@@ -1,10 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, StreamingResponse
+import io
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
 from typing import List, Optional
 import os
@@ -12,16 +11,6 @@ import json
 import shutil
 import uuid
 import random
-import logging
-import traceback
-
-# ============ LOGGING SETUP ============
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%S",
-)
-logger = logging.getLogger("helix.api")
 
 from database import engine, get_db, Base
 from models import User, Application, InterviewSession
@@ -47,6 +36,9 @@ from interview_engine import (
     get_graph_summary_for_prompt, format_qa_history,
     FIELD_LABELS, INDUSTRY_PACKS
 )
+from multilingual_nlp import analyze_language_and_nlp
+from pdf_service import generate_pdf_for_application, generate_application_pdf
+from email_service import send_requirements_email
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -64,43 +56,6 @@ app.add_middleware(
 
 # Create uploads directory
 os.makedirs("uploads", exist_ok=True)
-
-
-# ============ GLOBAL EXCEPTION HANDLERS ============
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """Catch-all: log full stack trace internally, return safe JSON to client."""
-    request_id = str(uuid.uuid4())[:8]
-    logger.error(
-        "[%s] Unhandled exception on %s %s\n%s",
-        request_id,
-        request.method,
-        request.url.path,
-        traceback.format_exc(),
-    )
-    return JSONResponse(
-        status_code=500,
-        content={
-            "detail": "An internal server error occurred. Please try again.",
-            "request_id": request_id,
-        },
-    )
-
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """Return structured 422 for Pydantic validation failures."""
-    logger.warning(
-        "Validation error on %s %s: %s",
-        request.method,
-        request.url.path,
-        exc.errors(),
-    )
-    return JSONResponse(
-        status_code=422,
-        content={"detail": exc.errors()},
-    )
 
 
 # ============ AUTH ROUTES ============
@@ -268,23 +223,20 @@ def create_application(
     db: Session = Depends(get_db),
     request: Request = None,
 ):
-    request_id = str(uuid.uuid4())[:8]
-    logger.info("[%s] POST /api/applications — guest_token=%s", request_id, bool(app_data.guest_token))
-
     # Try to get authenticated user (optional for guest mode)
     current_user = None
     auth_header = request.headers.get("Authorization") if request else None
     if auth_header and auth_header.startswith("Bearer "):
         try:
+            from auth import get_current_user as _get_current_user
             from auth import decode_token
             token = auth_header.split(" ", 1)[1]
             current_user = decode_token(token, db)
-            if current_user:
-                logger.info("[%s] Authenticated user id=%s", request_id, current_user.id)
-        except Exception as e:
-            logger.warning("[%s] Token decode failed: %s", request_id, e)
+        except Exception:
+            pass
 
     if current_user:
+        # Authenticated user
         application = Application(
             user_id=current_user.id,
             project_name=app_data.project_name,
@@ -294,7 +246,6 @@ def create_application(
     else:
         # Guest mode — require guest_token
         if not app_data.guest_token:
-            logger.warning("[%s] Rejected: no guest_token and no auth token", request_id)
             raise HTTPException(status_code=400, detail="guest_token required for unauthenticated access")
         application = Application(
             user_id=None,
@@ -304,51 +255,10 @@ def create_application(
             is_guest=True,
         )
 
-    # Retry loop to handle reference_number uniqueness collisions
-    max_retries = 5
-    for attempt in range(1, max_retries + 1):
-        try:
-            db.add(application)
-            db.commit()
-            db.refresh(application)
-            logger.info(
-                "[%s] Application created id=%s ref=%s (attempt %d)",
-                request_id, application.id, application.reference_number, attempt,
-            )
-            return ApplicationResponse.model_validate(application)
-        except IntegrityError as ie:
-            db.rollback()
-            error_str = str(ie.orig) if ie.orig else str(ie)
-            if "reference_number" in error_str and attempt < max_retries:
-                logger.warning(
-                    "[%s] reference_number collision on attempt %d — retrying with new ref",
-                    request_id, attempt,
-                )
-                # Generate a new reference number and retry
-                from models import generate_ref
-                application.reference_number = generate_ref()
-                # Re-add to session after rollback
-                db.add(application)
-                continue
-            # Non-recoverable IntegrityError or exhausted retries
-            logger.error(
-                "[%s] IntegrityError after %d attempt(s): %s",
-                request_id, attempt, error_str,
-            )
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to create application due to a database conflict. Please try again. (request_id={request_id})",
-            )
-        except Exception as exc:
-            db.rollback()
-            logger.error(
-                "[%s] Unexpected error creating application:\n%s",
-                request_id, traceback.format_exc(),
-            )
-            raise HTTPException(
-                status_code=500,
-                detail=f"An unexpected error occurred. Please try again. (request_id={request_id})",
-            ) from exc
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+    return ApplicationResponse.model_validate(application)
 
 
 @app.get("/api/applications", response_model=List[ApplicationResponse])
@@ -356,16 +266,11 @@ def get_applications(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Filter out empty drafts (applications with no questions answered)
-    # Only show apps that have at least some progress
     if current_user.is_admin:
-        applications = db.query(Application).filter(
-            (Application.status != "draft") | (Application.total_requirements_captured > 0)
-        ).order_by(Application.created_at.desc()).all()
+        applications = db.query(Application).order_by(Application.created_at.desc()).all()
     else:
         applications = db.query(Application).filter(
-            Application.user_id == current_user.id,
-            (Application.status != "draft") | (Application.total_requirements_captured > 0)
+            Application.user_id == current_user.id
         ).order_by(Application.created_at.desc()).all()
     return [ApplicationResponse.model_validate(a) for a in applications]
 
@@ -373,28 +278,74 @@ def get_applications(
 @app.get("/api/applications/{app_id}", response_model=ApplicationResponse)
 def get_application(
     app_id: int,
+    req: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    guest_token: Optional[str] = None,
 ):
+    current_user = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            from auth import decode_token
+            token = auth_header.split(" ", 1)[1]
+            current_user = decode_token(token, db)
+        except Exception:
+            pass
+
     application = db.query(Application).filter(Application.id == app_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
-    if application.user_id != current_user.id and not current_user.is_admin:
-        raise HTTPException(status_code=403, detail="Not authorized")
-    return ApplicationResponse.model_validate(application)
+
+    if current_user:
+        if application.user_id == current_user.id or current_user.is_admin:
+            return ApplicationResponse.model_validate(application)
+        if application.is_guest or application.user_id is None or (guest_token and application.guest_token == guest_token):
+            application.user_id = current_user.id
+            application.is_guest = False
+            db.commit()
+            db.refresh(application)
+            return ApplicationResponse.model_validate(application)
+
+    if guest_token and application.guest_token == guest_token:
+        return ApplicationResponse.model_validate(application)
+
+    raise HTTPException(status_code=403, detail="Not authorized")
 
 
 @app.put("/api/applications/{app_id}", response_model=ApplicationResponse)
 def update_application(
     app_id: int,
     app_data: ApplicationUpdate,
+    req: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    guest_token: Optional[str] = None,
 ):
+    current_user = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            from auth import decode_token
+            token = auth_header.split(" ", 1)[1]
+            current_user = decode_token(token, db)
+        except Exception:
+            pass
+
     application = db.query(Application).filter(Application.id == app_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
-    if application.user_id != current_user.id and not current_user.is_admin:
+
+    authorized = False
+    if current_user:
+        if application.user_id == current_user.id or current_user.is_admin:
+            authorized = True
+        elif application.is_guest or application.user_id is None:
+            application.user_id = current_user.id
+            application.is_guest = False
+            authorized = True
+    elif guest_token and application.guest_token == guest_token:
+        authorized = True
+
+    if not authorized:
         raise HTTPException(status_code=403, detail="Not authorized")
 
     update_data = app_data.model_dump(exclude_unset=True)
@@ -526,6 +477,11 @@ async def _process_answer_through_engine(
     current_q_number = current_session.question_number
     last_question_text = current_session.question_text
 
+    # Multilingual NLP Engine: Language Identification, Lock Enforcement, Intent & Sentiment
+    prev_lang_context = application.language_context or {}
+    lang_context = await analyze_language_and_nlp(answer_text, current_context=prev_lang_context)
+    application.language_context = lang_context
+
     # Step 1: Extract requirements from answer using the EXACT question that was asked
     graph_summary = get_graph_summary_for_prompt(graph)
     extraction = await extract_requirements(answer_text, last_question_text, graph_summary)
@@ -559,7 +515,7 @@ async def _process_answer_through_engine(
     targeted_fields = None
 
     if not interview_complete:
-        # Step 8: Generate the next dynamic question
+        # Step 8: Generate the next dynamic question in user's locked language
         industry = graph.get("industry")
         industry_pack = INDUSTRY_PACKS.get(industry) if industry else None
         
@@ -578,7 +534,8 @@ async def _process_answer_through_engine(
             industry_pack=industry_pack,
             missing_critical=coverage.get("missing_critical"),
             missing_important=coverage.get("missing_important"),
-            missing_optional=coverage.get("missing_optional")
+            missing_optional=coverage.get("missing_optional"),
+            language_context=lang_context
         )
         raw_question = gen_result.get("question", "Could you tell me more?")
         acknowledgement = gen_result.get("acknowledgement", "Thanks.")
@@ -588,7 +545,7 @@ async def _process_answer_through_engine(
             next_question_text = raw_question
         reasoning = gen_result.get("reasoning")
         targeted_fields = gen_result.get("targeted_fields")
-        language_code = gen_result.get("language_code", "en-US")
+        language_code = gen_result.get("language_code", lang_context.get("language_code", "en-US"))
 
         # Step 9: Save the NEXT question as an unanswered session record
         next_session = InterviewSession(
@@ -600,8 +557,20 @@ async def _process_answer_through_engine(
         )
         db.add(next_session)
     else:
-        acknowledgement = "Excellent! I now have a thorough understanding of your project."
-        language_code = "en-US"
+        locked_lang = lang_context.get("locked_language", "English")
+        if locked_lang == "Tanglish":
+            acknowledgement = "Super! Naan unga project requirements ellam purinjikitenaa."
+        elif locked_lang == "Manglish":
+            acknowledgement = "Super! Njangal ningalude project requirements ellam manassilakki."
+        elif locked_lang == "Hinglish":
+            acknowledgement = "Bahut accha! Mujhe aapke saare project requirements samajh aa gaye hain."
+        elif locked_lang == "Tenglish":
+            acknowledgement = "Super! Naaku me project requirements anni artham ayyayi."
+        elif locked_lang == "Kanglish":
+            acknowledgement = "Thumbanalla! Nanage nimma project requirements ellavu artha aayitu."
+        else:
+            acknowledgement = "Excellent! I now have a thorough understanding of your project."
+        language_code = lang_context.get("language_code", "en-US")
 
     db.commit()
 
@@ -616,7 +585,8 @@ async def _process_answer_through_engine(
         question_number=current_q_number,
         reasoning=reasoning,
         targeted_fields=targeted_fields,
-        language_code=language_code
+        language_code=language_code,
+        language_context=lang_context
     )
 
 
@@ -717,8 +687,11 @@ async def process_voice(
     if application.is_guest and request.guest_token and application.guest_token != request.guest_token:
         raise HTTPException(status_code=403, detail="Invalid guest token")
 
-    # Transcribe audio
-    transcribed_text = await transcribe_audio(request.audio_base64)
+    # Transcribe audio with language context hint
+    transcribed_text = await transcribe_audio(
+        request.audio_base64,
+        language_context=application.language_context
+    )
     if not transcribed_text or transcribed_text.startswith("["):
         return VoiceProcessResponse(
             transcribed_text=transcribed_text or "",
@@ -773,24 +746,40 @@ def claim_guest_session(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """After sign-in/register, transfer a guest application to the authenticated user."""
-    application = db.query(Application).filter(
-        Application.guest_token == data.guest_token,
-        Application.is_guest == True
-    ).first()
+    """After sign-in/register, transfer guest application(s) to the authenticated user."""
+    claimed_app = None
 
-    if not application:
+    if data.application_id:
+        app_by_id = db.query(Application).filter(Application.id == data.application_id).first()
+        if app_by_id:
+            app_by_id.user_id = current_user.id
+            app_by_id.is_guest = False
+            claimed_app = app_by_id
+
+    if data.guest_token:
+        apps_by_token = db.query(Application).filter(
+            Application.guest_token == data.guest_token
+        ).all()
+        for app in apps_by_token:
+            app.user_id = current_user.id
+            app.is_guest = False
+            if not claimed_app:
+                claimed_app = app
+
+    if not claimed_app and data.application_id:
+        claimed_app = db.query(Application).filter(
+            Application.id == data.application_id,
+            Application.user_id == current_user.id
+        ).first()
+
+    if not claimed_app:
         raise HTTPException(status_code=404, detail="Guest session not found or already claimed")
 
-    # Transfer ownership
-    application.user_id = current_user.id
-    application.is_guest = False
-    application.guest_token = None  # clear the token
     db.commit()
-    db.refresh(application)
+    db.refresh(claimed_app)
 
     return ClaimGuestSessionResponse(
-        application_id=application.id,
+        application_id=claimed_app.id,
         message="Interview session successfully linked to your account"
     )
 
@@ -798,9 +787,29 @@ def claim_guest_session(
 @app.get("/api/interview/{app_id}/sessions", response_model=List[InterviewResponse])
 def get_interview_sessions(
     app_id: int,
+    req: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
 ):
+    current_user = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            from auth import decode_token
+            token = auth_header.split(" ", 1)[1]
+            current_user = decode_token(token, db)
+        except Exception:
+            pass
+
+    application = db.query(Application).filter(Application.id == app_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+
+    if current_user:
+        if application.is_guest or application.user_id is None:
+            application.user_id = current_user.id
+            application.is_guest = False
+            db.commit()
+
     sessions = db.query(InterviewSession).filter(
         InterviewSession.application_id == app_id
     ).order_by(InterviewSession.question_number).all()
@@ -830,11 +839,25 @@ async def generate_requirements(
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
 
-    # Verify ownership
-    if current_user and application.user_id and application.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
-    if application.is_guest and request.guest_token and application.guest_token != request.guest_token:
+    # Verify ownership or claim guest application
+    if current_user:
+        if application.is_guest or application.user_id is None or (request.guest_token and application.guest_token == request.guest_token):
+            application.user_id = current_user.id
+            application.is_guest = False
+            db.commit()
+            db.refresh(application)
+        elif application.user_id != current_user.id and not current_user.is_admin:
+            raise HTTPException(status_code=403, detail="Not authorized")
+    elif application.is_guest and request.guest_token and application.guest_token != request.guest_token:
         raise HTTPException(status_code=403, detail="Invalid guest token")
+
+    # Update document language preference if supplied
+    if request.doc_language_preference:
+        lang_ctx = dict(application.language_context or {})
+        lang_ctx["doc_language_preference"] = request.doc_language_preference
+        application.language_context = lang_ctx
+        from sqlalchemy.orm.attributes import flag_modified
+        flag_modified(application, "language_context")
 
     # Get all interview sessions
     sessions = db.query(InterviewSession).filter(
@@ -852,8 +875,12 @@ async def generate_requirements(
         ]
     }
 
-    # Generate requirements summary
-    summary = await generate_requirements_summary(interview_data)
+    # Generate requirements summary in user's preferred language or English
+    summary = await generate_requirements_summary(
+        interview_data,
+        language_context=application.language_context,
+        doc_language_preference=request.doc_language_preference
+    )
 
     # Helper to convert lists to comma-separated strings for text fields
     def to_str(val):
@@ -863,22 +890,32 @@ async def generate_requirements(
             return ", ".join(str(v) for v in val)
         return str(val)
 
-    # Update application
-    application.ai_summary = to_str(summary.get("ai_summary", ""))
-    application.project_name = to_str(summary.get("project_name", "")) or application.project_name
-    application.project_type = to_str(summary.get("project_type", ""))
-    application.business_domain = to_str(summary.get("business_domain", ""))
-    application.application_type = to_str(summary.get("application_type", ""))
-    application.target_audience = to_str(summary.get("target_audience", ""))
-    application.key_features = to_str(summary.get("key_features", ""))
-    application.requirements_json = summary
+    # Update application — map ALL Gemini-extracted fields back to the application
+    application.ai_summary             = to_str(summary.get("ai_summary", ""))
+    application.project_name           = to_str(summary.get("project_name", ""))           or application.project_name
+    application.project_type           = to_str(summary.get("project_type", ""))           or application.project_type
+    application.business_domain        = to_str(summary.get("business_domain", ""))        or application.business_domain
+    application.application_type       = to_str(summary.get("application_type", ""))       or application.application_type
+    application.target_audience        = to_str(summary.get("target_audience", ""))        or application.target_audience
+    application.business_description   = to_str(summary.get("business_description", ""))   or application.business_description
+    application.problem_statement      = to_str(summary.get("problem_statement", ""))      or application.problem_statement
+    application.desired_outcomes       = to_str(summary.get("desired_outcomes", ""))       or application.desired_outcomes
+    application.key_features           = to_str(summary.get("key_features", ""))           or application.key_features
+    application.integrations           = to_str(summary.get("integrations", ""))           or application.integrations
+    application.timeline               = to_str(summary.get("timeline", ""))               or application.timeline
+    application.budget_range           = to_str(summary.get("budget_range", ""))           or application.budget_range
+    application.tech_preferences       = to_str(summary.get("tech_preferences", ""))       or application.tech_preferences
+    application.scalability_needs      = to_str(summary.get("scalability_needs", ""))      or application.scalability_needs
+    application.security_requirements  = to_str(summary.get("security_requirements", ""))  or application.security_requirements
+    application.requirements_json      = summary
     application.total_requirements_captured = summary.get("total_requirements", len(sessions))
-    application.status = "in_progress"
-    application.updated_at = datetime.utcnow()
+    application.status      = "in_progress"
+    application.updated_at  = datetime.utcnow()
 
     db.commit()
     db.refresh(application)
     return ApplicationResponse.model_validate(application)
+
 
 
 # ============ FILE UPLOAD ============
@@ -912,6 +949,185 @@ async def upload_document(
     db.commit()
 
     return {"filename": file.filename, "message": "File uploaded successfully"}
+
+
+# ============ PDF DOWNLOAD & EMAIL ROUTES ============
+
+@app.get("/api/applications/{app_id}/pdf")
+async def download_application_pdf(
+    app_id: int,
+    req: Request,
+    db: Session = Depends(get_db),
+    guest_token: Optional[str] = None,
+    lang: Optional[str] = None,
+):
+    """
+    Generate and stream the Business Requirement PDF for the given application.
+    Optional `lang` query param overrides the document language stored on the app.
+    """
+    # Resolve user
+    current_user = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            from auth import decode_token
+            token = auth_header.split(" ", 1)[1]
+            current_user = decode_token(token, db)
+        except Exception:
+            pass
+
+    application = db.query(Application).filter(Application.id == app_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+
+    # Auth check
+    authorized = False
+    if current_user:
+        if application.user_id == current_user.id or current_user.is_admin:
+            authorized = True
+        elif application.is_guest or application.user_id is None:
+            authorized = True
+    elif guest_token and application.guest_token == guest_token:
+        authorized = True
+    elif application.is_guest:
+        authorized = True  # guest viewing their own session
+    if not authorized:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    # Build a plain dict for the PDF service
+    app_dict = {
+        "id": application.id,
+        "reference_number": application.reference_number,
+        "project_name": application.project_name,
+        "project_type": application.project_type,
+        "business_domain": application.business_domain,
+        "application_type": application.application_type,
+        "target_audience": application.target_audience,
+        "business_description": application.business_description,
+        "problem_statement": application.problem_statement,
+        "desired_outcomes": application.desired_outcomes,
+        "key_features": application.key_features,
+        "integrations": application.integrations,
+        "timeline": application.timeline,
+        "budget_range": application.budget_range,
+        "tech_preferences": application.tech_preferences,
+        "scalability_needs": application.scalability_needs,
+        "security_requirements": application.security_requirements,
+        "ai_summary": application.ai_summary,
+        "requirements_json": application.requirements_json,
+        "signature_data": application.signature_data,
+        "signer_email": application.signer_email,
+        "status": application.status,
+        "submitted_at": str(application.submitted_at) if application.submitted_at else None,
+        "total_requirements_captured": application.total_requirements_captured or 0,
+        "language_context": application.language_context or {},
+    }
+
+    # Override language if requested via query param
+    if lang:
+        lang_ctx = dict(app_dict["language_context"])
+        lang_ctx["doc_language_preference"] = lang
+        app_dict["language_context"] = lang_ctx
+
+    # Generate PDF (with translation if needed)
+    try:
+        pdf_bytes = await generate_pdf_for_application(app_dict)
+    except Exception as e:
+        print(f"[PDF] Generation error: {e}")
+        # Fallback — generate without translation
+        pdf_bytes = generate_application_pdf(app_dict)
+
+    ref_no = application.reference_number or f"REQ-{app_id}"
+    filename = f"Helix_Requirements_{ref_no}.pdf"
+
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
+@app.post("/api/applications/{app_id}/send-email")
+async def send_application_email(
+    app_id: int,
+    req: Request,
+    db: Session = Depends(get_db),
+    guest_token: Optional[str] = None,
+):
+    """
+    Generate the PDF and send it via SMTP to the application owner's email.
+    Returns {success, message, email}.
+    """
+    # Resolve user
+    current_user = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            from auth import decode_token
+            token = auth_header.split(" ", 1)[1]
+            current_user = decode_token(token, db)
+        except Exception:
+            pass
+
+    application = db.query(Application).filter(Application.id == app_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+
+    # Build dict same as above
+    app_dict = {
+        "id": application.id,
+        "reference_number": application.reference_number,
+        "project_name": application.project_name,
+        "project_type": application.project_type,
+        "business_domain": application.business_domain,
+        "application_type": application.application_type,
+        "target_audience": application.target_audience,
+        "business_description": application.business_description,
+        "problem_statement": application.problem_statement,
+        "desired_outcomes": application.desired_outcomes,
+        "key_features": application.key_features,
+        "integrations": application.integrations,
+        "timeline": application.timeline,
+        "budget_range": application.budget_range,
+        "tech_preferences": application.tech_preferences,
+        "scalability_needs": application.scalability_needs,
+        "security_requirements": application.security_requirements,
+        "ai_summary": application.ai_summary,
+        "requirements_json": application.requirements_json,
+        "signature_data": application.signature_data,
+        "signer_email": application.signer_email,
+        "status": application.status,
+        "submitted_at": str(application.submitted_at) if application.submitted_at else None,
+        "total_requirements_captured": application.total_requirements_captured or 0,
+        "language_context": application.language_context or {},
+    }
+
+    # Add user info for recipient resolution
+    if current_user:
+        app_dict["user"] = {"email": current_user.email, "full_name": current_user.full_name}
+
+    # Generate PDF
+    try:
+        pdf_bytes = await generate_pdf_for_application(app_dict)
+    except Exception as e:
+        print(f"[EMAIL] PDF generation error: {e}")
+        pdf_bytes = generate_application_pdf(app_dict)
+
+    # Determine recipient — signer_email > user.email > phone-derived email
+    recipient = application.signer_email or (current_user.email if current_user else None)
+    if recipient and recipient.endswith("@helix.ai"):
+        # Phone-derived placeholder — skip
+        recipient = None
+
+    if not recipient:
+        return {"success": False, "message": "No valid email address found for this application.", "email": None}
+
+    success = send_requirements_email(app_dict, pdf_bytes, recipient_email=recipient)
+    return {
+        "success": success,
+        "message": "Email sent successfully!" if success else "Email delivery failed. Check SMTP credentials in .env.",
+        "email": recipient
+    }
 
 
 # ============ ADMIN ROUTES ============

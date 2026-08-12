@@ -20,12 +20,12 @@ export default function Landing() {
     const t = result.transcript.toLowerCase().trim();
     console.log('[Landing] Heard:', t);
 
-    // Start interview
+    // Start interview — only on clear explicit intent (not vague words)
     if (
-      t.includes('start') || t.includes('begin') || t.includes('interview') ||
-      t.includes("let's go") || t.includes('lets go') || t.includes('go') ||
-      t.includes('open') || t.includes('launch') || t.includes('yes') ||
-      t.includes('okay') || t.includes('ok') || t.includes('sure')
+      t.includes('start interview') || t.includes('begin interview') ||
+      t.includes('start voice') || t.includes('start the interview') ||
+      t.includes("let's start") || t.includes('lets start') ||
+      t.includes('start') || t.includes('begin')
     ) {
       setVoicePhase('navigating');
       speak("Starting your interview now. Let's go!", () => navigate('/interview'));
@@ -44,20 +44,12 @@ export default function Landing() {
       return;
     }
 
-    // Sign up
-    if (
-      t.includes('sign up')     || t.includes('signup') ||
-      t.includes('register')    || t.includes('create account') ||
-      t.includes('new account') || t.includes('create an account')
-    ) {
-      setVoicePhase('navigating');
-      speak('Taking you to sign up.', () => navigate('/register'));
-      return;
-    }
-
-    // Default: start the interview
-    setVoicePhase('navigating');
-    speak("Let's get started with your interview!", () => navigate('/interview'));
+    // Unrecognized input: stay on page
+    setVoicePhase('speaking');
+    speak("Please say 'start' or click 'Start Voice Interview' to begin.", () => {
+      setVoicePhase('listening');
+      startListeningRef.current?.();
+    });
   };
 
   const { startListening, stopListening, isListening } = useVoiceRecognition({

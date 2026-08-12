@@ -1,10 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { applicationsAPI } from '../services/api';
-import { ArrowLeft, Sparkles, Save, ArrowRight } from 'lucide-react';
+import { applicationsAPI, requirementsAPI } from '../services/api';
+import { ArrowLeft, Sparkles, Save, ArrowRight, Globe, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalHandsFreeVoice } from '../hooks/useGlobalHandsFreeVoice';
+
+// All supported Indian languages for the document selector
+const LANGUAGE_OPTIONS = [
+  { value: 'english',   label: 'English',     native: 'English',    flag: '🇬🇧' },
+  { value: 'tamil',     label: 'Tamil',       native: 'தமிழ்',      flag: '🇮🇳' },
+  { value: 'malayalam', label: 'Malayalam',   native: 'മലയാളം',    flag: '🇮🇳' },
+  { value: 'telugu',    label: 'Telugu',      native: 'తెలుగు',    flag: '🇮🇳' },
+  { value: 'kannada',   label: 'Kannada',     native: 'ಕನ್ನಡ',    flag: '🇮🇳' },
+  { value: 'hindi',     label: 'Hindi',       native: 'हिन्दी',    flag: '🇮🇳' },
+  { value: 'tanglish',  label: 'Tanglish',    native: 'Tanglish',   flag: '🇮🇳' },
+  { value: 'manglish',  label: 'Manglish',    native: 'Manglish',   flag: '🇮🇳' },
+  { value: 'hinglish',  label: 'Hinglish',    native: 'Hinglish',   flag: '🇮🇳' },
+  { value: 'tenglish',  label: 'Tenglish',    native: 'Tenglish',   flag: '🇮🇳' },
+];
 
 export default function Requirements() {
   const { id } = useParams();
@@ -14,6 +28,10 @@ export default function Requirements() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({});
+  const [docLang, setDocLang] = useState('english');
+  const [detectedLang, setDetectedLang] = useState(null);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   useGlobalHandsFreeVoice({
     'save': () => handleSave(),
@@ -29,30 +47,117 @@ export default function Requirements() {
     fetchApplication();
   }, [id]);
 
+  // Close language dropdown on outside click
+  useEffect(() => {
+    const handler = () => setLangDropdownOpen(false);
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, []);
+
   const fetchApplication = async () => {
     try {
       const res = await applicationsAPI.getOne(id);
       setApplication(res.data);
+
+      // Set language: default English, but show detected language as a suggestion
+      const langCtx = res.data.language_context || {};
+      const locked = langCtx.locked_language || null;
+      const docPref = langCtx.doc_language_preference;
+
+      if (locked && locked.toLowerCase() !== 'english') {
+        setDetectedLang(locked); // Show the detected language as a badge
+      }
+
+      // Honour saved preference, otherwise default to english
+      if (docPref && docPref !== 'user_lang') {
+        setDocLang(docPref.toLowerCase());
+      } else {
+        setDocLang('english');
+      }
+
       setFormData({
-        project_name: res.data.project_name || '',
-        project_type: res.data.project_type || '',
-        business_domain: res.data.business_domain || '',
-        application_type: res.data.application_type || '',
-        target_audience: res.data.target_audience || '',
-        business_description: res.data.business_description || '',
-        problem_statement: res.data.problem_statement || '',
-        desired_outcomes: res.data.desired_outcomes || '',
-        key_features: res.data.key_features || '',
-        integrations: res.data.integrations || '',
-        timeline: res.data.timeline || '',
-        budget_range: res.data.budget_range || '',
-        tech_preferences: res.data.tech_preferences || '',
-        scalability_needs: res.data.scalability_needs || '',
+        project_name:          res.data.project_name || '',
+        project_type:          res.data.project_type || '',
+        business_domain:       res.data.business_domain || '',
+        application_type:      res.data.application_type || '',
+        target_audience:       res.data.target_audience || '',
+        business_description:  res.data.business_description || '',
+        problem_statement:     res.data.problem_statement || '',
+        desired_outcomes:      res.data.desired_outcomes || '',
+        key_features:          res.data.key_features || '',
+        integrations:          res.data.integrations || '',
+        timeline:              res.data.timeline || '',
+        budget_range:          res.data.budget_range || '',
+        tech_preferences:      res.data.tech_preferences || '',
+        scalability_needs:     res.data.scalability_needs || '',
         security_requirements: res.data.security_requirements || '',
       });
     } catch (err) {
       toast.error('Failed to load application');
       navigate('/dashboard');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateFormDataFromApp = (appData) => {
+    setFormData({
+      project_name:          appData.project_name || '',
+      project_type:          appData.project_type || '',
+      business_domain:       appData.business_domain || '',
+      application_type:      appData.application_type || '',
+      target_audience:       appData.target_audience || '',
+      business_description:  appData.business_description || '',
+      problem_statement:     appData.problem_statement || '',
+      desired_outcomes:      appData.desired_outcomes || '',
+      key_features:          appData.key_features || '',
+      integrations:          appData.integrations || '',
+      timeline:              appData.timeline || '',
+      budget_range:          appData.budget_range || '',
+      tech_preferences:      appData.tech_preferences || '',
+      scalability_needs:     appData.scalability_needs || '',
+      security_requirements: appData.security_requirements || '',
+    });
+  };
+
+  const handleLanguageChange = async (newLang) => {
+    setDocLang(newLang);
+    setLangDropdownOpen(false);
+    if (newLang === docLang) return;
+
+    setLoading(true);
+    try {
+      const guestToken = localStorage.getItem('helix_guest_token');
+      const res = await requirementsAPI.generate({
+        application_id: Number(id),
+        guest_token: guestToken,
+        doc_language_preference: newLang,
+      });
+      setApplication(res.data);
+      updateFormDataFromApp(res.data);
+      const langObj = LANGUAGE_OPTIONS.find(l => l.value === newLang);
+      toast.success(`Document language set to ${langObj?.label || newLang}`);
+    } catch (err) {
+      toast.error('Failed to update document language');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAutoFillAi = async () => {
+    setLoading(true);
+    try {
+      const guestToken = localStorage.getItem('helix_guest_token');
+      const res = await requirementsAPI.generate({
+        application_id: Number(id),
+        guest_token: guestToken,
+        doc_language_preference: docLang,
+      });
+      setApplication(res.data);
+      updateFormDataFromApp(res.data);
+      toast.success('AI completed and enriched all requirement fields!');
+    } catch (err) {
+      toast.error('Failed to auto-fill requirements');
     } finally {
       setLoading(false);
     }
@@ -80,6 +185,27 @@ export default function Requirements() {
     navigate(`/documents/${id}`);
   };
 
+  const handleDownloadPdf = async () => {
+    setDownloadingPdf(true);
+    try {
+      const blob = await applicationsAPI.downloadPdf(id, docLang !== 'english' ? docLang : null);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const ref = application?.reference_number || `REQ-${id}`;
+      a.href = url;
+      a.download = `Helix_Requirements_${ref}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('PDF downloaded!');
+    } catch (err) {
+      toast.error('PDF download failed. Please try again.');
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-[#E5F1FB] to-[#F2F2FF] pt-[67px] flex items-center justify-center">
@@ -88,8 +214,8 @@ export default function Requirements() {
     );
   }
 
-  const aiFields = ['project_name', 'project_type', 'business_domain', 'application_type', 'target_audience'];
   const isSubmitted = application?.status === 'submitted';
+  const currentLangObj = LANGUAGE_OPTIONS.find(l => l.value === docLang) || LANGUAGE_OPTIONS[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#E5F1FB] to-[#F2F2FF] pt-[67px]">
@@ -107,8 +233,24 @@ export default function Requirements() {
               ✓ Submitted
             </span>
           )}
+          {isSubmitted && (
+            <button
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf}
+              className="flex items-center gap-1 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-full"
+            >
+              {downloadingPdf ? 'Generating...' : '↓ Download PDF'}
+            </button>
+          )}
           {!isSubmitted && (
             <>
+              <button
+                onClick={handleAutoFillAi}
+                disabled={loading}
+                className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 border border-indigo-200 rounded-full transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Auto-Fill Missing Fields with AI
+              </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
@@ -140,127 +282,161 @@ export default function Requirements() {
           <h1 className="text-4xl font-semibold text-helix-navy mb-2">
             Here's your requirement draft
           </h1>
-          <p className="text-base text-helix-gray-700">
+          <p className="text-base text-helix-gray-700 mb-4">
             I pulled this together from our conversation. Fields highlighted with <span className="inline-flex items-center gap-0.5 bg-blue-50 text-helix-blue text-xs px-1.5 py-0.5 rounded font-medium"><Sparkles className="w-2.5 h-2.5" />AI</span> were extracted automatically. Edit anything that's not quite right.
           </p>
+
+          {/* ── Document Language Selector ── */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-indigo-600 text-white rounded-xl">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-indigo-950">Document Language</h4>
+                  <p className="text-xs text-indigo-700">
+                    {detectedLang && detectedLang.toLowerCase() !== 'english'
+                      ? <>Helix detected your conversation was in <strong>{detectedLang}</strong>. Default is English — change below if needed.</>
+                      : <>Choose the language for your PDF report. Default is <strong>English</strong>.</>
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {/* Language Dropdown */}
+              <div className="relative" onClick={e => e.stopPropagation()}>
+                <button
+                  onClick={() => setLangDropdownOpen(prev => !prev)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-200 rounded-xl text-sm font-semibold text-indigo-800 hover:bg-indigo-50 shadow-sm"
+                >
+                  <span>{currentLangObj.flag}</span>
+                  <span>{currentLangObj.label}</span>
+                  {currentLangObj.native !== currentLangObj.label && (
+                    <span className="text-indigo-400 font-normal">({currentLangObj.native})</span>
+                  )}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {langDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-indigo-100 rounded-2xl shadow-xl z-50 overflow-hidden">
+                    <div className="px-3 py-2 bg-indigo-50 border-b border-indigo-100">
+                      <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-wider">Select Language</p>
+                    </div>
+                    <div className="py-1 max-h-72 overflow-y-auto">
+                      {LANGUAGE_OPTIONS.map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => handleLanguageChange(opt.value)}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-indigo-50 transition-colors ${docLang === opt.value ? 'bg-indigo-50' : ''}`}
+                        >
+                          <span className="text-lg">{opt.flag}</span>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-indigo-900">{opt.label}</span>
+                            {opt.native !== opt.label && (
+                              <span className="text-xs text-indigo-500">{opt.native}</span>
+                            )}
+                          </div>
+                          {docLang === opt.value && (
+                            <span className="ml-auto text-indigo-600 font-bold text-sm">✓</span>
+                          )}
+                          {detectedLang && opt.label.toLowerCase() === detectedLang.toLowerCase() && docLang !== opt.value && (
+                            <span className="ml-auto text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium">Detected</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Section 1: Project Information */}
         <FormSection number="01" title="Project Information" fieldCount="5 fields">
-          <FormField
-            readOnly={isSubmitted}
-            label="Project name"
-            value={formData.project_name}
-            onChange={(v) => handleChange('project_name', v)}
-            isAI={true}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Project Type"
-            value={formData.project_type}
-            onChange={(v) => handleChange('project_type', v)}
-            isAI={true}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Business Domain"
-            value={formData.business_domain}
-            onChange={(v) => handleChange('business_domain', v)}
-            isAI={true}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Application Type"
-            value={formData.application_type}
-            onChange={(v) => handleChange('application_type', v)}
-            isAI={true}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Target Audience"
-            value={formData.target_audience}
-            onChange={(v) => handleChange('target_audience', v)}
-            isAI={true}
-          />
+          <FormField readOnly={isSubmitted} label="Project name"      value={formData.project_name}      onChange={(v) => handleChange('project_name', v)}      isAI={true} />
+          <FormField readOnly={isSubmitted} label="Project Type"      value={formData.project_type}      onChange={(v) => handleChange('project_type', v)}      isAI={true} />
+          <FormField readOnly={isSubmitted} label="Business Domain"   value={formData.business_domain}   onChange={(v) => handleChange('business_domain', v)}   isAI={true} />
+          <FormField readOnly={isSubmitted} label="Application Type"  value={formData.application_type}  onChange={(v) => handleChange('application_type', v)}  isAI={true} />
+          <FormField readOnly={isSubmitted} label="Target Audience"   value={formData.target_audience}   onChange={(v) => handleChange('target_audience', v)}   isAI={true} />
         </FormSection>
 
         {/* Section 2: Business Details */}
         <FormSection number="02" title="Business Details" fieldCount="5 fields">
-          <FormField
-            readOnly={isSubmitted}
-            label="Business Description"
-            value={formData.business_description}
-            onChange={(v) => handleChange('business_description', v)}
-            isAI={true}
-            multiline
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Problem Statement"
-            value={formData.problem_statement}
-            onChange={(v) => handleChange('problem_statement', v)}
-            isAI={true}
-            multiline
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Desired Outcomes"
-            value={formData.desired_outcomes}
-            onChange={(v) => handleChange('desired_outcomes', v)}
-            multiline
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Key Features"
-            value={formData.key_features}
-            onChange={(v) => handleChange('key_features', v)}
-            isAI={true}
-            multiline
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Integrations"
-            value={formData.integrations}
-            onChange={(v) => handleChange('integrations', v)}
-          />
+          <FormField readOnly={isSubmitted} label="Business Description" value={formData.business_description} onChange={(v) => handleChange('business_description', v)} isAI={true}  multiline />
+          <FormField readOnly={isSubmitted} label="Problem Statement"    value={formData.problem_statement}    onChange={(v) => handleChange('problem_statement', v)}    isAI={true}  multiline />
+          <FormField readOnly={isSubmitted} label="Desired Outcomes"     value={formData.desired_outcomes}     onChange={(v) => handleChange('desired_outcomes', v)}                  multiline />
+          <FormField readOnly={isSubmitted} label="Key Features"         value={formData.key_features}         onChange={(v) => handleChange('key_features', v)}         isAI={true}  multiline />
+          <FormField readOnly={isSubmitted} label="Integrations"         value={formData.integrations}         onChange={(v) => handleChange('integrations', v)} />
         </FormSection>
 
         {/* Section 3: Technical Requirements */}
         <FormSection number="03" title="Technical & Timeline" fieldCount="5 fields">
-          <FormField
-            readOnly={isSubmitted}
-            label="Timeline"
-            value={formData.timeline}
-            onChange={(v) => handleChange('timeline', v)}
-            isAI={true}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Budget Range"
-            value={formData.budget_range}
-            onChange={(v) => handleChange('budget_range', v)}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Technology Preferences"
-            value={formData.tech_preferences}
-            onChange={(v) => handleChange('tech_preferences', v)}
-            multiline
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Scalability Needs"
-            value={formData.scalability_needs}
-            onChange={(v) => handleChange('scalability_needs', v)}
-          />
-          <FormField
-            readOnly={isSubmitted}
-            label="Security Requirements"
-            value={formData.security_requirements}
-            onChange={(v) => handleChange('security_requirements', v)}
-            multiline
-          />
+          <FormField readOnly={isSubmitted} label="Timeline"                value={formData.timeline}              onChange={(v) => handleChange('timeline', v)}              isAI={true} />
+          <FormField readOnly={isSubmitted} label="Budget Range"            value={formData.budget_range}          onChange={(v) => handleChange('budget_range', v)} />
+          <FormField readOnly={isSubmitted} label="Technology Preferences"  value={formData.tech_preferences}      onChange={(v) => handleChange('tech_preferences', v)}     multiline />
+          <FormField readOnly={isSubmitted} label="Scalability Needs"       value={formData.scalability_needs}     onChange={(v) => handleChange('scalability_needs', v)} />
+          <FormField readOnly={isSubmitted} label="Security Requirements"   value={formData.security_requirements} onChange={(v) => handleChange('security_requirements', v)} multiline />
         </FormSection>
+
+        {/* Section 4: Business Model Canvas (BMC) */}
+        {application?.requirements_json?.business_model_canvas && (
+          <FormSection number="04" title="Business Model Canvas" fieldCount="9 blocks">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Key Partners</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.key_partners) ? application.requirements_json.business_model_canvas.key_partners.join(', ') : application.requirements_json.business_model_canvas.key_partners}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Key Activities</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.key_activities) ? application.requirements_json.business_model_canvas.key_activities.join(', ') : application.requirements_json.business_model_canvas.key_activities}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Value Propositions</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.value_propositions) ? application.requirements_json.business_model_canvas.value_propositions.join(', ') : application.requirements_json.business_model_canvas.value_propositions}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Customer Relationships</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.customer_relationships) ? application.requirements_json.business_model_canvas.customer_relationships.join(', ') : application.requirements_json.business_model_canvas.customer_relationships}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Customer Segments</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.customer_segments) ? application.requirements_json.business_model_canvas.customer_segments.join(', ') : application.requirements_json.business_model_canvas.customer_segments}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Revenue Streams</h4>
+                <p className="text-xs text-slate-700">{Array.isArray(application.requirements_json.business_model_canvas.revenue_streams) ? application.requirements_json.business_model_canvas.revenue_streams.join(', ') : application.requirements_json.business_model_canvas.revenue_streams}</p>
+              </div>
+            </div>
+          </FormSection>
+        )}
+
+        {/* Section 5: Proportional Business Budget Allocation */}
+        {application?.requirements_json?.proportional_budget && Array.isArray(application.requirements_json.proportional_budget) && (
+          <FormSection number="05" title="Proportional Budget Allocation" fieldCount={`${application.requirements_json.proportional_budget.length} modules`}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-indigo-900 text-white font-semibold">
+                    <th className="p-3 rounded-l-lg">Module / Category</th>
+                    <th className="p-3 text-center">Split %</th>
+                    <th className="p-3">Scope & Deliverables</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {application.requirements_json.proportional_budget.map((item, idx) => (
+                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                      <td className="p-3 font-semibold text-slate-900">{item.category}</td>
+                      <td className="p-3 text-center font-bold text-indigo-600">{item.percentage}%</td>
+                      <td className="p-3 text-slate-600">{item.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </FormSection>
+        )}
 
         {/* AI Summary */}
         {application?.ai_summary && (
@@ -337,4 +513,3 @@ function FormField({ label, value, onChange, isAI, multiline, readOnly }) {
     </div>
   );
 }
-
