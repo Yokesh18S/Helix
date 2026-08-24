@@ -1,0 +1,524 @@
+/* Desktop - 10 */
+
+position: relative;
+width: 1440px;
+height: 1120px;
+
+background: linear-gradient(90deg, #E5F1FB 0%, #F2F2FF 100%);
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Back to interview */
+
+position: absolute;
+width: 120px;
+height: 21px;
+left: 1092px;
+top: 22px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 102px;
+height: 35px;
+left: 1239px;
+top: 11px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Continue */
+
+position: absolute;
+width: 56px;
+height: 18px;
+left: 1263px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Arrow 1 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 13px;
+height: 0px;
+left: 1074px;
+top: 32px;
+
+border: 1px solid #5B6983;
+transform: rotate(-180deg);
+
+
+/* Group 165 */
+
+position: absolute;
+width: 643px;
+height: 863px;
+left: calc(50% - 643px/2 + 0.5px);
+top: 128px;
+
+
+
+/* Rectangle 81 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 626px;
+height: 725px;
+left: 399px;
+top: 266px;
+
+background: #FFFFFF;
+border: 1px solid #DCE5EF;
+border-radius: 23px;
+
+
+/* Sign with mouse, trackpad or touchscreen. */
+
+position: absolute;
+width: 213px;
+height: 15px;
+left: 428px;
+top: 614px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5D6983;
+
+
+
+/* We'll send the signed requirement PDF to this address. */
+
+position: absolute;
+width: 280px;
+height: 15px;
+left: 428px;
+top: 734px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #5D6983;
+
+
+
+/* FINAL STEP */
+
+position: absolute;
+width: 90px;
+height: 18px;
+left: calc(50% - 90px/2 - 8px);
+top: 128px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.24em;
+
+color: #138DD8;
+
+
+
+/* Sign & approve submission */
+
+position: absolute;
+width: 502px;
+height: 54px;
+left: 461px;
+top: 151px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 36px;
+line-height: 54px;
+/* identical to box height */
+
+color: #101834;
+
+
+
+/* Confirm your details, sign digitally, and submit the requirement document. */
+
+position: absolute;
+width: 597px;
+height: 24px;
+left: 413px;
+top: 210px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* FULL NAME */
+
+position: absolute;
+width: 597px;
+height: 21px;
+left: 427px;
+top: 300px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* DIGITAL SIGNATURE */
+
+position: absolute;
+width: 597px;
+height: 21px;
+left: 427px;
+top: 400px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* EMAIL FOR SIGNED COPY */
+
+position: absolute;
+width: 597px;
+height: 21px;
+left: 427px;
+top: 655px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #5B6983;
+
+
+
+/* eg. Dr.Priya Menon */
+
+position: absolute;
+width: 597px;
+height: 21px;
+left: 445px;
+top: 340px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #858B9A;
+
+
+
+/* Rectangle 82 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 548px;
+height: 47px;
+left: 428px;
+top: 327px;
+
+background: #FCFEFF;
+border: 1px solid #DCE5EF;
+border-radius: 15px;
+
+
+/* Rectangle 84 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 548px;
+height: 47px;
+left: 428px;
+top: 682px;
+
+background: #FCFEFF;
+border: 1px solid #DCE5EF;
+border-radius: 15px;
+
+
+/* Rectangle 83 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 548px;
+height: 179px;
+left: 428px;
+top: 427px;
+
+background: #FCFEFF;
+border: 1px dashed #BFCBD7;
+border-radius: 15px;
+
+
+/* Group 164 */
+
+position: absolute;
+width: 548px;
+height: 103px;
+left: 428px;
+top: 777px;
+
+
+
+/* Rectangle 85 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 548px;
+height: 103px;
+left: 428px;
+top: 777px;
+
+background: #F5FAFE;
+border: 1px solid #DCE5EF;
+border-radius: 15px;
+
+
+/* I confirm that the provided information is accurate and approve submission of these requirements. I understand a downloadable copy will be issued to my registered email. */
+
+position: absolute;
+width: 496px;
+height: 72px;
+left: 472px;
+top: 793px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 24px;
+/* or 171% */
+
+color: #000000;
+
+
+
+/* Rectangle 86 */
+
+position: absolute;
+width: 12px;
+height: 12px;
+left: 444px;
+top: 801px;
+
+background: #FFFFFF;
+border: 1px solid #99B9D3;
+border-radius: 2px;
+
+
+/* Rectangle 87 */
+
+position: absolute;
+width: 550px;
+height: 50px;
+left: 427px;
+top: 908px;
+
+background: #101834;
+border-radius: 23px;
+
+
+/* Submit signed requiremenets */
+
+position: absolute;
+width: 260px;
+height: 21px;
+left: 572px;
+top: 923px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Vector 7 */
+
+position: absolute;
+width: 295px;
+height: 101px;
+left: 514px;
+top: 466px;
+
+border: 2px solid #101834;

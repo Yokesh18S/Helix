@@ -1,0 +1,2048 @@
+/* Desktop - 4 */
+
+position: relative;
+width: 1440px;
+height: 879px;
+
+background: #F6F7FE;
+
+
+/* Rectangle 1 */
+
+position: absolute;
+width: 1441px;
+height: 67px;
+left: 0px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Group 37 */
+
+position: absolute;
+width: 179px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 1 */
+
+position: absolute;
+width: 49px;
+height: 51px;
+left: 31px;
+top: 10px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 36 */
+
+position: absolute;
+width: 122px;
+height: 48px;
+left: 88px;
+top: 11px;
+
+
+
+/* ChatGPT Image Jun 11, 2026, 10_30_11 PM 2 */
+
+position: absolute;
+width: 122px;
+height: 35px;
+left: 88px;
+top: 11px;
+
+background: url(ChatGPT Image Jun 12, 2026, 09_26_18 PM-Photoroom.png);
+
+
+/* Group 35 */
+
+position: absolute;
+width: 117.5px;
+height: 15px;
+left: 90px;
+top: 44px;
+
+
+
+/* From Tech Wizard */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 104px;
+top: 44px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+
+color: #586683;
+
+
+
+/* Vector 1 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 90px;
+top: 51px;
+
+
+
+/* Vector 2 */
+
+position: absolute;
+width: 9.5px;
+height: 0px;
+left: 198px;
+top: 51px;
+
+
+
+/* Group 58 */
+
+position: absolute;
+width: 14.86px;
+height: 14.59px;
+left: 1396px;
+top: 96px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 96.94%;
+right: 2.02%;
+top: 10.92%;
+bottom: 87.42%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 97.11%;
+right: 2.02%;
+top: 11.18%;
+bottom: 87.42%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 96.94%;
+right: 2.02%;
+top: 10.92%;
+bottom: 87.42%;
+
+border: 1.3px solid #000000;
+
+
+/* Exit */
+
+position: absolute;
+width: 27px;
+height: 24px;
+left: 1379px;
+top: 22px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+
+color: #0F192E;
+
+
+
+/* of 12 */
+
+position: absolute;
+width: 34px;
+height: 21px;
+left: 1145px;
+top: 25px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Q12 */
+
+position: absolute;
+width: 32px;
+height: 30px;
+left: 1107px;
+top: 19px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+
+color: #000000;
+
+
+
+/* Vector 5 */
+
+position: absolute;
+width: 398px;
+height: 0px;
+left: 1038.5px;
+top: 137px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Group 61 */
+
+position: absolute;
+width: 1433.7px;
+height: 812px;
+left: 3px;
+top: 67px;
+
+
+
+/* Vector 6 */
+
+position: absolute;
+width: 398.7px;
+height: 0px;
+left: 1038px;
+top: 752.5px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Vector 4 */
+
+position: absolute;
+width: 0px;
+height: 812px;
+left: 1037px;
+top: 67px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Vector 3 */
+
+position: absolute;
+width: 1034.5px;
+height: 442.5px;
+left: 3px;
+top: 132px;
+
+border: 1px solid #D4DCE8;
+
+
+/* Group 52 */
+
+position: absolute;
+width: 150px;
+height: 28px;
+left: 288px;
+top: 20px;
+
+
+
+/* Rectangle 17 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 150px;
+height: 28px;
+left: 288px;
+top: 20px;
+
+background: #FFFFFF;
+border: 1px solid #F5F6F9;
+border-radius: 18px;
+
+
+/* Group 51 */
+
+position: absolute;
+width: 127px;
+height: 18px;
+left: 300px;
+top: 25px;
+
+
+
+/* Group 3 */
+
+position: absolute;
+width: 117px;
+height: 18px;
+left: 310px;
+top: 25px;
+
+
+
+/* Insighta is listening */
+
+position: absolute;
+width: 117px;
+height: 18px;
+left: 310px;
+top: 25px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 8 */
+
+position: absolute;
+width: 6px;
+height: 6px;
+left: 300px;
+top: 31px;
+
+background: #00C951;
+
+
+/* Group 57 */
+
+position: absolute;
+width: 160px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+
+
+/* Rectangle 22 */
+
+position: absolute;
+width: 160px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+background: #E1E8F1;
+border-radius: 8px;
+
+
+/* Rectangle 23 */
+
+position: absolute;
+width: 13px;
+height: 5px;
+left: 1191px;
+top: 32px;
+
+background: #6466FA;
+border-radius: 8px;
+
+
+/* LIVE EXTRACTION */
+
+position: absolute;
+width: 119px;
+height: 18px;
+left: 1062px;
+top: 78px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+letter-spacing: 0.11em;
+
+color: #93A5BB;
+
+
+
+/* 83 requirements captured */
+
+position: absolute;
+width: 227px;
+height: 26px;
+left: 1062px;
+top: 96px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 17px;
+line-height: 26px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 60 */
+
+position: absolute;
+width: 366px;
+height: 45px;
+left: 1055px;
+top: 795px;
+
+
+
+/* Rectangle 24 */
+
+position: absolute;
+width: 366px;
+height: 45px;
+left: 1055px;
+top: 795px;
+
+background: #1B293E;
+border-radius: 26px;
+
+
+/* Group 59 */
+
+position: absolute;
+width: 219px;
+height: 21px;
+left: 1129px;
+top: 807px;
+
+
+
+/* Generate requirement form */
+
+position: absolute;
+width: 195px;
+height: 21px;
+left: 1153px;
+top: 807px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Polygon 2 */
+
+position: absolute;
+width: 15px;
+height: 15px;
+left: 1129px;
+top: 810px;
+
+border: 2px solid #FFFFFF;
+border-radius: 2px;
+transform: rotate(90deg);
+
+
+/* Group 76 */
+
+position: absolute;
+width: 943px;
+height: 445px;
+left: 50px;
+top: 100px;
+
+
+
+/* Group 64 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 100px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 100px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* Group 65 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 170px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 170px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* Group 68 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 297px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 297px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* Group 70 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 367px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 367px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* Group 72 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 500px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 50px;
+top: 500px;
+
+background: linear-gradient(128.33deg, #7263FC 4.62%, #A655FF 95.38%);
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 108px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 178px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 305px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 375px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* si:ai-duotone */
+
+position: absolute;
+width: 22px;
+height: 22px;
+left: 58px;
+top: 508px;
+
+
+
+/* Group 54 */
+
+position: absolute;
+width: 14.86px;
+height: 14.86px;
+left: 2.41px;
+top: 2.41px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 21.53%;
+right: 21.53%;
+top: 21.53%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 10.94%;
+right: 21.53%;
+top: 10.94%;
+bottom: 21.53%;
+
+border: 1.3px solid #000000;
+
+
+/* Ellipse 7 */
+
+position: absolute;
+left: 68%;
+right: 20%;
+top: 72%;
+bottom: 16%;
+
+border: 1px solid #000000;
+
+
+/* Group 66 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 100px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 100px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* Hi! I'm Insighta. Let's start with a simple one. */
+
+position: absolute;
+width: 264px;
+height: 18px;
+left: 115px;
+top: 111px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 67 */
+
+position: absolute;
+width: 352px;
+height: 40px;
+left: 99px;
+top: 170px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 170px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* What does your business do? */
+
+position: absolute;
+width: 336px;
+height: 18px;
+left: 115px;
+top: 181px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 69 */
+
+position: absolute;
+width: 352px;
+height: 40px;
+left: 99px;
+top: 297px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 298px;
+height: 40px;
+left: 99px;
+top: 297px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* Got it — captured that. Next question: */
+
+position: absolute;
+width: 336px;
+height: 18px;
+left: 115px;
+top: 308px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 71 */
+
+position: absolute;
+width: 402px;
+height: 40px;
+left: 99px;
+top: 367px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 340.33px;
+height: 40px;
+left: 99px;
+top: 367px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* Do you need mobile access or a customer portal? */
+
+position: absolute;
+width: 383.73px;
+height: 18px;
+left: 117.27px;
+top: 378px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Group 73 */
+
+position: absolute;
+width: 352px;
+height: 52px;
+left: 99px;
+top: 493px;
+
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 352px;
+height: 52px;
+left: 99px;
+top: 493px;
+
+background: #ECF1F6;
+border-radius: 9px;
+
+
+/* That's all I need. I've drafted your requirements — let's review them next. */
+
+position: absolute;
+width: 336px;
+height: 36px;
+left: 115px;
+top: 504px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+
+color: #000000;
+
+
+
+/* Group 74 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 956px;
+top: 244px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 956px;
+top: 244px;
+
+background: #1B293E;
+
+
+/* Group 75 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 956px;
+top: 440px;
+
+
+
+/* Ellipse 9 */
+
+position: absolute;
+width: 37px;
+height: 37px;
+left: 956px;
+top: 440px;
+
+background: #1B293E;
+
+
+/* Rectangle 18 */
+
+position: absolute;
+width: 222px;
+height: 37px;
+left: 722px;
+top: 244px;
+
+background: #1B293E;
+border-radius: 14px;
+
+
+/* Rectangle 19 */
+
+position: absolute;
+width: 76px;
+height: 37px;
+left: 868px;
+top: 440px;
+
+background: #1B293E;
+border-radius: 14px;
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 180px;
+height: 18px;
+left: 764px;
+top: 254px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* yes */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 900px;
+top: 450px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Group 79 */
+
+position: absolute;
+width: 363px;
+height: 200px;
+left: 338px;
+top: 617px;
+
+
+
+/* Group 78 */
+
+position: absolute;
+width: 281px;
+height: 44px;
+left: 379px;
+top: 773px;
+
+
+
+/* Rectangle 2 */
+
+position: absolute;
+width: 281px;
+height: 44px;
+left: 379px;
+top: 773px;
+
+background: #1E293B;
+border-radius: 23px;
+
+
+/* Review generated requirements */
+
+position: absolute;
+width: 202px;
+height: 18px;
+left: 431px;
+top: 786px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+
+/* Group 58 */
+
+position: absolute;
+width: 14.86px;
+height: 14.59px;
+left: 407px;
+top: 788px;
+
+
+
+/* Group */
+
+position: absolute;
+left: 28.26%;
+right: 70.7%;
+top: 89.65%;
+bottom: 8.69%;
+
+
+
+/* Vector */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 28.43%;
+right: 70.7%;
+top: 89.91%;
+bottom: 8.69%;
+
+border: 1.3px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 28.26%;
+right: 70.7%;
+top: 89.65%;
+bottom: 8.69%;
+
+border: 1.3px solid #FFFFFF;
+
+
+/* I've captured 83 requirements. Let's review the draft. */
+
+position: absolute;
+width: 363px;
+height: 21px;
+left: 338px;
+top: 732px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Interview complete */
+
+position: absolute;
+width: 196px;
+height: 30px;
+left: 422px;
+top: 697px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 30px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Group 77 */
+
+position: absolute;
+width: 65px;
+height: 65px;
+left: 487px;
+top: 617px;
+
+
+
+/* Ellipse 28 */
+
+position: absolute;
+width: 65px;
+height: 65px;
+left: 487px;
+top: 617px;
+
+background: #D4FDE7;
+
+
+/* Ellipse 29 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 25px;
+height: 25px;
+left: 507px;
+top: 637px;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 35.83%;
+right: 63.61%;
+top: 73.61%;
+bottom: 25.71%;
+
+border: 2px solid #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 67.22%;
+right: 31.84%;
+top: 29.35%;
+bottom: 69.62%;
+
+background: #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 67.22%;
+right: 31.84%;
+top: 51.65%;
+bottom: 47.33%;
+
+background: #FFFFFF;
+
+
+/* Group 80 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 152px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 152px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 165px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 181px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 212px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 212px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 162px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Group 81 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 246px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 246px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 259px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 275px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 306px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 306px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 256px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Group 82 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 340px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 340px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 353px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 369px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 400px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 400px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 350px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Group 83 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 434px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 434px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 447px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 463px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 494px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 494px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 444px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Group 84 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 528px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 528px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 541px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 557px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 588px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 588px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 538px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
+
+
+/* Group 85 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 622px;
+
+
+
+/* Rectangle 25 */
+
+position: absolute;
+width: 367px;
+height: 79px;
+left: 1054px;
+top: 622px;
+
+background: #FFFFFF;
+border-radius: 30px;
+
+
+/* BUSINESS TYPE */
+
+position: absolute;
+width: 90px;
+height: 15px;
+left: 1068px;
+top: 635px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 10px;
+line-height: 15px;
+/* identical to box height */
+letter-spacing: 0.14em;
+
+color: #0885FE;
+
+
+
+/* Multi-specialty hospital */
+
+position: absolute;
+width: 170px;
+height: 21px;
+left: 1068px;
+top: 651px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #0B172B;
+
+
+
+/* Rectangle 26 */
+
+position: absolute;
+width: 332px;
+height: 3px;
+left: 1068px;
+top: 682px;
+
+background: #E1E8F1;
+border-radius: 5px;
+
+
+/* Rectangle 27 */
+
+position: absolute;
+width: 314px;
+height: 3px;
+left: 1068px;
+top: 682px;
+
+background: #0885FE;
+border-radius: 5px;
+
+
+/* 95% */
+
+position: absolute;
+width: 25px;
+height: 18px;
+left: 1375px;
+top: 632px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 18px;
+/* identical to box height */
+
+color: #90A5BA;
+
