@@ -66,6 +66,11 @@ class Application(Base):
     total_requirements_captured = Column(Integer, default=0)
     language_context = Column(JSON, nullable=True)  # Locked language context, speaking style, formality, etc.
 
+    # Business Canvas & Budget Planner
+    business_canvas = Column(JSON, nullable=True)  # Business Model Canvas (9 components)
+    budget_planner = Column(JSON, nullable=True)   # INR Detailed Budget Breakdown
+    contact_email = Column(String(255), nullable=True)  # Spoken/collected contact email
+
     # Signature
     signature_data = Column(Text, nullable=True)  # Base64 signature
     signer_email = Column(String(255), nullable=True)

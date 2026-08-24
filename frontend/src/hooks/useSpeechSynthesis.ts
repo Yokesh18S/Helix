@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useVoiceAgent } from '../context/VoiceAgentContext';
 
 export function useSpeechSynthesis() {
   const { voiceEnabled } = useAuth();
+  const { isSpeakerMuted } = useVoiceAgent();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -62,7 +64,7 @@ export function useSpeechSynthesis() {
       langCode = langCodeOrCb;
     }
 
-    if (!voiceEnabled) {
+    if (!voiceEnabled || isSpeakerMuted) {
       if (cb) cb();
       return;
     }

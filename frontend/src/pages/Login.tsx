@@ -38,8 +38,12 @@ export default function Login() {
   };
 
   const handleVoiceSuccess = async () => {
+    const pending = sessionStorage.getItem("pendingNavigation");
     const claimedAppId = await claimGuestSession();
-    if (claimedAppId) {
+    if (pending) {
+      sessionStorage.removeItem("pendingNavigation");
+      navigate(pending);
+    } else if (claimedAppId) {
       toast.success('Interview saved to your account!');
       navigate(`/requirements/${claimedAppId}`);
     } else {
@@ -125,8 +129,12 @@ export default function Login() {
       loginWithOtp(access_token, userData);
       toast.success(`Welcome back, ${userData.full_name || 'User'}!`);
 
+      const pending = sessionStorage.getItem("pendingNavigation");
       const claimedAppId = await claimGuestSession();
-      if (claimedAppId) {
+      if (pending) {
+        sessionStorage.removeItem("pendingNavigation");
+        navigate(pending);
+      } else if (claimedAppId) {
         toast.success('Interview saved to your account!');
         navigate(`/requirements/${claimedAppId}`);
       } else {

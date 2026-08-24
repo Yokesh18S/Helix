@@ -104,7 +104,7 @@ export default function Documents() {
             <StepItem number="04" label="Documents" active />
             <StepItem number="05" label="AI summary" />
             <StepItem number="06" label="Review" />
-            <StepItem number="07" label="Sign & submit" />
+            <StepItem number="07" label="Review & submit" />
           </div>
 
           <div className="bg-white rounded-2xl border border-[#DCE5EF] p-5 mt-4">

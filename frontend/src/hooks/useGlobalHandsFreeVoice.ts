@@ -3,22 +3,29 @@
  *
  * Listens for voice commands on any page. Uses a single recognition instance
  * from useVoiceRecognition. Recognition is restarted purely event-driven
- * (via the isListening dependency in useEffect) — no polling intervals.
+ * (via the isListening dependency in useEffect) - no polling intervals.
  *
  * Rules:
  *  - Only starts when active=true AND isSpeaking=false.
+ *  - STOPS automatically when VoiceAgentContext mode === "INTERVIEW" ï¿½ the
+ *    Interview Agent owns the microphone during that phase.
  *  - Restarts are triggered by isListening transitioning to false (onend/onerror),
  *    NOT by a polling setInterval.
  *  - isMountedRef prevents any state updates or start() calls after unmount.
  */
 import { useEffect, useCallback, useRef } from 'react';
 import { useVoiceRecognition } from './useVoiceRecognition';
+import { useVoiceAgent } from '../context/VoiceAgentContext';
 
 export function useGlobalHandsFreeVoice(
   commands: Record<string, () => void>,
   active: boolean = true,
   isSpeaking: boolean = false,
 ) {
+  // During INTERVIEW mode the Interview Agent owns the mic ï¿½ disable this hook.
+  const { mode } = useVoiceAgent();
+  const effectiveActive = active && mode !== 'INTERVIEW';
+
   const isMountedRef = useRef(true);
   const commandsRef = useRef(commands);
   commandsRef.current = commands;
@@ -51,18 +58,17 @@ export function useGlobalHandsFreeVoice(
   startListeningRef.current = startListening;
   stopListeningRef.current = stopListening;
 
-  // Event-driven restart: when active=true and isListening transitions to false
+  // Event-driven restart: when effectiveActive=true and isListening transitions to false
   // (caused by onend/onerror inside useVoiceRecognition), restart recognition.
-  // This replaces the old polling setInterval.
   useEffect(() => {
     if (!isMountedRef.current) return;
 
-    if (!active || isSpeaking) {
+    if (!effectiveActive || isSpeaking) {
       stopListeningRef.current();
       return;
     }
 
-    // Recognition is not currently running — start it.
+    // Recognition is not currently running - start it.
     if (!isListening) {
       console.log('[HandsFree] Starting/restarting recognition (event-driven).');
       startListeningRef.current();
@@ -70,11 +76,11 @@ export function useGlobalHandsFreeVoice(
 
     return () => {
       // When deactivated, stop cleanly.
-      if (!active) {
+      if (!effectiveActive) {
         stopListeningRef.current();
       }
     };
-  }, [active, isListening, isSpeaking]);
+  }, [effectiveActive, isListening, isSpeaking]);
 
   // Full stop on unmount
   useEffect(() => {

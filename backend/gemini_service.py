@@ -256,10 +256,31 @@ PERSONALITY:
 - Keep everything short and natural
 
 ACKNOWLEDGEMENT RULES:
-- Start with a SHORT, natural acknowledgement (under 8 words)
-- Good examples: "That's a nice idea.", "Interesting.", "Great.", "Got it.", "That makes sense.", "Sounds good."
-- Do NOT write long compliments or multi-sentence praise
-- Do NOT repeat back what the user just said
+- Write 1-2 SHORT sentences that acknowledge what the user said AND show you understood it.
+- Reference the actual business idea or information from their answer — do NOT be generic.
+- Show a small insight or relevant context about their domain — like a knowledgeable business partner would say.
+- Keep it natural and concise. Max 2 sentences. No more.
+- Do NOT start with hollow words like "Great!", "Wonderful!", "Absolutely!", "Of course!", "Sure!", "Certainly!", "Fantastic!", "Awesome!"
+- Do NOT repeat the user's exact words back to them.
+- Do NOT write long multi-sentence explanations.
+- Do NOT invent facts, revenue numbers, market size, or business details not mentioned by the user.
+- GOOD examples:
+  User: "I want to start a soap company."
+  → "That's an interesting direction. A soap business usually depends on how you source ingredients and reach your end customers."
+
+  User: "I want to open a restaurant."
+  → "Nice idea. Restaurants often revolve around smooth ordering, kitchen operations, and building a loyal customer base."
+
+  User: "I provide AI services for small businesses."
+  → "That's a useful space to be in. AI services for small businesses can help automate repetitive work and improve day-to-day efficiency."
+
+  User: "I want to build an e-commerce platform."
+  → "That makes sense. E-commerce platforms typically need to handle product listings, payments, and reliable order fulfillment."
+
+  User: "We sell agricultural produce to markets."
+  → "Got it. Agricultural businesses often deal with supply chain coordination, seasonal demand, and connecting farmers to buyers efficiently."
+
+- For unknown or very early-stage ideas, simply reflect what you understood without inventing domain claims.
 
 QUESTION RULES:
 - Ask exactly ONE question about ONE topic
@@ -338,7 +359,9 @@ PRIMARY FOCUS FOR THIS QUESTION: {focus_field}
 (Ask about this topic in a natural, conversational way. Do NOT use the field label directly.)
 
 TASK:
-1. Write a SHORT acknowledgement of the user's last answer in "{target_lang}".
+1. Write 1-2 SHORT sentences acknowledging the user's last answer in "{target_lang}".
+   - Be specific to what they said. Show a useful insight about their domain. Do NOT be generic.
+   - Do NOT start with hollow praise like "Great!" or "Fantastic!".
 2. Ask ONE simple, natural follow-up question about {focus_field} in "{target_lang}".
 3. The question must feel like a natural continuation — NOT a survey question.
 
@@ -442,15 +465,16 @@ async def generate_requirements_summary(
     try:
         model = genai.GenerativeModel(GEMINI_MODEL)
 
-        prompt = f"""You are an executive Business Analyst and native technical author generating a Business Requirement Specification (BRD / SRS), Business Model Canvas, and Proportional Business Budget Allocation in {chosen_language}.
+        prompt = f"""You are an executive Business Analyst and native technical author generating a Business Requirement Specification (BRD / SRS), Business Model Canvas, and Detailed Budget Planner in Indian Rupees (INR ₹) in {chosen_language}.
 
-MANDATORY TRANSLATION & NATIVE WRITING PRINCIPLES:
-1. SENTENCE & MEANING LEVEL: Translate and write at the SENTENCE / MEANING level. NEVER translate word-by-word or produce literal dictionary translations.
-2. NATURAL NATIVE PROSE: Write in fluent, grammatically correct, native professional prose as if originally authored by a native speaker in {chosen_language}.
-3. DIALECT TO FORMAL NATIVE SCRIPT: If target language is code-mixed (Tanglish, Manglish, Hinglish, Tenglish, Kanglish), write the entire document in the formal, professional native script (Tamil, Malayalam, Hindi, Telugu, Kannada) with proper grammar.
-4. TECHNICAL TERMINOLOGY PROTECTION: Preserve software & business domain terminology (e.g. API, AI, ML, UI/UX, CI/CD, DevOps, JWT, OTP, SQL, REST API, OAuth2, SSL, Cloud, React, Python FastAPI, PostgreSQL, Database, Mobile App, Web App). Do NOT translate technical terms into awkward or unrecognizable literal words.
-5. ZERO-BLANK RULE: DO NOT leave any field empty or blank. Infer realistic, high-quality technical specifications if omitted.
-6. TERMINOLOGY CONSISTENCY: Maintain uniform business and technical terminology throughout all sections.
+MANDATORY EXTRACTION & WRITING PRINCIPLES:
+1. DOMAIN IDENTIFICATION & ADAPTATION: Identify the user's business domain (e.g., AI Services, Restaurant, Hospital/Healthcare, Product Manufacturing, E-commerce, Education, Real Estate, SaaS). Adapt all terminology, workflows, features, and descriptions to match this domain.
+2. ACCURATE DOMAIN-BASED PROJECT NAME: Derive a concise, relevant project_name directly matching the user's business idea and domain (e.g. if user said "I provide AI services", project_name = "AI Services Platform"; if user said "restaurant ordering app", project_name = "Restaurant Order & Kitchen Management System"; if "hospital app", project_name = "Hospital & Patient Management Portal"). NEVER invent generic, unrelated corporate names like "SynergyFlow AI".
+3. STRICT FIDELITY TO USER STATEMENTS: Synthesize business_description, problem_statement, key_features, target_audience, timeline, budget_range, and integrations directly from the user's extracted facts and interview transcript.
+4. NATURAL NATIVE PROSE: Write in fluent, grammatically correct, native professional prose as if originally authored by a native speaker in {chosen_language}.
+5. TECHNICAL TERMINOLOGY PROTECTION: Preserve software & business domain terminology (e.g. API, AI, ML, UI/UX, CI/CD, DevOps, JWT, OTP, SQL, REST API, OAuth2, SSL, Cloud, React, Python FastAPI, PostgreSQL, Database, Mobile App, Web App).
+6. DOMAIN-TAILORED FORM FILLING: Fill all form fields, Business Model Canvas blocks, and budget items with specific features and requirements appropriate for the user's domain.
+7. BUDGET IN INR: All financial figures, budgets, and breakdowns MUST be calculated and displayed in Indian Rupees (INR ₹).
 
 Interview Data:
 {json.dumps(application_data, indent=2)}
@@ -469,33 +493,49 @@ Generate a JSON response with the following exact keys:
     "key_features": "List of core features comma separated",
     "integrations": "Third party integrations list",
     "timeline": "Estimated project timeline (e.g., 8-12 weeks for MVP launch)",
-    "budget_range": "Estimated budget range (e.g., $15,000 - $30,000)",
+    "budget_range": "Estimated budget range in INR (e.g., ₹10,00,000 - ₹25,00,000)",
     "tech_preferences": "Recommended technology stack (e.g., React / Next.js, Python FastAPI, PostgreSQL, Redis)",
     "scalability_needs": "Scalability requirements (e.g., Cloud containerized auto-scaling for 50,000 MAU)",
     "security_requirements": "Security specifications (e.g., TLS/SSL encryption, OAuth2/JWT auth, PCI-DSS compliance)",
     "total_requirements": 12,
     "business_model_canvas": {{
-        "key_partners": ["Technology Partners", "Payment Providers", "Cloud Vendors"],
-        "key_activities": ["Platform Development", "User Acquisition", "Customer Support"],
-        "key_resources": ["Proprietary Architecture", "Engineering Team", "Customer Data"],
-        "value_propositions": ["Streamlined Operations", "Automated Workflow", "Scalable Performance"],
-        "customer_relationships": ["Self-service Portal", "Automated Support", "Dedicated Success Manager"],
-        "channels": ["Web Platform", "Mobile Applications", "REST API Integrations"],
         "customer_segments": ["Target Customers & Enterprise Clients"],
-        "cost_structure": ["Software Engineering", "Cloud Infrastructure Hosting", "Marketing & Security"],
-        "revenue_streams": ["Subscription Plans", "Transaction Processing", "Premium Modules"]
+        "value_propositions": ["Streamlined Operations", "Automated Workflow", "Scalable Performance"],
+        "channels": ["Web Platform", "Mobile Applications", "REST API Integrations"],
+        "customer_relationships": ["Self-service Portal", "Automated Support", "Dedicated Success Manager"],
+        "revenue_streams": ["Subscription Plans", "Transaction Commission", "Premium Modules"],
+        "key_resources": ["Proprietary Architecture", "Engineering Team", "Customer Data"],
+        "key_activities": ["Platform Development", "User Acquisition", "Customer Support"],
+        "key_partnerships": ["Technology Partners", "Payment Providers", "Cloud Vendors"],
+        "cost_structure": ["Software Engineering", "Cloud Infrastructure Hosting", "Marketing & Security"]
+    }},
+    "budget_planner": {{
+        "total_budget_inr": "₹15,00,000",
+        "development_cost_inr": "₹6,00,000",
+        "marketing_budget_inr": "₹3,00,000",
+        "operations_cost_inr": "₹2,50,000",
+        "contingency_fund_inr": "₹1,50,000",
+        "break_even_timeline": "6 to 9 months",
+        "expected_roi": "150% over 18 months",
+        "breakdown": [
+            {{ "category": "Core Backend & Architecture", "percentage": 35, "allocated_inr": "₹5,25,000", "description": "API Services, DB Schema, Authentication" }},
+            {{ "category": "Frontend UI/UX & Mobile Apps", "percentage": 25, "allocated_inr": "₹3,75,000", "description": "Web App UI, Mobile Interfaces" }},
+            {{ "category": "AI / ML & Integrations", "percentage": 20, "allocated_inr": "₹3,00,000", "description": "Gemini Integration, Payment Gateways" }},
+            {{ "category": "QA & Security Audit", "percentage": 10, "allocated_inr": "₹1,50,000", "description": "Automated E2E Testing, Penetration Testing" }},
+            {{ "category": "Cloud DevOps & Contingency", "percentage": 10, "allocated_inr": "₹1,50,000", "description": "AWS/GCP Setup, CI/CD, Reserve Buffer" }}
+        ]
     }},
     "proportional_budget": [
         {{
             "category": "Core Architecture & Backend Development",
             "percentage": 35,
-            "allocated_amount": "35% of Total Budget",
+            "allocated_amount": "₹5,25,000 (35%)",
             "description": "API Services, DB Schema, Authentication, Core Services"
         }},
         {{
             "category": "Frontend UI/UX & Client Applications",
             "percentage": 25,
-            "allocated_amount": "25% of Total Budget",
+            "allocated_amount": "₹3,75,000 (25%)",
             "description": "Web App UI, Mobile Interfaces, Responsive Design"
         }},
         {{
@@ -675,3 +715,93 @@ Return ONLY a valid JSON object — no markdown, no backticks, no extra text:
     except Exception as e:
         print(f"Error in Gemini auth voice NLP: {e}")
         return {}
+
+
+async def parse_profile_information(
+    user_transcript: str,
+    current_phase: str,
+    current_name: Optional[str] = "",
+    current_phone: Optional[str] = "",
+) -> Dict[str, Any]:
+    """
+    Parse the user's transcript to extract name, phone, and business idea.
+    Recognizes corrections, handles natural variations, and normalizes output.
+    """
+    if not GEMINI_API_KEY:
+        # Fallback for demo mode
+        return {
+            "name": current_name,
+            "phone": current_phone,
+            "business_idea": None,
+            "is_correction": False,
+            "corrected_field": None,
+            "uncertain": True
+        }
+
+    try:
+        model = genai.GenerativeModel(GEMINI_MODEL)
+        
+        prompt = f"""You are Helix, an intelligent AI business consultant assistant.
+Your task is to analyze the user's spoken or typed transcript and extract their profile details (name and phone number), detect any business idea, and identify if they are correcting previously provided details.
+
+CURRENT CONTEXT:
+- Expected Field/Phase: {current_phase} (This is the information we are currently prompting for or in)
+- Currently captured Name: "{current_name or ''}"
+- Currently captured Phone: "{current_phone or ''}"
+- User Input: "{user_transcript}"
+
+EXTRACTION RULES:
+1. NAME:
+   - Extract only the person's name. Remove conversational prefixes (e.g. "My name is", "I'm", "You can call me", "Actually, my name is").
+   - Remove unnecessary punctuation.
+   - Do NOT accept an entire sentence as the name.
+   - If expected field is "name", prioritize extracting a person's name.
+   
+2. PHONE:
+   - Extract only the digits of the phone number.
+   - Convert spoken number words to digits (e.g. "nine eight" -> "98", "double nine" -> "99").
+   - Do not invent missing digits.
+   - If expected field is "phone", prioritize extracting a phone number.
+
+3. BUSINESS IDEA:
+   - Extract any mention of starting a business or a business idea. Keep it concise.
+
+4. CORRECTION:
+   - Detect if the user is correcting previously captured information (e.g. "Actually, my name is Yokesh Kumar", "Sorry, my number is...").
+   - Set "is_correction" to true if they are updating a value that was already captured.
+   - Identify which field is being corrected: "name", "phone", "both", or null.
+
+Return ONLY a valid JSON object matching this schema (do not include markdown block, output only JSON):
+{{
+  "name": "extracted name or null",
+  "phone": "extracted digits only or null",
+  "business_idea": "extracted business idea or null",
+  "is_correction": true or false,
+  "corrected_field": "name" or "phone" or "both" or null,
+  "uncertain": true or false
+}}"""
+
+        try:
+            gen_config = genai.GenerationConfig(temperature=0.1, response_mime_type="application/json")
+        except TypeError:
+            gen_config = genai.GenerationConfig(temperature=0.1)
+
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=gen_config
+        )
+        text = response.text.strip()
+        print("RAW PROFILE PARSE RESPONSE:", repr(text))
+        
+        return robust_json_loads(text)
+    except Exception as e:
+        print(f"Error in parse_profile_information: {e}")
+        return {
+            "name": None,
+            "phone": None,
+            "business_idea": None,
+            "is_correction": False,
+            "corrected_field": None,
+            "uncertain": True
+        }
+

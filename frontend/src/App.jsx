@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -13,22 +14,25 @@ import ReviewSign from './pages/ReviewSign';
 import Submitted from './pages/Submitted';
 import Admin from './pages/Admin';
 
+// HelixAssistant (old Gemini/Web Speech agent) has been removed.
+// Vapi is now the single voice agent across the entire app.
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/interview" element={<Interview />} />
+          <Route path="/"                element={<Landing />} />
+          <Route path="/login"           element={<Login />} />
+          <Route path="/register"        element={<Register />} />
+          <Route path="/dashboard"       element={<Dashboard />} />
+          <Route path="/interview"       element={<Interview />} />
           <Route path="/requirements/:id" element={<Requirements />} />
-          <Route path="/documents/:id" element={<Documents />} />
-          <Route path="/review/:id" element={<ReviewSign />} />
-          <Route path="/submitted/:id" element={<Submitted />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/documents/:id"   element={<Documents />} />
+          <Route path="/review/:id"      element={<ReviewSign />} />
+          <Route path="/submitted/:id"   element={<Submitted />} />
+          <Route path="/admin"           element={<Admin />} />
         </Routes>
         <Toaster
           position="top-right"
@@ -46,4 +50,3 @@ function App() {
 }
 
 export default App;
-

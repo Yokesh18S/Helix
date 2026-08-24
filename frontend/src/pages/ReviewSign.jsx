@@ -2,21 +2,20 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { applicationsAPI } from '../services/api';
-import { ArrowLeft, CheckCircle, Circle, Pen, Send } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Circle, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalHandsFreeVoice } from '../hooks/useGlobalHandsFreeVoice';
+import { useVoiceAgent } from '../context/VoiceAgentContext';
 
 export default function ReviewSign() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { pageActionsRef } = useVoiceAgent();
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [signerEmail, setSignerEmail] = useState('');
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [signatureData, setSignatureData] = useState('');
-  const canvasRef = useRef(null);
   const [checklist, setChecklist] = useState({
     infoVerified: false,
     requirementsVerified: false,
@@ -24,13 +23,12 @@ export default function ReviewSign() {
     aiSummaryReviewed: false,
   });
 
-  const autoSignAndSubmitRef = useRef(null);
+  const autoSubmitRef = useRef(null);
 
   useGlobalHandsFreeVoice({
-    'sign and submit': () => autoSignAndSubmitRef.current?.(),
-    'submit project': () => autoSignAndSubmitRef.current?.(),
-    'submit': () => autoSignAndSubmitRef.current?.(),
-    'approve': () => autoSignAndSubmitRef.current?.(),
+    'submit project': () => autoSubmitRef.current?.(),
+    'submit': () => autoSubmitRef.current?.(),
+    'approve': () => autoSubmitRef.current?.(),
     'back': () => navigate(`/documents/${id}`),
     'documents': () => navigate(`/documents/${id}`),
     'go back': () => navigate(`/documents/${id}`)
@@ -56,46 +54,10 @@ export default function ReviewSign() {
     }
   };
 
-  // Canvas drawing for signature
-  const startDrawing = (e) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-    setIsDrawing(true);
-  };
-
-  const draw = (e) => {
-    if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#000';
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    ctx.stroke();
-  };
-
-  const stopDrawing = () => {
-    setIsDrawing(false);
-    const canvas = canvasRef.current;
-    setSignatureData(canvas.toDataURL());
-  };
-
-  const clearSignature = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setSignatureData('');
-  };
-
-  const triggerSubmit = async (sig = signatureData) => {
+  const triggerSubmit = async () => {
     setSubmitting(true);
     try {
       await applicationsAPI.update(id, {
-        signature_data: sig,
         signer_email: signerEmail || user?.email
       });
       await applicationsAPI.submit(id);
@@ -114,18 +76,14 @@ export default function ReviewSign() {
       toast.error('Please verify all checklist items');
       return;
     }
-    if (!signatureData) {
-      toast.error('Please provide your signature');
-      return;
-    }
     if (!signerEmail) {
       toast.error('Please provide your email');
       return;
     }
-    await triggerSubmit(signatureData);
+    await triggerSubmit();
   };
 
-  const autoSignAndSubmit = () => {
+  const autoSubmit = () => {
     setChecklist({
       infoVerified: true,
       requirementsVerified: true,
@@ -133,35 +91,22 @@ export default function ReviewSign() {
       aiSummaryReviewed: true,
     });
     
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = 'italic bold 28px "Georgia", sans-serif';
-      ctx.fillStyle = '#1E1B4B';
-      ctx.fillText(user?.full_name || 'Helix User', 20, 65);
-      
-      // Draw signature line
-      ctx.beginPath();
-      ctx.moveTo(15, 75);
-      ctx.bezierCurveTo(50, 85, 150, 65, 260, 75);
-      ctx.strokeStyle = '#6366F1';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      const sig = canvas.toDataURL();
-      setSignatureData(sig);
-      
-      toast.success('Signature generated hands-free!');
-      setTimeout(() => {
-        triggerSubmit(sig);
-      }, 500);
-    }
+    toast.success('Checklist verified hands-free!');
+    setTimeout(() => {
+      triggerSubmit();
+    }, 500);
   };
 
   useEffect(() => {
-    autoSignAndSubmitRef.current = autoSignAndSubmit;
+    autoSubmitRef.current = autoSubmit;
   }, [checklist, signerEmail, user]);
+
+  // Register Voice Agent Actions
+  pageActionsRef.current = {
+    checkRequirements: async () => {
+      autoSubmit();
+    }
+  };
 
   if (loading) {
     return (
@@ -195,10 +140,10 @@ export default function ReviewSign() {
         {/* Header */}
         <p className="text-xs font-semibold text-helix-blue tracking-[0.24em] text-center mb-2">FINAL STEP</p>
         <h1 className="text-4xl font-semibold text-helix-navy text-center mb-2">
-          Sign & approve submission
+          Review & approve submission
         </h1>
         <p className="text-base text-helix-gray-700 text-center mb-10">
-          Confirm your details, sign digitally, and submit the requirement document.
+          Confirm your details and submit the requirement document.
         </p>
 
         {/* Checklist */}
@@ -228,38 +173,11 @@ export default function ReviewSign() {
           </div>
         </div>
 
-        {/* Signature */}
-        <div className="bg-white rounded-2xl border border-[#DCE5EF] p-6 mb-6">
-          <h3 className="font-semibold text-base text-helix-navy mb-1">Digital Signature</h3>
-          <p className="text-[10px] text-helix-gray-600 mb-4">
-            Sign with mouse, trackpad or touchscreen.
-          </p>
-
-          <div className="border border-gray-200 rounded-xl overflow-hidden mb-3">
-            <canvas
-              ref={canvasRef}
-              width={580}
-              height={150}
-              className="w-full cursor-crosshair bg-gray-50"
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-            />
-          </div>
-          <button
-            onClick={clearSignature}
-            className="text-xs text-helix-gray-500 hover:text-red-500"
-          >
-            Clear signature
-          </button>
-        </div>
-
         {/* Email */}
         <div className="bg-white rounded-2xl border border-[#DCE5EF] p-6 mb-8">
           <h3 className="font-semibold text-base text-helix-navy mb-1">Confirmation Email</h3>
           <p className="text-[10px] text-helix-gray-600 mb-4">
-            We'll send the signed requirement PDF to this address.
+            We'll send the requirement PDF to this address.
           </p>
           <input
             type="email"

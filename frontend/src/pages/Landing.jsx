@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, Play, Sparkles, X, Volume2 } from 'lucide-react';
+import { Mic, Play, Sparkles, X, Volume2, VolumeX } from 'lucide-react';
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
 import { useVoiceRecognition } from '../hooks/useVoiceRecognition';
+import { useVoiceAgent } from '../context/VoiceAgentContext';
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { isSpeakerMuted, setSpeakerMuted } = useVoiceAgent();
   const { speak, stop: stopSpeaking, isSpeaking } = useSpeechSynthesis();
 
   // 'idle' | 'speaking' | 'listening' | 'navigating'
@@ -28,7 +30,7 @@ export default function Landing() {
       t.includes('start') || t.includes('begin')
     ) {
       setVoicePhase('navigating');
-      speak("Starting your interview now. Let's go!", () => navigate('/interview'));
+      speak("Starting your Helix AI interview now. Let's go!", () => navigate('/interview'));
       return;
     }
 
@@ -96,6 +98,21 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#EEF1F8] pt-[67px] flex flex-col items-center justify-center relative overflow-hidden">
       
+      {/* Speaker Mute Control */}
+      <button
+        onClick={() => {
+          if (!isSpeakerMuted) {
+            stopSpeaking();
+          }
+          setSpeakerMuted(!isSpeakerMuted);
+        }}
+        className="absolute top-24 right-6 z-50 p-3 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-all flex items-center justify-center text-gray-600 hover:text-indigo-600 focus:outline-none"
+        aria-label={isSpeakerMuted ? "Unmute speaker" : "Mute speaker"}
+        title={isSpeakerMuted ? "Speaker Muted" : "Speaker On"}
+      >
+        {isSpeakerMuted ? <VolumeX className="w-5 h-5 text-gray-400" /> : <Volume2 className="w-5 h-5" />}
+      </button>
+
       {/* CSS-based Custom Waveform and Mouth Sync Styling */}
       <style>{`
         @keyframes waveform {

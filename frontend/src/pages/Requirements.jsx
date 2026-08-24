@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { applicationsAPI, requirementsAPI } from '../services/api';
-import { ArrowLeft, Sparkles, Save, ArrowRight, Globe, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Sparkles, Save, ArrowRight, Globe, ChevronDown, Mail, Send, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalHandsFreeVoice } from '../hooks/useGlobalHandsFreeVoice';
+import { useVoiceAgent } from '../context/VoiceAgentContext';
 
-// All supported Indian languages for the document selector
+// All supported languages for the document selector (including Korean)
 const LANGUAGE_OPTIONS = [
   { value: 'english',   label: 'English',     native: 'English',    flag: '🇬🇧' },
+  { value: 'korean',    label: 'Korean',      native: '한국어',    flag: '🇰🇷' },
   { value: 'tamil',     label: 'Tamil',       native: 'தமிழ்',      flag: '🇮🇳' },
   { value: 'malayalam', label: 'Malayalam',   native: 'മലയാളം',    flag: '🇮🇳' },
   { value: 'telugu',    label: 'Telugu',      native: 'తెలుగు',    flag: '🇮🇳' },
@@ -24,14 +26,45 @@ export default function Requirements() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { pageActionsRef } = useVoiceAgent();
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isAutoGenerating, setIsAutoGenerating] = useState(false); // Gemini auto-fill in progress
   const [formData, setFormData] = useState({});
   const [docLang, setDocLang] = useState('english');
   const [detectedLang, setDetectedLang] = useState(null);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+
+  // Real-time Email Sender Modal state
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
+
+  const handleSendEmail = async () => {
+    if (!emailAddress || !emailAddress.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    setSendingEmail(true);
+    try {
+      const res = await applicationsAPI.sendEmail(id, {
+        recipient_email: emailAddress,
+        doc_language_preference: docLang
+      });
+      if (res.data.success) {
+        toast.success(`PDF Requirements successfully emailed to ${res.data.email || emailAddress}!`);
+        setShowEmailModal(false);
+      } else {
+        toast.error(res.data.message || 'Failed to send email');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to send email.');
+    } finally {
+      setSendingEmail(false);
+    }
+  };
 
   useGlobalHandsFreeVoice({
     'save': () => handleSave(),
@@ -75,23 +108,77 @@ export default function Requirements() {
         setDocLang('english');
       }
 
-      setFormData({
-        project_name:          res.data.project_name || '',
-        project_type:          res.data.project_type || '',
-        business_domain:       res.data.business_domain || '',
-        application_type:      res.data.application_type || '',
-        target_audience:       res.data.target_audience || '',
-        business_description:  res.data.business_description || '',
-        problem_statement:     res.data.problem_statement || '',
-        desired_outcomes:      res.data.desired_outcomes || '',
-        key_features:          res.data.key_features || '',
-        integrations:          res.data.integrations || '',
-        timeline:              res.data.timeline || '',
-        budget_range:          res.data.budget_range || '',
-        tech_preferences:      res.data.tech_preferences || '',
-        scalability_needs:     res.data.scalability_needs || '',
-        security_requirements: res.data.security_requirements || '',
-      });
+      const defaultEm = res.data.contact_email || res.data.signer_email || user?.email || '';
+      if (defaultEm && !defaultEm.endsWith('@helix.ai') && !defaultEm.endsWith('@helix-guest.com')) {
+        setEmailAddress(defaultEm);
+      }
+
+      const appData = res.data;
+      const formValues = {
+        project_name:          appData.project_name || '',
+        project_type:          appData.project_type || '',
+        business_domain:       appData.business_domain || '',
+        application_type:      appData.application_type || '',
+        target_audience:       appData.target_audience || '',
+        business_description:  appData.business_description || '',
+        problem_statement:     appData.problem_statement || '',
+        desired_outcomes:      appData.desired_outcomes || '',
+        key_features:          appData.key_features || '',
+        integrations:          appData.integrations || '',
+        timeline:              appData.timeline || '',
+        budget_range:          appData.budget_range || '',
+        tech_preferences:      appData.tech_preferences || '',
+        scalability_needs:     appData.scalability_needs || '',
+        security_requirements: appData.security_requirements || '',
+      };
+      setFormData(formValues);
+
+      // ── Auto-fill: if all key fields are empty, trigger Gemini generation ──
+      const allEmpty = !formValues.project_name
+        && !formValues.business_domain
+        && !formValues.business_description
+        && !formValues.key_features;
+
+      if (allEmpty) {
+        setIsAutoGenerating(true);
+        // Delay slightly so the page renders first, then auto-generate
+        setTimeout(async () => {
+          try {
+            const guestToken = localStorage.getItem('helix_guest_token');
+            const genRes = await requirementsAPI.generate({
+              application_id: Number(id),
+              guest_token: guestToken,
+              doc_language_preference: docPref && docPref !== 'user_lang' ? docPref : 'english',
+            });
+            if (genRes.data) {
+              setApplication(genRes.data);
+              setFormData({
+                project_name:          genRes.data.project_name || '',
+                project_type:          genRes.data.project_type || '',
+                business_domain:       genRes.data.business_domain || '',
+                application_type:      genRes.data.application_type || '',
+                target_audience:       genRes.data.target_audience || '',
+                business_description:  genRes.data.business_description || '',
+                problem_statement:     genRes.data.problem_statement || '',
+                desired_outcomes:      genRes.data.desired_outcomes || '',
+                key_features:          genRes.data.key_features || '',
+                integrations:          genRes.data.integrations || '',
+                timeline:              genRes.data.timeline || '',
+                budget_range:          genRes.data.budget_range || '',
+                tech_preferences:      genRes.data.tech_preferences || '',
+                scalability_needs:     genRes.data.scalability_needs || '',
+                security_requirements: genRes.data.security_requirements || '',
+              });
+              toast.success('✅ Requirements generated from your interview!');
+            }
+          } catch (err) {
+            console.warn('Auto-generate failed:', err);
+            toast.error('Could not auto-fill requirements. Use the “Generate from Interview” button.');
+          } finally {
+            setIsAutoGenerating(false);
+          }
+        }, 800);
+      }
     } catch (err) {
       toast.error('Failed to load application');
       navigate('/dashboard');
@@ -165,6 +252,21 @@ export default function Requirements() {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Register Voice Agent Actions
+  pageActionsRef.current = {
+    changeLanguage: async ({ language }) => {
+      const langObj = LANGUAGE_OPTIONS.find(l => 
+        l.label.toLowerCase() === language.toLowerCase() || 
+        l.value.toLowerCase() === language.toLowerCase()
+      );
+      const newLang = langObj ? langObj.value : language.toLowerCase();
+      return handleLanguageChange(newLang);
+    },
+    checkRequirements: async () => {
+      return handleAutoFillAi();
+    }
   };
 
   const handleSave = async () => {
@@ -245,11 +347,18 @@ export default function Requirements() {
           {!isSubmitted && (
             <>
               <button
-                onClick={handleAutoFillAi}
-                disabled={loading}
-                className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 border border-indigo-200 rounded-full transition-all"
+                onClick={() => setShowEmailModal(true)}
+                className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-4 py-2 border border-emerald-200 rounded-full transition-all"
               >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Auto-Fill Missing Fields with AI
+                <Mail className="w-3.5 h-3.5 text-emerald-600" /> Email PDF
+              </button>
+              <button
+                onClick={handleAutoFillAi}
+                disabled={loading || isAutoGenerating}
+                className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 border border-indigo-200 rounded-full transition-all disabled:opacity-60"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                {isAutoGenerating ? 'Generating...' : 'Regenerate from Interview'}
               </button>
               <button
                 onClick={handleSave}
@@ -268,6 +377,7 @@ export default function Requirements() {
           )}
         </div>
       </div>
+
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-10">
@@ -461,6 +571,56 @@ export default function Requirements() {
           </div>
         )}
       </div>
+
+      {/* Real-time Email Sender Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md mx-4 rounded-3xl p-6 bg-white shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-gray-900">Email Requirements PDF</h3>
+                  <p className="text-xs text-gray-500">Send official PDF directly to recipient</p>
+                </div>
+              </div>
+              <button onClick={() => setShowEmailModal(false)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Recipient Email Address</label>
+              <input
+                type="email"
+                value={emailAddress}
+                onChange={e => setEmailAddress(e.target.value)}
+                placeholder="user@example.com"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:outline-none text-sm font-medium"
+              />
+              <p className="text-[11px] text-gray-400 mt-1">
+                Document will be sent in <strong>{currentLangObj.label} ({currentLangObj.native})</strong> with full Business Canvas.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendEmail}
+                disabled={sendingEmail || !emailAddress}
+                className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 shadow-md shadow-emerald-200"
+              >
+                {sendingEmail ? 'Sending...' : <><Send className="w-4 h-4" /> Send Email</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

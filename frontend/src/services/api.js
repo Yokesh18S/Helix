@@ -47,6 +47,8 @@ export const authAPI = {
   processVoiceNlp: (data) => api.post('/auth/voice-nlp', data),
   initiateOtp: (data) => guestApi.post('/auth/otp/initiate', data),
   verifyOtp: (data) => guestApi.post('/auth/otp/verify', data),
+  // Claim a guest application after OTP sign-in
+  claimGuestSession: (data) => api.post('/interview/claim', data),
 };
 
 // Applications API
@@ -78,7 +80,7 @@ export const applicationsAPI = {
     });
   },
   // Send PDF via email
-  sendEmail: (id) => api.post(`/applications/${id}/send-email`),
+  sendEmail: (id, data) => api.post(`/applications/${id}/send-email`, data || {}),
 };
 
 // Interview API (Adaptive Engine)
@@ -94,6 +96,7 @@ export const interviewAPI = {
   processVoiceGuest: (data) => guestApi.post('/interview/process-voice', data),
   processTextGuest: (applicationId, guestToken, data) =>
     guestApi.post(`/interview/process-text?application_id=${applicationId}&guest_token=${guestToken}`, data),
+  parseProfile: (data) => guestApi.post('/interview/parse-profile', data),
   getSessions: (appId) => api.get(`/interview/${appId}/sessions`),
   // Claim guest session after login/register
   claimGuestSession: (guestToken, applicationId = null) =>

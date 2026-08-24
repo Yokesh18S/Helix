@@ -61,6 +61,9 @@ class ApplicationUpdate(BaseModel):
     scalability_needs: Optional[str] = None
     security_requirements: Optional[str] = None
     ai_summary: Optional[str] = None
+    business_canvas: Optional[Dict[str, Any]] = None
+    budget_planner: Optional[Dict[str, Any]] = None
+    contact_email: Optional[str] = None
     signature_data: Optional[str] = None
     signer_email: Optional[str] = None
 
@@ -91,6 +94,9 @@ class ApplicationResponse(BaseModel):
     scalability_needs: Optional[str] = None
     security_requirements: Optional[str] = None
     ai_summary: Optional[str] = None
+    business_canvas: Optional[Dict[str, Any]] = None
+    budget_planner: Optional[Dict[str, Any]] = None
+    contact_email: Optional[str] = None
     requirements_json: Optional[Dict[str, Any]] = None
     total_requirements_captured: int = 0
     language_context: Optional[Dict[str, Any]] = None
@@ -142,6 +148,20 @@ class VoiceProcessResponse(BaseModel):
     targeted_fields: Optional[List[str]] = None
     language_code: Optional[str] = None
     language_context: Optional[Dict[str, Any]] = None
+    is_correction: Optional[bool] = False
+    updated_name: Optional[str] = None
+    updated_phone: Optional[str] = None
+    next_phase: Optional[str] = None
+    simulated_otp: Optional[str] = None
+    engine_response: Optional[Dict[str, Any]] = None
+
+
+class ParseProfileRequest(BaseModel):
+    user_transcript: str
+    current_phase: str
+    current_name: Optional[str] = ""
+    current_phone: Optional[str] = ""
+    application_id: Optional[int] = None
 
 
 class GenerateRequirementsRequest(BaseModel):
@@ -184,6 +204,7 @@ class AuthVoiceNlpResponse(BaseModel):
 class OtpInitiateRequest(BaseModel):
     phone: str
     name: Optional[str] = None
+    email: Optional[str] = None
 
 
 class OtpInitiateResponse(BaseModel):
