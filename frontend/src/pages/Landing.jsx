@@ -1,119 +1,165 @@
+/**
+ * Landing.jsx — Helix Home Screen Powered by Vapi Voice
+ *
+ * Flow:
+ *  - When user visits Home screen, Vapi connects and greets the user with live voice.
+ *  - Listens for user saying "Start" or clicking "Start voice interview".
+ *  - Navigates seamlessly into /interview for the full structured consultation.
+ */
+
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic, Play, Sparkles, X, Volume2, VolumeX } from 'lucide-react';
-import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
-import { useVoiceRecognition } from '../hooks/useVoiceRecognition';
-import { useVoiceAgent } from '../context/VoiceAgentContext';
+import VapiLib from '@vapi-ai/web';
+
+const Vapi = VapiLib?.default ?? VapiLib;
+
+// ── Vapi Credentials ─────────────────────────────────────────────────────────
+const VAPI_PUBLIC_KEY   = import.meta.env.VITE_VAPI_PUBLIC_KEY || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
+const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { isSpeakerMuted, setSpeakerMuted } = useVoiceAgent();
-  const { speak, stop: stopSpeaking, isSpeaking } = useSpeechSynthesis();
 
-  // 'idle' | 'speaking' | 'listening' | 'navigating'
-  const [voicePhase, setVoicePhase] = useState('idle');
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
-  const startListeningRef = useRef(null);
-  const stopListeningRef  = useRef(null);
+  const [liveTranscript, setLiveTranscript] = useState('');
 
-  // ── Voice result handler ────────────────────────────────────────────────
-  const handleVoiceResult = (result) => {
-    if (!result.isFinal) return;
-    const t = result.transcript.toLowerCase().trim();
-    console.log('[Landing] Heard:', t);
+  const vapiRef = useRef(null);
+  const mounted = useRef(true);
 
-    // Start interview — only on clear explicit intent (not vague words)
-    if (
-      t.includes('start interview') || t.includes('begin interview') ||
-      t.includes('start voice') || t.includes('start the interview') ||
-      t.includes("let's start") || t.includes('lets start') ||
-      t.includes('start') || t.includes('begin')
-    ) {
-      setVoicePhase('navigating');
-      speak("Starting your Helix AI interview now. Let's go!", () => navigate('/interview'));
-      return;
+  const startInterview = () => {
+    if (vapiRef.current) {
+      try { vapiRef.current.stop(); } catch (_) {}
+      vapiRef.current = null;
     }
-
-    // Sign in
-    if (
-      t.includes('sign in') || t.includes('signin') ||
-      t.includes('login')   || t.includes('log in') ||
-      t.includes('my work') || t.includes('saved') || t.includes('dashboard') ||
-      t.includes('account')
-    ) {
-      setVoicePhase('navigating');
-      speak('Taking you to sign in.', () => navigate('/login'));
-      return;
-    }
-
-    // Unrecognized input: stay on page
-    setVoicePhase('speaking');
-    speak("Please say 'start' or click 'Start Voice Interview' to begin.", () => {
-      setVoicePhase('listening');
-      startListeningRef.current?.();
-    });
+    navigate('/interview');
   };
 
-  const { startListening, stopListening, isListening } = useVoiceRecognition({
-    onResult: handleVoiceResult
-  });
-
-  // Keep refs updated so the effect closure is always fresh
-  useEffect(() => { startListeningRef.current = startListening; }, [startListening]);
-  useEffect(() => { stopListeningRef.current  = stopListening;  }, [stopListening]);
-
-  // ── Start voice on mount ────────────────────────────────────────────────
+  // ── Initialize Vapi on Home Page for Live Greeting ──────────────────────────
   useEffect(() => {
-    // Start listening immediately so it is active even if TTS Autoplay is blocked
-    startListening();
+    mounted.current = true;
 
-    const timer = setTimeout(() => {
-      setVoicePhase('speaking');
-      speak(
-        "Hello! Welcome to Helix, your AI requirements assistant. Just click start voice interview, or say 'start' to begin.",
-        () => {
-          setVoicePhase('listening');
-          startListening();
+    async function initLandingVoice() {
+      try {
+        if (vapiRef.current) {
+          try { vapiRef.current.stop(); } catch (_) {}
+          vapiRef.current = null;
         }
-      );
-    }, 300);
+
+        const vapi = new Vapi(VAPI_PUBLIC_KEY);
+        vapiRef.current = vapi;
+
+        vapi.on('call-start', () => {
+          if (!mounted.current) return;
+          console.log('[Landing Vapi] Voice greeting active');
+          setIsListening(true);
+          setIsSpeaking(false);
+        });
+
+        vapi.on('speech-start', () => {
+          if (!mounted.current) return;
+          setIsSpeaking(true);
+          setIsListening(false);
+        });
+
+        vapi.on('speech-end', () => {
+          if (!mounted.current) return;
+          setIsSpeaking(false);
+          setIsListening(true);
+        });
+
+        vapi.on('message', (msg) => {
+          if (!mounted.current) return;
+
+          // Transcript from user
+          if (msg.type === 'transcript' && msg.role === 'user') {
+            const txt = (msg.transcript || '').toLowerCase().trim();
+            setLiveTranscript(txt);
+
+            if (msg.transcriptType === 'final' && txt) {
+              console.log('[Landing Vapi] Heard user:', txt);
+
+              // Detect "start" or "begin" to enter interview
+              if (
+                txt.includes('start') ||
+                txt.includes('begin') ||
+                txt.includes('interview') ||
+                txt.includes("let's go") ||
+                txt.includes('lets go') ||
+                txt.includes('yes') ||
+                txt.includes('sure') ||
+                txt.includes('okay') ||
+                txt.includes('ready')
+              ) {
+                startInterview();
+              } else if (
+                txt.includes('login') ||
+                txt.includes('sign in') ||
+                txt.includes('signin') ||
+                txt.includes('account') ||
+                txt.includes('dashboard')
+              ) {
+                if (vapiRef.current) {
+                  try { vapiRef.current.stop(); } catch (_) {}
+                }
+                navigate('/login');
+              }
+            }
+          }
+        });
+
+        vapi.on('error', (err) => {
+          console.warn('[Landing Vapi] notice:', err);
+        });
+
+        // Start Vapi greeting
+        await vapi.start(VAPI_ASSISTANT_ID);
+
+      } catch (err) {
+        console.warn('[Landing Vapi] init notice:', err);
+      }
+    }
+
+    initLandingVoice();
 
     return () => {
-      clearTimeout(timer);
-      stopListening();
+      mounted.current = false;
+      if (vapiRef.current) {
+        try { vapiRef.current.stop(); } catch (_) {}
+        vapiRef.current = null;
+      }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Keep mic alive while in listening phase ─────────────────────────────
-  useEffect(() => {
-    if (voicePhase === 'listening' && !isListening && !isSpeaking) {
-      const t = setTimeout(() => {
-        if (!isListening && !isSpeaking) startListening();
-      }, 400);
-      return () => clearTimeout(t);
-    }
-  }, [isListening, isSpeaking, voicePhase, startListening]);
+  const toggleMute = () => {
+    if (!vapiRef.current) return;
+    const nextMuted = !isMuted;
+    try {
+      vapiRef.current.setMuted(nextMuted);
+      setIsMuted(nextMuted);
+    } catch (_) {}
+  };
+
+  const isWaveActive = isSpeaking || isListening;
 
   return (
     <div className="min-h-screen bg-[#EEF1F8] pt-[67px] flex flex-col items-center justify-center relative overflow-hidden">
-      
+
       {/* Speaker Mute Control */}
       <button
-        onClick={() => {
-          if (!isSpeakerMuted) {
-            stopSpeaking();
-          }
-          setSpeakerMuted(!isSpeakerMuted);
-        }}
+        onClick={toggleMute}
         className="absolute top-24 right-6 z-50 p-3 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-all flex items-center justify-center text-gray-600 hover:text-indigo-600 focus:outline-none"
-        aria-label={isSpeakerMuted ? "Unmute speaker" : "Mute speaker"}
-        title={isSpeakerMuted ? "Speaker Muted" : "Speaker On"}
+        aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
+        title={isMuted ? "Muted" : "Listening"}
       >
-        {isSpeakerMuted ? <VolumeX className="w-5 h-5 text-gray-400" /> : <Volume2 className="w-5 h-5" />}
+        {isMuted ? <VolumeX className="w-5 h-5 text-gray-400" /> : <Volume2 className="w-5 h-5" />}
       </button>
 
-      {/* CSS-based Custom Waveform and Mouth Sync Styling */}
+      {/* CSS-based Custom Waveform Styling */}
       <style>{`
         @keyframes waveform {
           0%, 100% { transform: scaleY(0.3); }
@@ -136,7 +182,7 @@ export default function Landing() {
         <div className="bg-[#E0E7FF] border border-[#C7D2FE] rounded-full px-4 py-1.5 mb-6 flex items-center gap-2 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-[#4F46E5] animate-pulse" />
           <span className="text-[11px] font-semibold text-[#4F46E5] uppercase tracking-wider">
-            Voice assistant Helix
+            Vapi Voice Assistant Helix
           </span>
         </div>
 
@@ -154,7 +200,6 @@ export default function Landing() {
                 alt="Helix Avatar" 
                 className="w-full h-full object-cover rounded-full bg-white scale-[1.02] transition-transform duration-500 hover:scale-105"
                 onError={(e) => {
-                  // Fallback if image fails to load
                   e.currentTarget.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
                 }}
               />
@@ -171,7 +216,6 @@ export default function Landing() {
         <div className="flex items-end justify-center gap-[4px] h-10 w-44 mb-8">
           {[...Array(15)].map((_, i) => {
             const minHeight = [12, 18, 24, 30, 20, 26, 32, 16, 28, 22, 18, 24, 30, 14, 8][i];
-            const isWaveActive = isListening || isSpeaking;
             return (
               <div
                 key={i}
@@ -187,18 +231,22 @@ export default function Landing() {
           })}
         </div>
 
-        {/* Buttons (Replaces "Tap the mic..." portion) */}
+        {/* Live Heard Bubble if user speaks on home */}
+        {liveTranscript && (
+          <div className="mb-6 px-4 py-2 bg-indigo-50 border border-indigo-200 rounded-full text-xs font-semibold text-indigo-700 animate-in fade-in">
+            Heard: &quot;{liveTranscript}&quot;
+          </div>
+        )}
+
+        {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
           {/* Start voice interview (dark button) */}
           <button
-            onClick={() => {
-              stopSpeaking();
-              navigate('/interview');
-            }}
-            className="flex items-center justify-center gap-2 bg-[#1E293B] hover:bg-[#0f172a] text-white font-semibold text-sm px-8 py-3.5 rounded-full shadow-lg shadow-slate-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
+            onClick={startInterview}
+            className="flex items-center justify-center gap-2 bg-[#1E293B] hover:bg-[#0f172a] text-white font-semibold text-sm px-8 py-3.5 rounded-full shadow-lg shadow-slate-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto cursor-pointer"
           >
             <Mic className="w-4 h-4 text-white" />
-            Start voice interview
+            <span>Start voice interview</span>
           </button>
 
           {/* See Tutorial (white button) */}
@@ -207,7 +255,7 @@ export default function Landing() {
             className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#1E293B] font-semibold text-sm px-8 py-3.5 rounded-full border border-slate-200 shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
           >
             <Play className="w-4 h-4 text-[#1E293B]" />
-            See Tutorial
+            <span>See Tutorial</span>
           </button>
         </div>
 
@@ -239,9 +287,9 @@ export default function Landing() {
                   1
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">Voice Interview</h4>
+                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">Vapi Voice Consultation</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Answer 12 smart questions about your project idea. You can speak naturally or type your answers.
+                    Say &quot;start&quot; to begin. Helix asks for your Name, Mobile Number, and guides you through your business idea.
                   </p>
                 </div>
               </div>
@@ -252,9 +300,9 @@ export default function Landing() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">AI Extraction</h4>
+                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">Live Database Storage</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Helix parses your responses in real-time, extracting precise technical features and business domains.
+                    Every answer is recorded and saved in real-time, with an on-screen feed for you to verify.
                   </p>
                 </div>
               </div>
@@ -265,9 +313,9 @@ export default function Landing() {
                   3
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">Generate & Save</h4>
+                  <h4 className="font-semibold text-sm text-[#1E293B] mb-1">Instant Specification & Sign In</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Once finished, sign in to save the generated document to your account, ready to download.
+                    Once finished, sign in or enter OTP to claim and download your complete technical document.
                   </p>
                 </div>
               </div>
@@ -276,17 +324,15 @@ export default function Landing() {
             <button
               onClick={() => {
                 setShowTutorial(false);
-                stopSpeaking();
-                navigate('/interview');
+                startInterview();
               }}
-              className="w-full bg-[#1E293B] hover:bg-[#0f172a] text-white font-semibold py-3.5 rounded-full shadow-lg transition-colors text-sm"
+              className="w-full py-3 bg-[#1E293B] hover:bg-[#0f172a] text-white rounded-2xl font-semibold text-sm transition-all"
             >
-              Got it, let's start!
+              Start Voice Consultation
             </button>
           </div>
         </div>
       )}
-
     </div>
   );
 }

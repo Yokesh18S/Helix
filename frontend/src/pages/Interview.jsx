@@ -1,41 +1,40 @@
 /**
- * Interview.jsx — Helix Voice Interview (Controlled Pipeline)
+ * Interview.jsx — Helix Vapi-Powered AI Business Consultant
  *
- * FLOW:
- *  Phase 1 — IDENTITY: Collect name + phone via browser speech (or text).
- *             Uses /api/interview/parse-profile (Gemini). Vapi does NOT start yet.
- *  Phase 2 — VAPI: Business interview via Vapi. 6-10 questions.
- *             Every answer is saved + extracted live via saveInterviewAnswer tool.
- *  Phase 3 — OTP: completeInterview fires → frontend calls authAPI.initiateOtp
- *             → OTP modal shown → on success → navigate('/dashboard').
- *
- * Universal speech: prefers webkitSpeechRecognition/SpeechRecognition;
- * gracefully falls back to text-input on unsupported browsers.
+ * Guaranteed Real-Time Flow:
+ *  - 1-Click Instant Vapi Wakeup (Microphone pre-unlocked).
+ *  - Live Dynamic Question Tracking: Never stuck on greeting question; updates on every assistant turn.
+ *  - Live Recorded Responses: Accurate Q&A pairing saved directly into SQLite.
+ *  - Immediate Post-Interview Action: Pops up Sign In / Sign Up / OTP modal instantly upon completion.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { applicationsAPI, interviewAPI, requirementsAPI, authAPI } from '../services/api';
+import { applicationsAPI, authAPI } from '../services/api';
 import VapiLib from '@vapi-ai/web';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 import {
-  Mic, MicOff, PhoneOff, Volume2, VolumeX, RotateCcw,
-  Sparkles, ArrowRight, CheckCircle2, Circle, MinusCircle,
-  Send, X, Loader2, Mail, ShieldCheck, Tag, User, Phone
+  Mic, MicOff, PhoneOff, Sparkles, ArrowRight, CheckCircle2, Circle,
+  Send, X, Loader2, User, Phone, ShieldCheck,
+  LogIn, UserPlus, FileText, RefreshCw, MessageSquare, Check, Play
 } from 'lucide-react';
 import AiProcessingWaveform from '../components/AiProcessingWaveform';
-import { extractEmailFromSpeech, isValidEmail } from '../utils/emailParser';
 
-// ── Safe Vapi constructor (ESM/CJS interop) ───────────────────────────────────
+// ── Safe Vapi constructor ─────────────────────────────────────────────────────
 const Vapi = VapiLib?.default ?? VapiLib;
 
-// ── Credentials from .env — ONLY public key goes here ────────────────────────
-const VAPI_PUBLIC_KEY   = import.meta.env.VITE_VAPI_PUBLIC_KEY;
-const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
-const API_BASE          = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// ── Previous credentials:
+// const PREV_VAPI_PUBLIC_KEY   = 'c6b80ecd-d0ed-46df-b2f3-85561cda30fc';
+// const PREV_VAPI_ASSISTANT_ID = '428e68f5-cbd8-41a3-bf1a-29b9f90673c1';
 
-// ── Guest token ────────────────────────────────────────────────────────────────
+// ── Active credentials from .env:
+const VAPI_PUBLIC_KEY   = import.meta.env.VITE_VAPI_PUBLIC_KEY || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
+const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
+const API_BASE          = '/api';
+
+// ── Guest token helper ────────────────────────────────────────────────────────
 function getOrCreateGuestToken() {
   let t = localStorage.getItem('helix_guest_token');
   if (!t) {
@@ -47,1518 +46,1275 @@ function getOrCreateGuestToken() {
   return t;
 }
 
-// ── Universal SpeechRecognition (Chrome, Edge, Safari, Firefox polyfill) ──────
-const SpeechRecognitionAPI =
-  typeof window !== 'undefined'
-    ? (window.SpeechRecognition || window.webkitSpeechRecognition || null)
-    : null;
-
-// ── Browser TTS helper ────────────────────────────────────────────────────────
-function speakText(text, onEnd) {
-  if (!window.speechSynthesis || !text) { onEnd && onEnd(); return; }
-
-  const doSpeak = () => {
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.rate  = 0.95;
-    utt.pitch = 1.05;
-    utt.volume = 1.0;
-    utt.lang  = 'en-US';
-
-    // Pick the best available English voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferred =
-      voices.find(v => v.lang.startsWith('en') && v.name.includes('Google US English')) ||
-      voices.find(v => v.lang.startsWith('en') && v.name.includes('Samantha')) ||
-      voices.find(v => v.lang === 'en-US') ||
-      voices.find(v => v.lang.startsWith('en')) ||
-      null;
-    if (preferred) utt.voice = preferred;
-
-    let finished = false;
-    const done = () => { if (!finished) { finished = true; onEnd && onEnd(); } };
-    utt.onend   = done;
-    utt.onerror = done;
-
-    // Chrome bug: speechSynthesis can pause mid-utterance — keep it alive
-    const keepAlive = setInterval(() => {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.resume();
-      } else {
-        clearInterval(keepAlive);
-      }
-    }, 5000);
-    utt.onend = () => { clearInterval(keepAlive); done(); };
-
-    window.speechSynthesis.speak(utt);
-  };
-
-  // Voices may not be loaded yet on first call — wait for them
-  const voices = window.speechSynthesis.getVoices();
-  if (voices.length > 0) {
-    doSpeak();
-  } else {
-    window.speechSynthesis.onvoiceschanged = () => {
-      window.speechSynthesis.onvoiceschanged = null;
-      doSpeak();
-    };
-    // Fallback timeout if onvoiceschanged never fires
-    setTimeout(() => {
-      if (window.speechSynthesis.getVoices().length === 0) { onEnd && onEnd(); }
-      else doSpeak();
-    }, 1500);
-  }
-}
-
-
-function createRecognizer() {
-  if (!SpeechRecognitionAPI) return null;
-  try {
-    const r = new SpeechRecognitionAPI();
-    r.continuous = false;
-    r.interimResults = true;
-    r.lang = 'en-US';
-    return r;
-  } catch (_) {
-    return null;
-  }
-}
-
-// ── Navigation intent detection ───────────────────────────────────────────────
-function detectNavIntent(text) {
-  const t = (text || '').toLowerCase().trim();
-  if (/\b(go\s*(to\s*)?(home|landing)|back\s*to\s*home|take\s*me\s*home)\b/.test(t)) return 'HOME';
-  if (/\b(go\s*(to\s*)?dashboard|open\s*dashboard|take\s*me\s*to\s*dashboard|check\s*dashboard)\b/.test(t)) return 'DASHBOARD';
-  if (/\b(sign\s*(in|up)|log\s*(in|out)|login|go\s*to\s*(sign\s*in|login))\b/.test(t)) return 'LOGIN';
-  if (/\b(go\s*(to\s*)?requirements?|open\s*requirements?|show\s*(my\s*)?requirements?|view\s*requirements?)\b/.test(t)) return 'REQUIREMENTS';
-  if (/\b(go\s*(to\s*)?documents?|open\s*documents?|show\s*(my\s*)?documents?)\b/.test(t)) return 'DOCUMENTS';
-  if (/\b(exit|leave|go\s*back|cancel\s*interview|stop\s*interview|end\s*interview)\b/.test(t)) return 'EXIT';
-  return null;
-}
-
-// ── OTP Modal ─────────────────────────────────────────────────────────────────
-function OtpModal({ phone, name, simOtp, onSuccess, onClose }) {
-  const [otp, setOtp]       = useState('');
+// ── Post-Interview Sign-In / Sign-Up / Claim Modal ────────────────────────────
+function PostInterviewModal({
+  appId,
+  phone,
+  name,
+  simOtp,
+  onGuestContinue,
+  onOtpSuccess,
+}) {
+  const [authTab, setAuthTab] = useState('register'); // 'register' | 'login' | 'otp'
+  const [formData, setFormData] = useState({
+    full_name: name || '',
+    phone: phone || '',
+    email: '',
+    password: '',
+  });
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const { loginWithOtp }     = useAuth();
+  const [resending, setResending] = useState(false);
+  const [currentSimOtp, setCurrentSimOtp] = useState(simOtp);
+  const { loginWithOtp, setUser } = useAuth();
+  const navigate = useNavigate();
 
-  const handleVerify = async () => {
-    if (otp.length !== 6) { toast.error('Please enter a 6-digit OTP'); return; }
+  // Update prefilled name/phone if parent updates
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      full_name: prev.full_name || name || '',
+      phone: prev.phone || phone || '',
+    }));
+  }, [name, phone]);
+
+  // 1. Create Account
+  const handleRegister = async (e) => {
+    if (e) e.preventDefault();
+    if (!formData.full_name.trim()) {
+      toast.error('Please enter your full name');
+      return;
+    }
+    if (!formData.phone.trim() && !formData.email.trim()) {
+      toast.error('Please enter your phone number or email');
+      return;
+    }
+    if (!formData.password || formData.password.length < 4) {
+      toast.error('Please enter a password (min 4 characters)');
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await authAPI.verifyOtp({ phone, otp_code: otp });
+      const regRes = await authAPI.register({
+        full_name: formData.full_name.trim(),
+        email: formData.email.trim() || `${formData.phone.replace(/\D/g, '') || 'user'}@helix.local`,
+        phone: formData.phone.trim() || undefined,
+        password: formData.password,
+      });
+
+      const { access_token, user: userData } = regRes.data;
+      localStorage.setItem('helix_token', access_token);
+      localStorage.setItem('helix_user', JSON.stringify(userData));
+      if (setUser) setUser(userData);
+
+      toast.success(`Account created! Welcome, ${userData.full_name}!`);
+
+      // Claim guest application
+      try {
+        await authAPI.claimGuestSession({
+          application_id: appId,
+          guest_token: getOrCreateGuestToken(),
+        });
+      } catch (_) {}
+
+      onOtpSuccess();
+      navigate(`/requirements/${appId}`);
+    } catch (err) {
+      console.error('Register error:', err);
+      toast.error(err.response?.data?.detail || 'Failed to create account. Please try signing in.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 2. Sign In
+  const handleLogin = async (e) => {
+    if (e) e.preventDefault();
+    if (!formData.phone.trim() && !formData.email.trim()) {
+      toast.error('Please enter your phone or email');
+      return;
+    }
+    if (!formData.password) {
+      toast.error('Please enter your password');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const logRes = await authAPI.login({
+        phone: formData.phone.trim() || formData.email.trim(),
+        password: formData.password,
+      });
+
+      const { access_token, user: userData } = logRes.data;
+      localStorage.setItem('helix_token', access_token);
+      localStorage.setItem('helix_user', JSON.stringify(userData));
+      if (setUser) setUser(userData);
+
+      toast.success(`Signed in! Welcome back, ${userData.full_name || 'User'}!`);
+
+      // Claim guest application
+      try {
+        await authAPI.claimGuestSession({
+          application_id: appId,
+          guest_token: getOrCreateGuestToken(),
+        });
+      } catch (_) {}
+
+      onOtpSuccess();
+      navigate(`/requirements/${appId}`);
+    } catch (err) {
+      console.error('Login error:', err);
+      toast.error(err.response?.data?.detail || 'Invalid credentials. Please check your phone/password.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 3. Verify OTP
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      toast.error('Please enter a 6-digit OTP');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await authAPI.verifyOtp({ phone: formData.phone || phone, otp_code: otp });
       const { access_token, user: userData } = res.data;
       loginWithOtp(access_token, userData);
-      toast.success('Signed in successfully!');
-      onSuccess();
+      toast.success('Signed in successfully! Your project is saved.');
+      try {
+        await authAPI.claimGuestSession({
+          application_id: appId,
+          guest_token: getOrCreateGuestToken(),
+        });
+      } catch (_) {}
+      onOtpSuccess();
+      navigate(`/requirements/${appId}`);
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Invalid OTP. Please try again.');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    const p = formData.phone || phone;
+    if (!p) return;
+    setResending(true);
+    try {
+      const res = await authAPI.initiateOtp({ phone: p, name: formData.full_name || name });
+      if (res.data?.simulated_otp) {
+        setCurrentSimOtp(res.data.simulated_otp);
+        toast.success(`New OTP: ${res.data.simulated_otp}`, { duration: 10000 });
+      } else {
+        toast.success('OTP sent to your phone!');
+      }
+    } catch (err) {
+      toast.error('Failed to send OTP.');
+    } finally {
+      setResending(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-sm mx-4 rounded-3xl p-8 bg-white shadow-2xl">
-        <div className="text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <Sparkles className="w-7 h-7 text-white" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4 animate-in fade-in duration-300">
+      <div
+        className="w-full max-w-lg bg-white rounded-3xl p-7 shadow-2xl border border-gray-100 flex flex-col relative overflow-hidden max-h-[90vh] overflow-y-auto"
+        style={{ boxShadow: '0 25px 60px -15px rgba(99, 102, 241, 0.25)' }}
+      >
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-100 rounded-full blur-3xl opacity-60 pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-100 rounded-full blur-3xl opacity-60 pointer-events-none" />
+
+        {/* Modal Header */}
+        <div className="text-center mb-5 relative">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center mx-auto mb-2.5 shadow-lg shadow-indigo-200">
+            <Sparkles className="w-7 h-7 text-white animate-pulse" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900">Verify your number</h2>
-          {phone && <p className="text-sm text-gray-500 mt-1">Code sent to <strong>{phone}</strong></p>}
-          {name  && <p className="text-sm text-gray-400">Welcome, {name}!</p>}
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+            Requirements Captured!
+          </h2>
+          <p className="text-xs text-gray-500 mt-1">
+            Create an account or sign in to save and download your complete specifications report.
+          </p>
         </div>
 
-        {simOtp && (
-          <div className="mb-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-2.5 text-xs text-center">
-            <span className="font-semibold block mb-0.5">Dev Mode OTP</span>
-            <span className="font-mono font-bold text-base">{simOtp}</span>
+        {/* Auth Tab Selector */}
+        <div className="flex bg-slate-100 p-1 rounded-2xl mb-5 border border-slate-200/80">
+          <button
+            type="button"
+            onClick={() => setAuthTab('register')}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              authTab === 'register'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Create Account</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAuthTab('login')}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              authTab === 'login'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </button>
+
+          {phone && (
+            <button
+              type="button"
+              onClick={() => setAuthTab('otp')}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                authTab === 'otp'
+                  ? 'bg-white text-indigo-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>Instant OTP</span>
+            </button>
+          )}
+        </div>
+
+        {/* 1. Create Account Tab */}
+        {authTab === 'register' && (
+          <form onSubmit={handleRegister} className="space-y-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  required
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  placeholder="Your Name"
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Mobile Number
+              </label>
+              <div className="relative">
+                <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="10-digit mobile number"
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Choose a password"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-2xl font-bold text-sm shadow-md shadow-indigo-200 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+              <span>Create Account & Save Project</span>
+            </button>
+          </form>
+        )}
+
+        {/* 2. Sign In Tab */}
+        {authTab === 'login' && (
+          <form onSubmit={handleLogin} className="space-y-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Mobile Number or Email
+              </label>
+              <div className="relative">
+                <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  required
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="Registered phone or email"
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Enter your password"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm shadow-md shadow-indigo-200 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
+              <span>Sign In & Save Project</span>
+            </button>
+          </form>
+        )}
+
+        {/* 3. Instant Phone OTP Tab */}
+        {authTab === 'otp' && phone && (
+          <div className="flex flex-col items-center">
+            <p className="text-xs text-gray-500 mb-3 text-center">
+              Enter the 6-digit verification code sent to <strong className="text-gray-800">{phone}</strong>
+            </p>
+
+            {currentSimOtp && (
+              <div className="mb-4 w-full bg-amber-50 border border-amber-200 text-amber-900 rounded-xl px-4 py-2.5 text-xs text-center flex items-center justify-between">
+                <div>
+                  <span className="font-semibold block text-[11px] uppercase tracking-wider text-amber-700">Verification Code</span>
+                  <span className="font-mono font-bold text-lg">{currentSimOtp}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOtp(currentSimOtp)}
+                  className="px-2.5 py-1 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs font-medium transition-colors"
+                >
+                  Auto-fill
+                </button>
+              </div>
+            )}
+
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="000000"
+              className="w-full text-center text-3xl font-mono font-bold tracking-[0.4em] px-4 py-3.5 rounded-2xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all bg-gray-50/50"
+              onKeyDown={(e) => e.key === 'Enter' && handleVerifyOtp()}
+              autoFocus
+            />
+
+            <button
+              onClick={handleVerifyOtp}
+              disabled={loading || otp.length !== 6}
+              className="w-full mt-4 py-3.5 rounded-2xl font-semibold text-white transition-all shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{
+                background: otp.length === 6 ? 'linear-gradient(135deg, #4f46e5, #7c3aed)' : '#9ca3af',
+              }}
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Save Project'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={resending}
+              className="mt-3 text-xs text-indigo-600 hover:underline font-medium"
+            >
+              {resending ? 'Sending...' : 'Resend Code'}
+            </button>
           </div>
         )}
 
-        <input
-          type="text" inputMode="numeric" maxLength={6}
-          value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          placeholder="000000"
-          className="w-full text-center text-3xl font-bold tracking-[0.5em] px-4 py-4 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all"
-          onKeyDown={e => e.key === 'Enter' && handleVerify()}
-          autoFocus
-        />
-
-        <button
-          onClick={handleVerify} disabled={loading || otp.length !== 6}
-          className="w-full mt-4 py-3.5 rounded-2xl font-semibold text-white transition-all disabled:opacity-50"
-          style={{ background: otp.length === 6 ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#d1d5db' }}
-        >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Verify & Sign In'}
-        </button>
-        <button onClick={onClose} className="w-full mt-3 py-2.5 rounded-2xl text-sm text-gray-500 hover:text-gray-700">
-          Cancel
-        </button>
+        {/* Continue as Guest */}
+        <div className="mt-5 pt-4 border-t border-gray-100 text-center">
+          <button
+            type="button"
+            onClick={onGuestContinue}
+            className="w-full py-2.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all flex items-center justify-center gap-1.5"
+          >
+            <FileText className="w-3.5 h-3.5 text-gray-500" />
+            <span>Continue as Guest (View & Download Specifications)</span>
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-// ── Identity Collection Phase UI ──────────────────────────────────────────────
-function IdentityPhase({
-  identityPhase, identityPrompt, identityInput, setIdentityInput,
-  identityListening, isTTSSpeaking, identityError, onSubmitText, capturedName, capturedPhone,
-  hasSpeechSupport
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-      {/* Avatar */}
-      <div className="relative w-28 h-28 mb-6">
-        <div className={`absolute inset-0 rounded-full transition-all duration-500 ${
-          identityListening ? 'ring-8 ring-green-300/50 ring-offset-4 ring-offset-[#F6F7FE]' : ''
-        }`} />
-        <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-600 flex items-center justify-center shadow-2xl">
-          {identityPhase === 'name'
-            ? <User className={`w-10 h-10 text-white ${identityListening ? 'animate-pulse' : ''}`} />
-            : <Phone className={`w-10 h-10 text-white ${identityListening ? 'animate-pulse' : ''}`} />
-          }
-        </div>
-      </div>
-
-      <p className="text-sm font-bold text-indigo-600 tracking-wider uppercase mb-2">Helix AI</p>
-
-      {/* Helix prompt bubble */}
-      <div className="bg-white border border-[#D4DCE8] rounded-2xl shadow-sm px-6 py-4 mb-6 max-w-md w-full" style={{ borderLeft: '3px solid #6366f1' }}>
-        <p className="text-base font-medium text-gray-900 leading-relaxed">{identityPrompt}</p>
-      </div>
-
-      {/* Captured so far */}
-      {(capturedName || capturedPhone) && (
-        <div className="flex gap-3 mb-4 flex-wrap justify-center">
-          {capturedName  && <span className="bg-green-50 border border-green-200 text-green-700 rounded-full px-3 py-1 text-xs font-medium">✓ {capturedName}</span>}
-          {capturedPhone && <span className="bg-blue-50 border border-blue-200 text-blue-700 rounded-full px-3 py-1 text-xs font-medium">✓ {capturedPhone}</span>}
-        </div>
-      )}
-
-      {/* Speaking / Listening indicator */}
-      {isTTSSpeaking ? (
-        <div className="flex items-center gap-2 mb-4 text-indigo-600 font-medium text-sm">
-          <div className="flex items-end gap-[2px] h-5">
-            {[4,7,5,9,6,8,4].map((h, i) => (
-              <div key={i} style={{
-                width: 3, height: `${h * 3}px`, backgroundColor: '#6366f1', borderRadius: 4,
-                animation: `pulse 0.5s ease-in-out ${i * 0.08}s infinite alternate`
-              }} />
-            ))}
-          </div>
-          <span>Helix is speaking...</span>
-        </div>
-      ) : identityListening ? (
-        <div className="flex items-center gap-2 mb-4 text-green-600 font-medium text-sm">
-          <div className="flex items-end gap-[2px] h-5">
-            {[3,6,9,5,8].map((h, i) => (
-              <div key={i} style={{
-                width: 3, height: `${h * 3}px`, backgroundColor: '#10b981', borderRadius: 4,
-                animation: `pulse 0.7s ease-in-out ${i * 0.1}s infinite alternate`
-              }} />
-            ))}
-          </div>
-          <span>Listening...</span>
-        </div>
-      ) : null}
-
-      {/* Error */}
-      {identityError && (
-        <p className="text-red-500 text-sm mb-3">{identityError}</p>
-      )}
-
-      {/* Text input fallback (always shown for universal support) */}
-      <div className="w-full max-w-md flex gap-2">
-        <input
-          type={identityPhase === 'phone' ? 'tel' : 'text'}
-          value={identityInput}
-          onChange={e => setIdentityInput(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') onSubmitText(); }}
-          placeholder={
-            isTTSSpeaking     ? 'Helix is speaking...' :
-            identityPhase === 'name'  ? 'Type your name or speak...' :
-            identityPhase === 'phone' ? 'Type your phone number or speak...' :
-            'Processing...'
-          }
-          disabled={isTTSSpeaking}
-          className="flex-1 rounded-full border border-gray-200 bg-white px-5 py-3 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
-          maxLength={identityPhase === 'phone' ? 15 : 60}
-          autoFocus
-        />
-        <button
-          onClick={onSubmitText}
-          disabled={!identityInput.trim()}
-          className="w-12 h-12 rounded-full flex items-center justify-center bg-indigo-600 text-white disabled:opacity-40 hover:bg-indigo-700 transition-colors flex-shrink-0"
-        >
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      </div>
-
-      {hasSpeechSupport && (
-        <p className="text-xs text-gray-400 mt-3">
-          {identityListening ? 'Speak now — or type above' : 'You can also type your answer above'}
-        </p>
-      )}
-    </div>
-  );
-}
-
-
-// ── Main Interview Component ───────────────────────────────────────────────────
+// ── Main Interview Component ──────────────────────────────────────────────────
 export default function Interview() {
-  const { user, loginWithOtp } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // ── PHASE state ──────────────────────────────────────────────────────────────
-  // 'identity' | 'vapi_starting' | 'vapi_active' | 'complete' | 'otp' | 'done'
-  const [interviewPhase, setInterviewPhase] = useState('identity');
+  // ── Step tracking: 'name' | 'phone' | 'questions'
+  const [currentStep, setCurrentStep] = useState('name');
 
-  // ── Identity collection state ────────────────────────────────────────────────
-  const [identityPhase,    setIdentityPhase]    = useState('name'); // 'name'|'phone'|'done'
-  const [identityPrompt,   setIdentityPrompt]   = useState("Welcome to Helix! Could you please tell me your full name?");
-  const [identityInput,    setIdentityInput]    = useState('');
-  const [identityListening, setIdentityListening] = useState(false);
-  const [isTTSSpeaking,    setIsTTSSpeaking]    = useState(false);
-  const [identityError,    setIdentityError]    = useState('');
-  const [capturedName,     setCapturedName]     = useState('');
-  const [capturedPhone,    setCapturedPhone]    = useState('');
-  const [identityProcessing, setIdentityProcessing] = useState(false);
+  // ── Voice States
+  const [callStatus, setCallStatus] = useState('connecting'); // 'connecting' | 'active' | 'complete' | 'ended' | 'error'
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
 
-  // ── Vapi / interview state ───────────────────────────────────────────────────
-  const [callStatus,      setCallStatus]      = useState('initializing');
-  const [isSpeaking,      setIsSpeaking]      = useState(false);
-  const [isListening,     setIsListening]     = useState(false);
-  const [isMuted,         setIsMuted]         = useState(false);
-  const [liveTranscript,  setLiveTranscript]  = useState('');
-  const [currentSpeech,   setCurrentSpeech]   = useState('');
-  const [typedText,       setTypedText]       = useState('');
-  const [processing,      setProcessing]      = useState(false);
-  const [procStep,        setProcStep]        = useState('');
-  const [errorMsg,        setErrorMsg]        = useState('');
-  const [appId,           setAppId]           = useState(null);
-  const [callDuration,    setCallDuration]    = useState(0);
-  const [collectedEmail,  setCollectedEmail]  = useState('');
-  const [detectedDomain,  setDetectedDomain]  = useState('');
+  // Spoken transcripts
+  const [currentSpeech, setCurrentSpeech] = useState('');
+  const [liveTranscript, setLiveTranscript] = useState('');
+  const [currentQText, setCurrentQText] = useState('Hello! Welcome to Helix. What is your name?');
+  const [typedText, setTypedText] = useState('');
 
-  // Coverage / extractions
-  const [coverage,      setCoverage]      = useState({ overall_percent: 0, collected_fields: [], missing_fields: [], checklist: [], domain_label: null });
-  const [extractions,   setExtractions]   = useState([]);
-  const [totalCaptured, setTotalCaptured] = useState(0);
-  const [answers,       setAnswers]       = useState({});
-  const [currentQ,      setCurrentQ]      = useState(1);
-  const [currentQText,  setCurrentQText]  = useState('');
-  const [lockedLang,    setLockedLang]    = useState('English');
+  // Recorded Q&A items for user verification
+  const [qaHistory, setQaHistory] = useState([]);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
 
-  // OTP modal
-  const [showOtp,  setShowOtp]  = useState(false);
-  const [otpPhone, setOtpPhone] = useState('');
-  const [otpName,  setOtpName]  = useState('');
-  const [simOtp,   setSimOtp]   = useState('');
+  // Identity state
+  const [capturedName, setCapturedName] = useState('');
+  const [capturedPhone, setCapturedPhone] = useState('');
 
-  // ── Refs ──────────────────────────────────────────────────────────────────────
-  const vapiRef          = useRef(null);
-  const appIdRef         = useRef(null);
-  const mounted          = useRef(true);
-  const hasVapiStarted   = useRef(false);
-  const callTimer        = useRef(null);
-  const guestToken       = useRef(getOrCreateGuestToken());
-  const ansCountRef      = useRef(0);
-  const currentQRef      = useRef(1);
-  const capturedNameRef  = useRef('');
+  // Coverage & Extractions
+  const [coverage, setCoverage] = useState({
+    overall_percent: 0,
+    collected_fields: [],
+    missing_fields: [],
+    checklist: [],
+    domain_label: null
+  });
+  const [extractions, setExtractions] = useState([]);
+  const [totalCaptured, setTotalCaptured] = useState(0);
+
+  // App & Modals
+  const [appId, setAppId] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [procStep, setProcStep] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [simOtp, setSimOtp] = useState('');
+
+  // ── Refs for Synchronous Live State (Guarantees Fresh Closures)
+  const vapiRef = useRef(null);
+  const appIdRef = useRef(null);
+  const mounted = useRef(true);
+  const callTimer = useRef(null);
+  const guestToken = useRef(getOrCreateGuestToken());
+  const capturedNameRef = useRef('');
   const capturedPhoneRef = useRef('');
-  const recognizerRef    = useRef(null);
-  const identityPhaseRef = useRef('name');
+  const currentStepRef = useRef('name');
+  const currentQTextRef = useRef('Hello! Welcome to Helix. What is your name?');
+  const currentSpeechRef = useRef('');
+  const isCompletingRef = useRef(false);
 
-  // Keep refs in sync with state
-  useEffect(() => { appIdRef.current       = appId; },          [appId]);
-  useEffect(() => { currentQRef.current    = currentQ; },       [currentQ]);
-  useEffect(() => { capturedNameRef.current  = capturedName; },  [capturedName]);
+  useEffect(() => { appIdRef.current = appId; }, [appId]);
+  useEffect(() => { capturedNameRef.current = capturedName; }, [capturedName]);
   useEffect(() => { capturedPhoneRef.current = capturedPhone; }, [capturedPhone]);
-  useEffect(() => { identityPhaseRef.current = identityPhase; }, [identityPhase]);
+  useEffect(() => { currentStepRef.current = currentStep; }, [currentStep]);
+  useEffect(() => { currentQTextRef.current = currentQText; }, [currentQText]);
+  useEffect(() => { currentSpeechRef.current = currentSpeech; }, [currentSpeech]);
 
-  const hasSpeechSupport = !!SpeechRecognitionAPI;
-
-  // ── Format duration ──────────────────────────────────────────────────────────
-  const formatDuration = s => {
+  const formatDuration = (s) => {
     const m = Math.floor(s / 60);
     return `${m}:${(s % 60).toString().padStart(2, '0')}`;
   };
 
-  // ── Create guest application on mount ────────────────────────────────────────
+  // ── 1. Create Guest Application in DB on Mount & Auto-Start Vapi
   useEffect(() => {
-    async function createApp() {
+    mounted.current = true;
+
+    async function initApp() {
       try {
         const appRes = await applicationsAPI.createGuest(guestToken.current);
         if (!mounted.current) return;
         const aid = appRes.data.id;
         setAppId(aid);
         appIdRef.current = aid;
-        localStorage.setItem('helix_pending_app_id',    String(aid));
+        localStorage.setItem('helix_pending_app_id', String(aid));
         localStorage.setItem('helix_pending_guest_token', guestToken.current);
-        console.log('[Identity] Guest application created:', aid);
+        console.log('[Helix] Initialized Application ID in SQLite:', aid);
+
+        if (user) {
+          if (user.full_name) {
+            setCapturedName(user.full_name);
+            capturedNameRef.current = user.full_name;
+          }
+          if (user.phone) {
+            setCapturedPhone(user.phone);
+            capturedPhoneRef.current = user.phone;
+            setCurrentStep('questions');
+          } else if (user.full_name) {
+            setCurrentStep('phone');
+          }
+        }
+
+        // Auto-start Vapi immediately on mount
+        startVapi(aid);
       } catch (err) {
-        console.error('[Identity] Failed to create guest application:', err);
-        toast.error('Failed to start session. Please refresh.');
+        console.error('[Helix] Init error:', err);
+        if (mounted.current) {
+          setCallStatus('error');
+          setErrorMsg('Failed to initialize session.');
+        }
       }
     }
-    createApp();
-    return () => { mounted.current = false; };
+
+    initApp();
+
+    return () => {
+      mounted.current = false;
+      if (vapiRef.current) {
+        try { vapiRef.current.stop(); } catch (_) {}
+      }
+      if (callTimer.current) clearInterval(callTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Speak identity prompt via browser TTS then start listening ───────────────
-  const speakAndListen = useCallback((text) => {
-    // Stop any current recognition
-    if (recognizerRef.current) {
-      try { recognizerRef.current.abort(); } catch (_) {}
-    }
-    setIdentityListening(false);
-    setIsTTSSpeaking(true);
-
-    speakText(text, () => {
-      if (!mounted.current) return;
-      setIsTTSSpeaking(false);
-      // Start speech recognition only after TTS finishes
-      setTimeout(() => {
-        if (mounted.current && interviewPhaseRef.current === 'identity') {
-          startIdentityListening();
-        }
-      }, 300);
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Ref so speakAndListen is accessible inside effects without stale closure
-  const speakAndListenRef = useRef(speakAndListen);
-  useEffect(() => { speakAndListenRef.current = speakAndListen; }, [speakAndListen]);
-
-  // Track interviewPhase in a ref for use inside speakAndListen closure
-  const interviewPhaseRef = useRef('identity');
-  useEffect(() => { interviewPhaseRef.current = interviewPhase; }, [interviewPhase]);
-
-  // ── Speak the greeting when identity phase first mounts ──────────────────────
-  useEffect(() => {
-    if (interviewPhase !== 'identity') return;
-    // Small delay so voices are loaded
-    const t = setTimeout(() => {
-      speakAndListenRef.current(identityPrompt);
-    }, 600);
-    return () => clearTimeout(t);
-  // Only fire on mount — identityPrompt change is handled separately
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interviewPhase]);
-
-  // ── Start speech recognition for identity phase (text fallback) ───────────────
-  useEffect(() => {
-    if (interviewPhase !== 'identity') return;
-    if (!hasSpeechSupport) return; // text-only fallback
-    // TTS handler above will call startIdentityListening after speaking.
-    // If no TTS support, start directly.
-    if (!window.speechSynthesis) startIdentityListening();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interviewPhase, identityPhase]);
-
-  function startIdentityListening() {
-    if (!hasSpeechSupport) return;
-
-    // Stop any existing recognizer
-    if (recognizerRef.current) {
-      try { recognizerRef.current.abort(); } catch (_) {}
-    }
-
-    const rec = createRecognizer();
-    if (!rec) return;
-    recognizerRef.current = rec;
-
-    let finalResult = '';
-
-    rec.onstart = () => {
-      if (mounted.current) {
-        setIdentityListening(true);
-        setIdentityError('');
-      }
-    };
-
-    rec.onresult = (e) => {
-      let interim = '';
-      let final   = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) final += t;
-        else interim += t;
-      }
-      if (final) {
-        finalResult = final.trim();
-        setIdentityInput(finalResult);
-      } else if (interim) {
-        setIdentityInput(interim.trim());
-      }
-    };
-
-    rec.onerror = (e) => {
-      console.warn('[Identity Speech] error:', e.error);
-      if (mounted.current) {
-        setIdentityListening(false);
-        if (e.error === 'not-allowed') {
-          setIdentityError('Microphone access denied. Please type your answer below.');
-        }
-        // other errors: just fall back to text
-      }
-    };
-
-    rec.onend = () => {
-      if (mounted.current) {
-        setIdentityListening(false);
-        if (finalResult.trim()) {
-          handleIdentitySubmit(finalResult.trim());
-        }
-      }
-    };
-
-    try { rec.start(); } catch (_) {}
-  }
-
-  // ── Call parse-profile API with user input ────────────────────────────────────
-  const handleIdentitySubmit = useCallback(async (inputOverride) => {
-    const rawInput = (inputOverride ?? identityInput).trim();
-    if (!rawInput || identityProcessing) return;
-
-    const currentPhase = identityPhaseRef.current;
-    const currentName  = capturedNameRef.current;
-    const currentPhone = capturedPhoneRef.current;
-    const aid          = appIdRef.current;
-
-    console.log(`[Identity] Submitting for phase="${currentPhase}" input="${rawInput}"`);
-    setIdentityProcessing(true);
-    setIdentityError('');
-    setIdentityInput('');
-
-    // Stop recognizer during API call
-    if (recognizerRef.current) {
-      try { recognizerRef.current.abort(); } catch (_) {}
-    }
-    setIdentityListening(false);
-
-    try {
-      const payload = {
-        user_transcript: rawInput,
-        current_phase:   currentPhase,
-        current_name:    currentName,
-        current_phone:   currentPhone,
-        application_id:  aid,
-      };
-      const res = await interviewAPI.parseProfile(payload);
-      const data = res.data;
-      console.log('[Identity] parse-profile response:', data);
-
-      const newName  = data.updated_name  || currentName;
-      const newPhone = data.updated_phone || currentPhone;
-      const nextPhase = data.next_phase || currentPhase;
-      const nextPrompt = data.next_question || '';
-
-      // Update captured identity
-      if (newName)  { setCapturedName(newName);   capturedNameRef.current  = newName; }
-      if (newPhone) { setCapturedPhone(newPhone);  capturedPhoneRef.current = newPhone; }
-
-      if (nextPhase === 'questions') {
-        // Both name and phone confirmed — start Vapi
-        console.log('[Identity] COMPLETE. Starting Vapi interview...');
-        const firstName = newName.split(' ')[0];
-        // Speak farewell before Vapi starts
-        speakText(`Thank you, ${firstName}! Starting your business interview now.`, () => {
-          if (!mounted.current) return;
-          toast.success(`Welcome, ${newName}! Starting your business interview.`);
-          setInterviewPhase('vapi_starting');
-          startVapiInterview(newName, newPhone);
-        });
-      } else {
-        // Still need more info
-        const newPrompt = nextPrompt || (nextPhase === 'phone'
-          ? `Thank you, ${newName}! What is your 10-digit phone number?`
-          : 'Could you please tell me your name?');
-        setIdentityPhase(nextPhase);
-        identityPhaseRef.current = nextPhase;
-        setIdentityPrompt(newPrompt);
-        setIdentityProcessing(false);
-        // Speak the next prompt then start listening
-        setTimeout(() => {
-          if (mounted.current) speakAndListenRef.current(newPrompt);
-        }, 200);
-      }
-    } catch (err) {
-      console.error('[Identity] parse-profile error:', err);
-      setIdentityError('Could not process that. Please try again.');
-      setIdentityProcessing(false);
-      setTimeout(() => { if (mounted.current) startIdentityListening(); }, 500);
-    }
-  }, [identityInput, identityProcessing]);
-
-  // Text submit handler for identity phase
-  const onIdentityTextSubmit = useCallback(() => {
-    handleIdentitySubmit(identityInput);
-  }, [handleIdentitySubmit, identityInput]);
-
-  // ── Start Vapi interview ──────────────────────────────────────────────────────
-  async function startVapiInterview(name, phone) {
-    if (hasVapiStarted.current) return;
-    hasVapiStarted.current = true;
-
-    if (!VAPI_PUBLIC_KEY || !VAPI_ASSISTANT_ID) {
-      const missing = !VAPI_PUBLIC_KEY ? 'VITE_VAPI_PUBLIC_KEY' : 'VITE_VAPI_ASSISTANT_ID';
-      setErrorMsg(`Configuration error: ${missing} not set.`);
-      setCallStatus('error');
-      setInterviewPhase('vapi_active');
-      return;
-    }
+  // ── 2. Complete Interview & Finalize Requirements in SQLite
+  const handleCompleteInterview = useCallback(async () => {
+    if (isCompletingRef.current) return;
+    isCompletingRef.current = true;
 
     const aid = appIdRef.current;
-    setCallStatus('connecting');
-    setInterviewPhase('vapi_active');
+    if (!aid) return;
+
+    setCallStatus('complete');
+    setProcessing(true);
+    setProcStep('Generating your business requirements specification...');
 
     try {
+      await axios.post(`${API_BASE}/vapi/complete-interview`, {
+        application_id: aid,
+      });
+      toast.success('Requirements captured & saved to database!');
+
+      const phone = capturedPhoneRef.current;
+      const name = capturedNameRef.current;
+
+      if (!user && phone) {
+        try {
+          const otpRes = await authAPI.initiateOtp({ phone, name });
+          if (otpRes.data?.simulated_otp) {
+            setSimOtp(otpRes.data.simulated_otp);
+          }
+        } catch (_) {}
+      }
+
+      if (user) {
+        try {
+          await authAPI.claimGuestSession({
+            application_id: aid,
+            guest_token: guestToken.current,
+          });
+        } catch (_) {}
+        navigate(`/requirements/${aid}`);
+      } else {
+        // Immediately show the sign up / sign in modal
+        setShowPostModal(true);
+      }
+    } catch (err) {
+      console.error('[Helix] Error completing interview:', err);
+      setShowPostModal(true);
+    } finally {
+      setProcessing(false);
+      setProcStep('');
+    }
+  }, [user, navigate]);
+
+  // ── 3. Parse and Persist Every Answer to SQLite DB & Verification List
+  const handleUserSpokenAnswer = useCallback(async (text) => {
+    if (!text || !text.trim()) return;
+    const aid = appIdRef.current;
+    let name = capturedNameRef.current;
+    let phone = capturedPhoneRef.current;
+
+    // Read the live synchronous question text from ref
+    const currentQ = currentSpeechRef.current.trim() || currentQTextRef.current.trim() || 'Business Requirements Consultation';
+
+    // Step 1: Capture Name (only if not a business description)
+    if (!name && currentStepRef.current === 'name') {
+      const lower = text.toLowerCase().trim();
+      const isBusinessSentence = lower.startsWith('i want') || lower.startsWith('we want') || lower.startsWith('i am building') || lower.startsWith('we are building') || lower.startsWith('this is a') || lower.includes('restaurant') || lower.includes('app') || lower.includes('software');
+      
+      if (!isBusinessSentence) {
+        const nameMatch = text.match(/(?:my name is|i am|i'm|this is|call me|name's)\s+([a-zA-Z\s]{2,25})/i);
+        if (nameMatch && nameMatch[1]) {
+          const parsed = nameMatch[1].trim();
+          name = parsed;
+          setCapturedName(parsed);
+          capturedNameRef.current = parsed;
+          setCurrentStep('phone');
+          toast.success(`Name recorded: ${parsed}`, { icon: '✓' });
+        } else if (text.trim().split(/\s+/).length <= 3 && !text.includes('?')) {
+          const parsed = text.replace(/[^a-zA-Z\s]/g, '').trim();
+          if (parsed.length >= 2 && parsed.length <= 25) {
+            name = parsed;
+            setCapturedName(parsed);
+            capturedNameRef.current = parsed;
+            setCurrentStep('phone');
+            toast.success(`Name recorded: ${parsed}`, { icon: '✓' });
+          }
+        }
+      } else {
+        setCurrentStep('questions');
+      }
+    }
+
+    // Step 2: Capture Phone
+    if (!phone) {
+      const phoneDigits = text.replace(/\D/g, '');
+      if (phoneDigits.length >= 10) {
+        const normalized = phoneDigits.slice(-10);
+        phone = normalized;
+        setCapturedPhone(normalized);
+        capturedPhoneRef.current = normalized;
+        setCurrentStep('questions');
+        toast.success(`Mobile number recorded: ${normalized}`, { icon: '✓' });
+      }
+    }
+
+    // Add to recorded responses history for user verification
+    setQaHistory((prev) => [
+      ...prev,
+      {
+        question: currentQ,
+        answer: text,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        verified: true,
+      },
+    ]);
+
+    // Sync profile to DB
+    if (aid && (name || phone)) {
+      try {
+        await axios.post(`${API_BASE}/vapi/sync-profile`, {
+          application_id: aid,
+          name: name,
+          phone: phone,
+        });
+      } catch (_) {}
+    }
+
+    // Save Q&A pair to DB
+    if (aid) {
+      try {
+        const saveRes = await axios.post(`${API_BASE}/vapi/save-answer`, {
+          application_id: aid,
+          question: currentQ,
+          answer: text,
+          language: 'en-US',
+        });
+        const d = saveRes.data;
+        if (d?.coverage) setCoverage(d.coverage);
+        if (typeof d?.questions_answered === 'number') {
+          setQuestionsAnswered(d.questions_answered);
+        }
+        if (d?.extraction || d?.ai_extraction) {
+          const ext = d.extraction || d.ai_extraction;
+          setExtractions((prev) => [...prev, ext]);
+          setTotalCaptured((prev) => prev + (ext.requirements?.length || ext.key_points?.length || 1));
+        }
+      } catch (ex) {
+        console.warn('[Helix] Error saving answer to DB:', ex);
+      }
+    }
+  }, []);
+
+  // ── 4. Start Vapi Voice Assistant (1-Click Instant Mic Pre-Unlock)
+  const startVapi = async (targetAid) => {
+    let aid = targetAid || appIdRef.current;
+    if (!aid) {
+      try {
+        const appRes = await applicationsAPI.createGuest(guestToken.current);
+        aid = appRes.data.id;
+        setAppId(aid);
+        appIdRef.current = aid;
+      } catch (_) {}
+    }
+
+    setCallStatus('connecting');
+    setErrorMsg('');
+    isCompletingRef.current = false;
+
+    try {
+      // Pre-unlock mic in 1 click
+      try {
+        if (navigator?.mediaDevices?.getUserMedia) {
+          const testStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          testStream.getTracks().forEach(t => t.stop());
+        }
+      } catch (micErr) {
+        console.warn('[Vapi] Mic access check:', micErr);
+      }
+
+      // Destroy any previous instance
+      if (vapiRef.current) {
+        try { vapiRef.current.stop(); } catch (_) {}
+        vapiRef.current = null;
+      }
+
+      console.log('[Vapi] Starting instant Vapi connection with Key:', VAPI_PUBLIC_KEY.slice(0, 8) + '...');
       const vapi = new Vapi(VAPI_PUBLIC_KEY);
       vapiRef.current = vapi;
 
-      // ── Vapi event listeners ──────────────────────────────────────────────────
       vapi.on('call-start', () => {
         if (!mounted.current) return;
-        console.log('[Vapi] call-start');
+        console.log('[Vapi] Call connected successfully!');
         setCallStatus('active');
         setIsListening(true);
         setIsSpeaking(false);
         let secs = 0;
+        if (callTimer.current) clearInterval(callTimer.current);
         callTimer.current = setInterval(() => {
           if (mounted.current) setCallDuration(++secs);
         }, 1000);
+
+        // Auto-send start signal so assistant immediately asks for Name without requiring user to say start twice
+        setTimeout(() => {
+          try {
+            vapi.send({
+              type: 'add-message',
+              message: {
+                role: 'user',
+                content: 'Start the interview'
+              }
+            });
+          } catch (_) {}
+        }, 300);
       });
 
       vapi.on('call-end', () => {
         if (!mounted.current) return;
-        console.log('[Vapi] call-end');
+        console.log('[Vapi] Call ended');
         if (callTimer.current) clearInterval(callTimer.current);
         setIsListening(false);
         setIsSpeaking(false);
-
-        setCallStatus(prev => {
-          if (prev === 'complete') return 'complete';
-          // Fallback: generate requirements if Vapi didn't call completeInterview
-          const aid2 = appIdRef.current;
-          if (aid2) {
-            console.log('[Vapi] call-end fallback — calling /api/vapi/complete-interview');
-            fetch(`${API_BASE}/api/vapi/complete-interview`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ application_id: aid2 }),
-            })
-              .then(r => r.json())
-              .then(d => {
-                console.log('[Vapi] fallback complete-interview result:', d);
-                if (d?.success && mounted.current) {
-                  setCallStatus('complete');
-                  setInterviewPhase('complete');
-                  triggerOtp();
-                }
-              })
-              .catch(e => console.warn('[Vapi] fallback complete-interview error:', e));
-          }
-          return 'ended';
-        });
+        handleCompleteInterview();
       });
 
       vapi.on('speech-start', () => {
         if (!mounted.current) return;
         setIsSpeaking(true);
         setIsListening(false);
-        setCurrentSpeech('');
       });
 
       vapi.on('speech-end', () => {
         if (!mounted.current) return;
         setIsSpeaking(false);
         setIsListening(true);
-        setCurrentSpeech('');
+        if (currentSpeechRef.current) {
+          currentQTextRef.current = currentSpeechRef.current;
+          setCurrentQText(currentSpeechRef.current);
+        }
       });
 
-      vapi.on('message', msg => {
+      vapi.on('message', (msg) => {
         if (!mounted.current) return;
-        console.log('[Vapi] message:', msg.type, msg);
 
-        // ── Live transcripts ──────────────────────────────────────────────────
+        // 1. Assistant Speech Updates
+        if (msg.type === 'speech-update' && msg.text) {
+          const txt = msg.text.trim();
+          // If assistant says "say start", automatically trigger next question
+          if (txt.toLowerCase().includes('say "start"') || txt.toLowerCase().includes("say 'start'") || txt.toLowerCase().includes('just say start')) {
+            try {
+              vapi.send({ type: 'add-message', message: { role: 'user', content: 'Start' } });
+            } catch (_) {}
+          } else {
+            currentSpeechRef.current = txt;
+            currentQTextRef.current = txt;
+            setCurrentSpeech(txt);
+            setCurrentQText(txt);
+            checkIfInterviewDone(txt);
+          }
+        }
+
+        // 2. Conversation Updates
+        if (msg.type === 'conversation-update') {
+          const msgs = msg.conversation || msg.messages || [];
+          for (let i = msgs.length - 1; i >= 0; i--) {
+            if (msgs[i].role === 'assistant' && msgs[i].content) {
+              const txt = msgs[i].content.trim();
+              if (!txt.toLowerCase().includes('just say start') && !txt.toLowerCase().includes("say 'start'")) {
+                currentSpeechRef.current = txt;
+                currentQTextRef.current = txt;
+                setCurrentSpeech(txt);
+                setCurrentQText(txt);
+                checkIfInterviewDone(txt);
+                break;
+              }
+            }
+          }
+        }
+
+        // 3. Transcript Updates
         if (msg.type === 'transcript') {
           if (msg.role === 'user') {
             const txt = msg.transcript || '';
             if (msg.transcriptType === 'final') {
               setLiveTranscript('');
-              const parsedEm = extractEmailFromSpeech(txt);
-              if (parsedEm) {
-                setCollectedEmail(parsedEm);
-                toast.success(`Captured email: ${parsedEm}`, { icon: 'email' });
-              }
-              const nav = detectNavIntent(txt);
-              if (nav) { handleNavIntent(nav); return; }
               if (txt.trim()) {
-                ansCountRef.current += 1;
-                setAnswers(prev => ({ ...prev, [currentQRef.current]: txt }));
+                handleUserSpokenAnswer(txt.trim());
               }
             } else {
               setLiveTranscript(txt);
-              const nav = detectNavIntent(txt);
-              if (nav) handleNavIntent(nav);
             }
           } else if (msg.role === 'assistant') {
-            if (msg.transcriptType === 'partial') {
-              setCurrentSpeech(msg.transcript || '');
-            } else if (msg.transcriptType === 'final') {
-              const txt = (msg.transcript || '').trim();
-              setCurrentSpeech('');
-              if (txt) {
+            const txt = (msg.transcript || '').trim();
+            if (txt) {
+              if (txt.toLowerCase().includes('say "start"') || txt.toLowerCase().includes("say 'start'") || txt.toLowerCase().includes('just say start')) {
+                try {
+                  vapi.send({ type: 'add-message', message: { role: 'user', content: 'Start' } });
+                } catch (_) {}
+              } else {
+                currentSpeechRef.current = txt;
+                currentQTextRef.current = txt;
+                setCurrentSpeech(txt);
                 setCurrentQText(txt);
-                currentQRef.current += 1;
-                setCurrentQ(q => q + 1);
+                checkIfInterviewDone(txt);
               }
-              const nav = detectNavIntent(txt);
-              if (nav) handleNavIntent(nav);
             }
           }
         }
 
-        // ── Tool call results (from Vapi server tools) ────────────────────────
+        // 4. Tool calls
         if (msg.type === 'tool-calls-result' || msg.type === 'function-call-result') {
           const items = msg.toolCallList || msg.toolCalls || [];
           for (const item of items) {
             try {
-              const result = typeof item.result === 'string'
-                ? JSON.parse(item.result)
-                : item.result;
+              const result = typeof item.result === 'string' ? JSON.parse(item.result) : item.result;
               if (!result) continue;
 
-              // Coverage / extraction update from saveInterviewAnswer
-              if (result.coverage) {
-                setCoverage(result.coverage);
-              }
+              if (result.coverage) setCoverage(result.coverage);
               if (typeof result.questions_answered === 'number') {
                 setQuestionsAnswered(result.questions_answered);
-                const newQ = result.questions_answered + 1;
-                if (newQ > currentQRef.current) {
-                  currentQRef.current = newQ;
-                  setCurrentQ(newQ);
-                }
               }
-              if (result.should_complete) {
-                console.log('[Vapi] should_complete=true — Vapi should now call completeInterview');
+              if (result.extraction || result.ai_extraction) {
+                const ext = result.extraction || result.ai_extraction;
+                setExtractions((prev) => [...prev, ext]);
+                setTotalCaptured((prev) => prev + (ext.requirements?.length || ext.key_points?.length || 1));
               }
-
-              // Live extractions
-              if (result.extraction || result.ai_extraction || (result.key_points && result.key_points.length > 0)) {
-                const ext = result.extraction || result.ai_extraction || { key_points: result.key_points, category: 'requirement' };
-                setExtractions(prev => [...prev, { q: currentQRef.current, ...ext }]);
-                setTotalCaptured(prev => prev + (ext.requirements?.length || ext.key_points?.length || 1));
+              if (result.redirect_to || (result.success && msg.type.includes('complete'))) {
+                handleCompleteInterview();
               }
-              if (result.language_code) setLockedLang(result.locked_language || 'English');
-
-              // Interview complete
-              if (result.redirect_to && result.success) {
-                console.log('[Vapi] completeInterview success — triggering OTP');
-                setCallStatus('complete');
-                setInterviewPhase('complete');
-                setTimeout(() => {
-                  if (!mounted.current) return;
-                  triggerOtp();
-                }, 1500);
-              }
-
-              // OTP explicitly triggered by Vapi tool (legacy path — keep for compatibility)
-              if (result.otp_sent || result.simulated_otp) {
-                if (result.simulated_otp) {
-                  setSimOtp(result.simulated_otp);
-                  toast.success(`[Dev] OTP: ${result.simulated_otp}`, { duration: 10000 });
-                }
-                if (result.phone) {
-                  setOtpPhone(result.phone);
-                  setOtpName(result.name || capturedNameRef.current);
-                  setShowOtp(true);
-                }
-              }
-
-              // Navigation command from tool
-              if (result.navigate_to) handleNavIntent(result.navigate_to);
-
             } catch (_) {}
           }
         }
-
-        // ── End of call report ────────────────────────────────────────────────
-        if (msg.type === 'end-of-call-report') {
-          console.log('[Vapi] end-of-call-report:', msg);
-        }
-
-        // ── Metadata messages ─────────────────────────────────────────────────
-        if (msg.type === 'metadata') {
-          if (msg.interview_complete) {
-            setCallStatus('complete');
-            setInterviewPhase('complete');
-            setTimeout(() => { if (mounted.current) triggerOtp(); }, 1500);
-          }
-          if (msg.coverage)   setCoverage(msg.coverage);
-          if (msg.extraction) {
-            setExtractions(prev => [...prev, { q: currentQRef.current, ...msg.extraction }]);
-            setTotalCaptured(prev => prev + (msg.extraction.requirements?.length || 1));
-          }
-        }
       });
 
-      vapi.on('error', err => {
+      vapi.on('error', (err) => {
         if (!mounted.current) return;
-        console.error('[Vapi] error:', err);
-        if (callTimer.current) clearInterval(callTimer.current);
-        setIsListening(false); setIsSpeaking(false);
+        console.error('[Vapi] error event:', err);
         const rawMsg = err?.error?.message ?? err?.message ?? err;
-        const safeMsg = typeof rawMsg === 'string'
-          ? rawMsg
-          : (rawMsg?.message || JSON.stringify(rawMsg) || 'Voice connection error');
-        setErrorMsg(safeMsg);
-        setCallStatus('error');
+        const safeMsg = typeof rawMsg === 'string' ? rawMsg : 'Voice connection error';
+        if (callStatus !== 'active') {
+          setErrorMsg(safeMsg);
+          setCallStatus('error');
+        }
       });
 
-      // ── Start the Vapi call ────────────────────────────────────────────────
-      console.log('[Vapi] Starting call — assistant:', VAPI_ASSISTANT_ID, 'app:', aid, 'name:', name, 'phone:', phone);
-
+      // Start call with direct firstMessage override asking for name
       await vapi.start(VAPI_ASSISTANT_ID, {
-        metadata: {
-          application_id:   String(aid),
-          guest_token:      guestToken.current,
-          user_id:          user ? String(user.id) : null,
-          user_name:        name || user?.full_name || '',
-          user_phone:       phone || user?.phone || '',
-          is_authenticated: String(!!user),
-          interview_mode:   'business_interview',
-          identity_done:    'true',
-        },
-        variableValues: {
-          application_id:   String(aid),
-          user_name:        (name || user?.full_name || '').trim().split(/\s+/)[0] || '',
-          is_authenticated: String(!!user),
-        },
+        firstMessage: "Hello! Welcome to Helix. Before we dive into your project, could you please tell me your name?"
       });
 
     } catch (err) {
-      console.error('[Vapi] init error:', err);
-      if (!mounted.current) return;
-      if (callTimer.current) clearInterval(callTimer.current);
-      const rawErr = err?.message ?? err;
-      const safeErr = typeof rawErr === 'string' ? rawErr : (rawErr?.message || JSON.stringify(rawErr) || 'Failed to start interview');
-      setErrorMsg(safeErr);
-      setCallStatus('error');
-      toast.error('Could not connect to Helix. Check your internet and try again.');
-    }
-  }
-
-  // ── Trigger OTP after interview completes ────────────────────────────────────
-  const triggerOtp = useCallback(async () => {
-    if (!mounted.current) return;
-
-    const phone = capturedPhoneRef.current || otpPhone;
-    const name  = capturedNameRef.current  || otpName;
-
-    if (!phone) {
-      // No phone captured — go straight to requirements if authenticated
-      if (user) {
-        navigate(`/requirements/${appIdRef.current}`);
-      } else {
-        navigate('/login?claim=true');
+      console.error('[Vapi] start error:', err);
+      if (mounted.current) {
+        setCallStatus('error');
+        setErrorMsg('Microphone access needed. Click Start Voice to allow.');
       }
-      return;
     }
+  };
 
-    // Already authenticated
-    if (user) {
-      // Claim the guest session then navigate
-      try {
-        await authAPI.claimGuestSession({ application_id: appIdRef.current, guest_token: guestToken.current });
-      } catch (_) {}
-      navigate(`/requirements/${appIdRef.current}`);
-      return;
+  // Helper to detect completion speech
+  const checkIfInterviewDone = (text) => {
+    if (!text) return;
+    const lower = text.toLowerCase();
+    if (
+      lower.includes('requirements have been captured') ||
+      lower.includes('please sign in') ||
+      lower.includes('sign in to view your full requirements') ||
+      lower.includes('congratulations! your requirements') ||
+      lower.includes('all your requirements are captured')
+    ) {
+      setTimeout(() => {
+        handleCompleteInterview();
+      }, 1500);
     }
+  };
 
-    console.log('[OTP] Initiating OTP for phone:', phone);
-    setOtpPhone(phone);
-    setOtpName(name);
-
-    try {
-      const res = await authAPI.initiateOtp({ phone, name });
-      if (res.data.simulated_otp) {
-        setSimOtp(res.data.simulated_otp);
-        toast.success(`[Dev] OTP: ${res.data.simulated_otp}`, { duration: 15000 });
-      }
-      setShowOtp(true);
-    } catch (err) {
-      console.error('[OTP] initiateOtp error:', err);
-      toast.error('Could not send OTP. Please enter manually.');
-      setShowOtp(true); // Still show modal
-    }
-  }, [user, otpPhone, otpName, navigate]);
-
-  // ── OTP success handler ────────────────────────────────────────────────────────
-  const handleOtpSuccess = useCallback(async () => {
-    setShowOtp(false);
-    setInterviewPhase('done');
-
-    const aid = appIdRef.current;
-    if (aid) {
-      // Claim guest session so the app appears in the authenticated dashboard
-      try {
-        await authAPI.claimGuestSession({ application_id: aid, guest_token: guestToken.current });
-      } catch (_) {}
-      navigate(`/requirements/${aid}`);
-    } else {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
-
-  // ── Stop Vapi ─────────────────────────────────────────────────────────────────
-  const stopVapi = useCallback(() => {
-    if (vapiRef.current) {
-      try { vapiRef.current.stop(); } catch (_) {}
-    }
-    if (callTimer.current) clearInterval(callTimer.current);
-    if (mounted.current) {
-      setCallStatus(prev => prev === 'complete' ? 'complete' : 'ended');
-      setIsListening(false); setIsSpeaking(false);
-    }
-  }, []);
-
-  // ── Navigate and clean up ─────────────────────────────────────────────────────
-  const safeNavigate = useCallback((path) => {
-    stopVapi();
-    setTimeout(() => { if (mounted.current) navigate(path); }, 300);
-  }, [navigate, stopVapi]);
-
-  // ── Handle navigation intents ─────────────────────────────────────────────────
-  const handleNavIntent = useCallback((intent) => {
-    switch (intent) {
-      case 'HOME':         safeNavigate('/');          break;
-      case 'DASHBOARD':    safeNavigate('/dashboard'); break;
-      case 'LOGIN':        safeNavigate('/login');     break;
-      case 'REQUIREMENTS':
-        if (appIdRef.current) safeNavigate(`/requirements/${appIdRef.current}`);
-        else toast('No project yet — finish the interview first.', { icon: 'info' });
-        break;
-      case 'DOCUMENTS':
-        if (appIdRef.current) safeNavigate(`/documents/${appIdRef.current}`);
-        else toast('No project yet — finish the interview first.', { icon: 'info' });
-        break;
-      case 'EXIT':
-        stopVapi();
-        break;
-      default: break;
-    }
-  }, [safeNavigate, stopVapi]);
-
-  // ── Generate requirements (authenticated user path) ──────────────────────────
-  const handleGenerateRequirements = useCallback(async () => {
-    if (!user) {
-      triggerOtp();
-      return;
-    }
-    setProcessing(true); setProcStep('generating');
-    try {
-      await requirementsAPI.generate({ application_id: appIdRef.current });
-      toast.success('Requirements generated!');
-      ansCountRef.current = 99;
-      navigate(`/requirements/${appIdRef.current}`);
-    } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to generate requirements.');
-      if (mounted.current) { setProcessing(false); setProcStep(''); }
-    }
-  }, [user, navigate, triggerOtp]);
-
-  // ── Typed text fallback (keyboard input during Vapi call) ────────────────────
-  const submitTyped = useCallback(async () => {
+  // Typed text fallback
+  const submitTyped = async () => {
     const t = typedText.trim();
     if (!t || processing) return;
     setTypedText('');
+    setProcessing(true);
+    setProcStep('Recording...');
 
-    const nav = detectNavIntent(t);
-    if (nav) { handleNavIntent(nav); return; }
-
-    setProcessing(true); setProcStep('analyzing');
     try {
-      let res;
-      if (user) {
-        res = await interviewAPI.processText(appIdRef.current, { answer_text: t });
-      } else {
-        res = await interviewAPI.processTextGuest(appIdRef.current, guestToken.current, { answer_text: t });
-      }
-      if (!mounted.current) return;
-      const data = res.data;
-      if (data.coverage) setCoverage(data.coverage);
-      if (data.ai_extraction) {
-        setExtractions(prev => [...prev, { q: currentQRef.current, ...data.ai_extraction }]);
-        setTotalCaptured(prev => prev + (data.ai_extraction.requirements?.length || 1));
-      }
-      setAnswers(prev => ({ ...prev, [currentQRef.current]: data.transcribed_text || t }));
-      ansCountRef.current += 1;
-      if (data.language_context?.locked_language) setLockedLang(data.language_context.locked_language);
-      if (data.interview_complete) {
-        setCallStatus('complete');
-        setInterviewPhase('complete');
-        stopVapi();
-        setTimeout(() => { if (mounted.current) triggerOtp(); }, 1500);
-      } else if (data.next_question) {
-        setCurrentQText(data.next_question);
-        currentQRef.current += 1; setCurrentQ(q => q + 1);
-      }
-    } catch (err) {
-      console.error('[Interview] typed submit error:', err);
-      toast.error('Failed to process. Please try again.');
+      await handleUserSpokenAnswer(t);
+      toast.success('Response recorded!');
+    } catch (_) {
+      toast.error('Failed to record response.');
     } finally {
-      if (mounted.current) { setProcessing(false); setProcStep(''); }
+      setProcessing(false);
+      setProcStep('');
     }
-  }, [typedText, processing, user, stopVapi, handleNavIntent, triggerOtp]);
-
-  // ── Mute/Unmute mic ──────────────────────────────────────────────────────────
-  const toggleMute = useCallback(() => {
-    if (!vapiRef.current) return;
-    const newMuted = !isMuted;
-    try { vapiRef.current.setMuted(newMuted); } catch (_) {}
-    setIsMuted(newMuted);
-  }, [isMuted]);
-
-  // ── Cleanup ───────────────────────────────────────────────────────────────────
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-      if (recognizerRef.current) { try { recognizerRef.current.abort(); } catch (_) {} }
-      if (vapiRef.current) { try { vapiRef.current.stop(); } catch (_) {} }
-      if (callTimer.current) clearInterval(callTimer.current);
-      // Clean up short sessions
-      if (appIdRef.current && ansCountRef.current < 2 && interviewPhase !== 'done') {
-        applicationsAPI.delete(appIdRef.current).catch(() => {});
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── Status config ──────────────────────────────────────────────────────────────
-  const statusConfig = {
-    initializing: { dot: 'bg-purple-400 animate-pulse', label: 'Starting up...' },
-    connecting:   { dot: 'bg-indigo-400 animate-pulse', label: 'Connecting to Helix...' },
-    active:       { dot: isSpeaking ? 'bg-blue-500 animate-pulse' : 'bg-green-400 animate-pulse', label: isSpeaking ? 'Helix is speaking...' : 'Listening to you...' },
-    complete:     { dot: 'bg-green-500',                label: 'Interview complete! ✓' },
-    ended:        { dot: 'bg-gray-400',                 label: 'Call ended' },
-    error:        { dot: 'bg-red-500',                  label: 'Connection error' },
   };
-  const cfg = statusConfig[callStatus] || statusConfig.initializing;
 
-  const progressPercent = coverage.overall_percent || 0;
-  const isVapiActive    = callStatus === 'active' || callStatus === 'connecting';
-  const showIdentity    = interviewPhase === 'identity';
+  const toggleMute = () => {
+    if (!vapiRef.current) return;
+    const nextMuted = !isMuted;
+    try {
+      vapiRef.current.setMuted(nextMuted);
+      setIsMuted(nextMuted);
+    } catch (_) {}
+  };
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // RENDER
-  // ═══════════════════════════════════════════════════════════════════════════
+  const stopCall = () => {
+    if (vapiRef.current) {
+      try { vapiRef.current.stop(); } catch (_) {}
+    }
+    handleCompleteInterview();
+  };
+
+  const progressPercent = coverage.overall_percent || Math.min(questionsAnswered * 12, 100);
+
+  const statusConfig = {
+    ready:        { dot: 'bg-indigo-400', label: 'Helix Voice AI Ready' },
+    connecting:   { dot: 'bg-amber-400 animate-pulse', label: 'Connecting to Vapi Consultant...' },
+    active:       { dot: isSpeaking ? 'bg-indigo-600 animate-pulse' : 'bg-emerald-500 animate-pulse', label: isSpeaking ? 'Helix is speaking...' : 'Listening to you...' },
+    complete:     { dot: 'bg-emerald-500', label: 'Interview complete! ✓' },
+    ended:        { dot: 'bg-gray-400', label: 'Call ended' },
+    error:        { dot: 'bg-rose-500', label: 'Ready to connect' },
+  };
+  const cfg = statusConfig[callStatus] || statusConfig.ready;
+
   return (
-    <div className="min-h-screen bg-[#F6F7FE] pt-[67px]">
+    <div className="min-h-screen bg-[#F8FAFC] pt-[67px] flex flex-col">
 
-      {/* ─── Top Bar ────────────────────────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+      {/* Top Header Bar */}
+      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between shadow-xs sticky top-[67px] z-20">
         <div className="flex items-center gap-3">
-          {/* Phase badge */}
-          {showIdentity ? (
-            <div className="bg-indigo-50 border border-indigo-200 rounded-full px-4 py-1 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-xs font-medium text-indigo-700">Identity Verification</span>
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-100 rounded-full px-4 py-1 flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
-              <span className="text-xs font-medium">{cfg.label}</span>
-            </div>
-          )}
+          <div className="bg-slate-50 border border-slate-200/80 rounded-full px-3.5 py-1 flex items-center gap-2 shadow-2xs">
+            <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
+            <span className="text-xs font-semibold text-slate-700">{cfg.label}</span>
+          </div>
 
-          {/* Question counter */}
-          {callStatus === 'active' && !showIdentity && (
-            <div className="bg-amber-50 border border-amber-200 rounded-full px-3 py-1 flex items-center gap-1.5 text-xs text-amber-800 font-bold">
-              <span>Q {Math.min(questionsAnswered + 1, 10)} / 10</span>
-              {questionsAnswered >= 8 && <span className="text-green-700 ml-1">Wrapping up</span>}
-            </div>
-          )}
+          <div className="hidden sm:flex items-center gap-1.5 bg-indigo-50/80 border border-indigo-100 rounded-full px-3 py-1 text-xs text-indigo-700 font-semibold">
+            <span>Step:</span>
+            <span className="capitalize font-bold text-indigo-900">
+              {currentStep === 'name' ? '1. Name Verification' : currentStep === 'phone' ? '2. Mobile Number' : '3. Questionnaire'}
+            </span>
+          </div>
 
-          {/* Language lock pill */}
-          {callStatus === 'active' && !showIdentity && (
-            <div className="bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1 flex items-center gap-1.5 text-xs text-indigo-700 font-medium">
-              <span>Language: {lockedLang}</span>
-            </div>
-          )}
-
-          {/* Call timer */}
           {callStatus === 'active' && (
-            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
-              <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse" />
-              <span className="text-xs font-mono text-gray-600">{formatDuration(callDuration)}</span>
-            </div>
-          )}
-
-          {/* Captured identity pill */}
-          {capturedName && !showIdentity && (
-            <div className="bg-green-50 border border-green-200 rounded-full px-3 py-1 flex items-center gap-1 text-xs text-green-700 font-medium">
-              <User className="w-3 h-3" />
-              <span>{capturedName}</span>
+            <div className="bg-slate-100 border border-slate-200 rounded-full px-3 py-1 text-xs font-mono text-slate-600">
+              {formatDuration(callDuration)}
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-4">
-          {!showIdentity && (
-            <>
-              <span className="font-semibold text-sm text-gray-500">Project Understanding</span>
-              <span className="font-bold text-base text-blue-600">{progressPercent}%</span>
-              <div className="w-40 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-600 rounded-full transition-all duration-700" style={{ width: `${progressPercent}%` }} />
-              </div>
-            </>
-          )}
-        </div>
-
-        <button
-          onClick={() => safeNavigate(user ? '/dashboard' : '/')}
-          className="flex items-center gap-1 text-base font-medium text-gray-800 hover:text-red-500"
-        >
-          Exit <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* ─── Main Two-Column Layout ──────────────────────────────────────────── */}
-      <div className="flex h-[calc(100vh-67px-52px)]">
-
-        {/* ── Left Panel ──────────────────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col items-center justify-start pt-8 pb-12 px-6 md:px-10 border-r border-[#D4DCE8] overflow-y-auto">
-
-          {/* ── IDENTITY PHASE ─────────────────────────────────────────────── */}
-          {showIdentity ? (
-            <IdentityPhase
-              identityPhase={identityPhase}
-              identityPrompt={identityPrompt}
-              identityInput={identityInput}
-              setIdentityInput={setIdentityInput}
-              identityListening={identityListening}
-              isTTSSpeaking={isTTSSpeaking}
-              identityError={identityError}
-              onSubmitText={onIdentityTextSubmit}
-              capturedName={capturedName}
-              capturedPhone={capturedPhone}
-              hasSpeechSupport={hasSpeechSupport}
-            />
-
-          ) : interviewPhase === 'vapi_starting' ? (
-            /* ── Vapi starting / connecting ──────────────────────────────── */
-            <div className="flex flex-col items-center justify-center h-full">
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-600 flex items-center justify-center shadow-2xl mb-6">
-                <Loader2 className="w-10 h-10 text-white animate-spin" />
-              </div>
-              <p className="text-sm font-bold text-indigo-600 tracking-wider uppercase mb-2">Helix AI</p>
-              <p className="text-gray-500 text-sm">Starting your business interview...</p>
+          <div className="hidden md:flex items-center gap-2.5">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Understanding</span>
+            <span className="text-sm font-bold text-indigo-600">{progressPercent}%</span>
+            <div className="w-28 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-700"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
+          </div>
 
-          ) : callStatus === 'complete' ? (
-            /* ── Interview Complete ───────────────────────────────────────── */
-            <div className="text-center mt-12">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-8 h-8 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Interview Complete!</h2>
-              <p className="text-sm text-gray-600 mb-6">{totalCaptured} requirements captured.</p>
-              <button
-                onClick={handleGenerateRequirements} disabled={processing}
-                className="inline-flex items-center gap-2 bg-[#1E293B] text-white font-medium text-sm px-8 py-4 rounded-[32px] hover:bg-[#0f172a] disabled:opacity-50"
-              >
-                {processing ? 'Please wait...' : user ? 'Generate requirement form' : 'Sign in & Generate'}
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-          ) : callStatus === 'error' ? (
-            /* ── Error state ─────────────────────────────────────────────── */
-            <div className="text-center mt-12">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <X className="w-8 h-8 text-red-500" />
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Connection Failed</h2>
-              {errorMsg && <p className="text-sm text-red-500 mb-4 max-w-xs">{errorMsg}</p>}
-              <button
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 rounded-2xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                Try Again
-              </button>
-            </div>
-
-          ) : callStatus === 'ended' ? (
-            /* ── Ended state ─────────────────────────────────────────────── */
-            <div className="text-center mt-12">
-              <p className="text-gray-500 text-sm mb-6">Call ended. Your progress has been saved.</p>
-              <div className="flex gap-3 justify-center flex-wrap">
-                <button onClick={() => window.location.reload()}
-                  className="px-6 py-3 rounded-2xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700">
-                  Restart Interview
-                </button>
-                {appId && (
-                  <button onClick={() => navigate(`/requirements/${appId}`)}
-                    className="px-6 py-3 rounded-2xl text-sm font-semibold text-gray-700 border border-gray-200 hover:bg-gray-50">
-                    View Requirements
-                  </button>
-                )}
-                <button onClick={() => navigate(user ? '/dashboard' : '/')}
-                  className="px-6 py-3 rounded-2xl text-sm font-semibold text-gray-700 border border-gray-200 hover:bg-gray-50">
-                  {user ? 'Go to Dashboard' : 'Go Home'}
-                </button>
-              </div>
-            </div>
-
+          {callStatus === 'active' ? (
+            <button
+              onClick={stopCall}
+              className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1"
+            >
+              <PhoneOff className="w-3.5 h-3.5" />
+              <span>Finish Interview</span>
+            </button>
           ) : (
-            /* ── Active / Connecting (Vapi interview) ────────────────────── */
-            <>
-              {/* Helix avatar + waveform */}
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative w-28 h-28 mb-6">
-                  <div className={`absolute inset-0 rounded-full transition-all duration-500 ${
-                    isSpeaking  ? 'ring-8 ring-blue-300/50 ring-offset-4 ring-offset-[#F6F7FE]' :
-                    isListening ? 'ring-8 ring-green-300/50 ring-offset-4 ring-offset-[#F6F7FE]' : ''
-                  }`} />
-                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-600 flex items-center justify-center shadow-2xl">
-                    {callStatus === 'initializing' || callStatus === 'connecting'
-                      ? <Loader2 className="w-10 h-10 text-white animate-spin" />
-                      : <Sparkles className={`w-10 h-10 text-white ${isSpeaking ? 'animate-pulse' : ''}`} />
-                    }
-                  </div>
-                </div>
-
-                <p className="text-sm font-bold text-indigo-600 tracking-wider uppercase mb-1">Helix AI</p>
-                <p className="text-xs text-gray-400">
-                  {callStatus === 'initializing' ? 'Starting voice session...' :
-                   callStatus === 'connecting'   ? 'Connecting...' :
-                   isSpeaking  ? 'Speaking — just start talking to interrupt' :
-                   isListening ? 'Listening — speak now' : 'Ready'}
-                </p>
-
-                {callStatus === 'active' && (
-                  <div className="flex items-end gap-[3px] h-8 mt-4">
-                    {[3,6,9,5,8,4,7,10,6,3,8,5,9].map((h, i) => (
-                      <div key={i} style={{
-                        width: 3,
-                        height: (isSpeaking || isListening) ? `${h * 3}px` : '4px',
-                        backgroundColor: isSpeaking ? '#6366f1' : '#10b981',
-                        borderRadius: 4,
-                        transition: `height ${0.12 + i * 0.025}s ease-in-out`,
-                        opacity: (isSpeaking || isListening) ? 0.85 : 0.25,
-                        animation: (isSpeaking || isListening) ? `pulse 0.7s ease-in-out ${i * 0.06}s infinite alternate` : 'none',
-                      }} />
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Current Helix question / speech */}
-              {(currentQText || currentSpeech) && callStatus === 'active' && (
-                <div className="w-full max-w-xl mb-6">
-                  <div className="bg-white border border-[#D4DCE8] rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: '3px solid #6366f1' }}>
-                    <div className="flex items-center gap-2 px-5 pt-4 pb-2 border-b border-gray-100">
-                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                      <p className="text-[11px] font-bold text-indigo-600 tracking-widest uppercase">Helix says</p>
-                      {isSpeaking && <span className="ml-auto text-[10px] text-indigo-400 animate-pulse font-medium">Speaking...</span>}
-                    </div>
-                    <div className="px-5 py-4">
-                      <p className="text-base md:text-lg font-medium text-gray-900 leading-relaxed">
-                        {currentSpeech || currentQText}
-                        {isSpeaking && <span className="inline-block w-0.5 h-5 bg-indigo-400 ml-1 align-text-bottom animate-pulse" />}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Processing indicator */}
-              {processing && <AiProcessingWaveform procStep={procStep} />}
-
-              {/* Live user transcript */}
-              {liveTranscript && callStatus === 'active' && (
-                <div className="w-full max-w-md mb-6">
-                  <div className="bg-white rounded-2xl border border-purple-100 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-xs font-medium text-gray-600">You're saying...</span>
-                    </div>
-                    <p className="text-sm text-gray-700 min-h-[36px]">
-                      {liveTranscript}
-                      <span className="inline-block w-0.5 h-4 bg-green-500 ml-0.5 animate-pulse" />
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Control bar */}
-              {isVapiActive && (
-                <div className="w-full max-w-xl mx-auto">
-                  <div className="flex items-center gap-3 w-full">
-                    {/* Mute mic */}
-                    <button
-                      type="button" onClick={toggleMute}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all shadow-sm ${
-                        isMuted
-                          ? 'bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200'
-                          : isListening
-                          ? 'bg-[#FF4528] text-white shadow-lg shadow-red-200 ring-4 ring-red-100 animate-pulse'
-                          : 'bg-[#FF4528] text-white hover:bg-[#E03A1F]'
-                      }`}
-                      title={isMuted ? 'Unmute mic' : 'Mute mic'}
-                    >
-                      {isMuted ? <MicOff className="w-5 h-5 text-gray-600" /> : <Mic className="w-5 h-5 text-white" />}
-                    </button>
-
-                    {/* Text input fallback */}
-                    <div className="flex-1">
-                      <input
-                        type="text" value={typedText}
-                        onChange={e => setTypedText(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitTyped(); } }}
-                        placeholder={
-                          isSpeaking    ? 'Helix is speaking...' :
-                          isListening   ? 'Speak now, or type here...' :
-                          callStatus === 'connecting' ? 'Connecting...' :
-                          'Type your answer or a command...'
-                        }
-                        disabled={processing || callStatus !== 'active'}
-                        className="w-full rounded-full border border-gray-200 bg-white px-6 py-3.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all disabled:opacity-50"
-                      />
-                    </div>
-
-                    {/* Send button */}
-                    <button
-                      type="button" onClick={submitTyped}
-                      disabled={!typedText.trim() || processing || callStatus !== 'active'}
-                      className={`w-12 h-12 rounded-full border flex items-center justify-center flex-shrink-0 transition-all shadow-sm ${
-                        typedText.trim() && !processing && callStatus === 'active'
-                          ? 'bg-indigo-600 border-indigo-600 text-white shadow-md hover:bg-indigo-700'
-                          : 'bg-gray-50 border-gray-200 text-gray-300 cursor-not-allowed'
-                      }`}
-                    >
-                      <Send className="w-5 h-5" />
-                    </button>
-
-                    {/* End call */}
-                    <button
-                      type="button" onClick={stopVapi}
-                      className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all shadow-sm bg-red-500 text-white hover:bg-red-600"
-                      title="End interview"
-                    >
-                      <PhoneOff className="w-5 h-5" />
-                    </button>
-                  </div>
-
-                  <p className="text-[11px] text-gray-400 text-center mt-2.5">
-                    {isMuted
-                      ? 'Mic muted — type your answer below'
-                      : isSpeaking
-                      ? 'Helix is speaking — start talking to interrupt'
-                      : 'Vapi AI is listening — speak naturally or type below'}
-                  </p>
-                </div>
-              )}
-
-              {/* Previous answer */}
-              {answers[currentQ - 1] && !processing && callStatus === 'active' && (
-                <div className="bg-green-50 rounded-xl p-3 mt-6 max-w-md border border-green-100 w-full">
-                  <p className="text-xs text-green-700 font-medium mb-1">Previous answer recorded:</p>
-                  <p className="text-sm text-gray-700 line-clamp-2">{answers[currentQ - 1]}</p>
-                </div>
-              )}
-            </>
+            <button
+              onClick={startVapi}
+              className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1 shadow-xs"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Start Voice</span>
+            </button>
           )}
         </div>
+      </header>
 
-        {/* ── Right Panel ───────────────────────────────────────────────── */}
-        <div className="w-[400px] bg-white p-6 overflow-y-auto border-l border-gray-100 flex flex-col">
+      {/* Main Two-Column Body */}
+      <main className="flex-1 flex flex-col lg:flex-row h-[calc(100vh-67px-57px)] overflow-hidden">
 
-          {showIdentity ? (
-            /* ── Identity panel ──────────────────────────────────────────── */
-            <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
-                <ShieldCheck className="w-8 h-8 text-indigo-600" />
+        {/* Left Column: Interactive Voice Avatar, Live Speech & Text Input */}
+        <section className="flex-1 flex flex-col items-center justify-between p-6 md:p-8 overflow-y-auto border-r border-slate-200">
+
+          <div className="w-full max-w-2xl flex flex-col items-center my-auto">
+
+            {/* AI Avatar Pulse & Waveform */}
+            <div className="relative w-28 h-28 mb-5">
+              <div
+                className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                  isSpeaking
+                    ? 'ring-8 ring-indigo-400/40 ring-offset-4 ring-offset-[#F8FAFC]'
+                    : isListening
+                    ? 'ring-8 ring-emerald-400/40 ring-offset-4 ring-offset-[#F8FAFC]'
+                    : ''
+                }`}
+              />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-xl shadow-indigo-200">
+                <Sparkles className={`w-10 h-10 text-white ${isSpeaking ? 'animate-bounce' : ''}`} />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Identity Verification</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">
-                We collect your name and phone number before the interview to ensure your requirements are saved securely to your account.
+            </div>
+
+            {/* Audio Wave Bars */}
+            <div className="flex items-end gap-1 h-7 mb-5">
+              {[4, 7, 10, 6, 9, 5, 8, 12, 7, 4, 9, 6, 11, 5, 8].map((h, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 3.5,
+                    height: isSpeaking || isListening ? `${h * 2.2}px` : '4px',
+                    backgroundColor: isSpeaking ? '#4f46e5' : isListening ? '#10b981' : '#cbd5e1',
+                    borderRadius: 4,
+                    transition: `height ${0.1 + i * 0.02}s ease-in-out`,
+                    animation: isSpeaking || isListening ? `pulse 0.7s ease-in-out ${i * 0.05}s infinite alternate` : 'none',
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Speech Bubble: Live Helix Question */}
+            <div className="w-full bg-white border border-slate-200 rounded-3xl p-6 shadow-sm mb-4 relative overflow-hidden" style={{ borderLeft: '4px solid #4f46e5' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
+                <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-widest">
+                  Helix Consultant
+                </span>
+                {isSpeaking && (
+                  <span className="text-[10px] text-indigo-600 ml-auto font-semibold animate-pulse">
+                    Speaking...
+                  </span>
+                )}
+              </div>
+              <p className="text-base md:text-lg font-semibold text-slate-900 leading-relaxed">
+                {currentSpeech || currentQText || 'Hello! Welcome to Helix. Could you please tell me your name?'}
+                {isSpeaking && <span className="inline-block w-1 h-4 bg-indigo-500 ml-1.5 animate-pulse" />}
               </p>
-              <div className="mt-6 w-full space-y-3">
-                <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${capturedName ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                  <User className={`w-4 h-4 ${capturedName ? 'text-green-600' : 'text-gray-400'}`} />
-                  <div className="text-left">
-                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Name</p>
-                    <p className={`text-sm font-semibold ${capturedName ? 'text-green-700' : 'text-gray-400'}`}>
-                      {capturedName || 'Not yet captured'}
-                    </p>
-                  </div>
-                  {capturedName && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
-                </div>
-                <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${capturedPhone ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                  <Phone className={`w-4 h-4 ${capturedPhone ? 'text-green-600' : 'text-gray-400'}`} />
-                  <div className="text-left">
-                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Phone</p>
-                    <p className={`text-sm font-semibold ${capturedPhone ? 'text-green-700' : 'text-gray-400'}`}>
-                      {capturedPhone || 'Not yet captured'}
-                    </p>
-                  </div>
-                  {capturedPhone && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
-                </div>
-              </div>
             </div>
 
-          ) : (
-            /* ── Coverage panel (during Vapi interview) ────────────────── */
-            <>
-              <p className="text-xs font-semibold text-gray-500 tracking-[0.11em] mb-4 uppercase">Requirement Coverage</p>
+            {/* User Live Transcription Bubble */}
+            {liveTranscript && (
+              <div className="w-full bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4 mb-4 shadow-xs">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">
+                    You are saying...
+                  </span>
+                </div>
+                <p className="text-base text-slate-800 font-medium">
+                  {liveTranscript}
+                </p>
+              </div>
+            )}
 
-              <div className="flex items-center gap-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border border-blue-100/50 rounded-2xl p-4 mb-6">
-                <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-white border border-blue-200 shadow-sm flex-shrink-0">
-                  <span className="text-base font-bold text-blue-600">{progressPercent}%</span>
+            {/* Processing Waveform */}
+            {processing && <AiProcessingWaveform procStep={procStep} />}
+          </div>
+
+          {/* Bottom Control & Text Input Bar (Always Rendered & Interactive) */}
+          <div className="w-full max-w-2xl mt-auto pt-2">
+            <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-full p-2 shadow-lg shadow-slate-100">
+              <button
+                type="button"
+                onClick={toggleMute}
+                className={`w-11 h-11 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
+                  isMuted
+                    ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-200'
+                }`}
+                title={isMuted ? 'Unmute microphone' : 'Mute microphone'}
+              >
+                {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              </button>
+
+              <input
+                type="text"
+                value={typedText}
+                onChange={(e) => setTypedText(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') submitTyped(); }}
+                placeholder={
+                  isSpeaking
+                    ? 'Helix is speaking...'
+                    : currentStep === 'name'
+                    ? 'Type your name (or speak)...'
+                    : currentStep === 'phone'
+                    ? 'Type your 10-digit mobile number...'
+                    : 'Speak your answer, or type here...'
+                }
+                disabled={processing}
+                className="flex-1 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
+              />
+
+              <button
+                type="button"
+                onClick={submitTyped}
+                disabled={!typedText.trim() || processing}
+                className="w-9 h-9 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 disabled:opacity-40 flex items-center justify-center transition-colors flex-shrink-0"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={stopCall}
+                className="w-9 h-9 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors flex-shrink-0"
+                title="Finish and generate requirements"
+              >
+                <PhoneOff className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-center text-xs text-slate-400 mt-2">
+              {isMuted ? 'Microphone muted' : 'Vapi AI Voice Active — speak naturally anytime or type your answer'}
+            </p>
+          </div>
+        </section>
+
+        {/* Right Column: Recorded Responses & Verification Panel */}
+        <aside className="w-full lg:w-[420px] bg-white p-6 overflow-y-auto flex flex-col gap-5 border-t lg:border-t-0 lg:border-l border-slate-200">
+
+          {/* Captured User Profile Verification Card */}
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-indigo-600" />
+              <span>Verified Profile Details</span>
+            </h4>
+            <div className="space-y-2">
+              <div className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs ${capturedName ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-white border-slate-200 text-slate-500'}`}>
+                <div className="flex items-center gap-2">
+                  <User className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="font-medium">Name:</span>
+                  <span className="font-bold">{capturedName || 'Listening for name...'}</span>
                 </div>
-                <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Project Understanding</h4>
-                  <p className="text-sm font-bold text-gray-900 mt-0.5">
-                    {progressPercent >= 90 ? 'Thoroughly Understood'
-                      : progressPercent >= 60 ? 'Deep Understanding'
-                      : progressPercent >= 30 ? 'Gathering Scope'
-                      : 'Analyzing Idea'}
-                  </p>
-                </div>
+                {capturedName && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
               </div>
 
-              {/* Checklist */}
-              {(coverage.checklist?.length > 0 || coverage.collected_fields?.length > 0) && (
-                <div className="border border-gray-100 rounded-2xl p-4 bg-gray-50/30 mb-6">
-                  <h4 className="text-xs font-bold text-gray-900 mb-3">Requirement Checklist</h4>
-                  {coverage.checklist?.length > 0 ? (() => {
-                    const universal = coverage.checklist.filter(i => i.section !== 'domain');
-                    const domain    = coverage.checklist.filter(i => i.section === 'domain');
-                    const renderItem = item => {
-                      if (item.status === 'complete') return (
-                        <div key={item.field} className="flex items-center gap-1.5 text-xs text-green-700" title={item.evidence || item.label}>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                          <span className="truncate font-medium">{item.label}</span>
-                        </div>
-                      );
-                      if (item.status === 'partial') return (
-                        <div key={item.field} className="flex items-center gap-1.5 text-xs text-amber-600">
-                          <MinusCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-                      );
-                      return (
-                        <div key={item.field} className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Circle className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-                      );
-                    };
-                    return (
-                      <>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">{universal.map(renderItem)}</div>
-                        {domain.length > 0 && (
-                          <>
-                            <div className="flex items-center gap-2 mt-4 mb-2">
-                              <div className="flex-1 h-px bg-gradient-to-r from-indigo-100 to-transparent" />
-                              <span className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider whitespace-nowrap px-1">
-                                {coverage.domain_label ? `${coverage.domain_label} Requirements` : 'Domain Requirements'}
-                              </span>
-                              <div className="flex-1 h-px bg-gradient-to-l from-indigo-100 to-transparent" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-2">{domain.map(renderItem)}</div>
-                          </>
-                        )}
-                        <div className="flex items-center gap-3 mt-3 pt-2.5 border-t border-gray-100">
-                          <div className="flex items-center gap-1 text-[10px] text-gray-400"><CheckCircle2 className="w-3 h-3 text-green-500" /><span>Captured</span></div>
-                          <div className="flex items-center gap-1 text-[10px] text-gray-400"><MinusCircle  className="w-3 h-3 text-amber-400" /><span>Partial</span></div>
-                          <div className="flex items-center gap-1 text-[10px] text-gray-400"><Circle       className="w-3 h-3 text-gray-300" /><span>Missing</span></div>
-                        </div>
-                      </>
-                    );
-                  })() : (
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      {(coverage.collected_fields || []).map(f => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs text-green-700">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                          <span className="truncate font-medium">{coverage.field_labels?.[f] || f}</span>
-                        </div>
-                      ))}
-                      {(coverage.missing_fields || []).map(f => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Circle className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-                          <span className="truncate">{coverage.field_labels?.[f] || f}</span>
-                        </div>
-                      ))}
+              <div className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs ${capturedPhone ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-white border-slate-200 text-slate-500'}`}>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="font-medium">Mobile:</span>
+                  <span className="font-bold">{capturedPhone || 'Listening for mobile #...'}</span>
+                </div>
+                {capturedPhone && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+              </div>
+            </div>
+          </div>
+
+          {/* Live Recorded Responses History (User Verification) */}
+          <div className="flex-1 flex flex-col">
+            <div className="flex items-center justify-between mb-2.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <MessageSquare className="w-4 h-4 text-indigo-600" />
+                <span>Recorded Responses ({qaHistory.length})</span>
+              </h4>
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">
+                Saved in DB
+              </span>
+            </div>
+
+            {qaHistory.length === 0 ? (
+              <div className="border border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-400 my-auto">
+                <Sparkles className="w-5 h-5 mx-auto mb-2 text-slate-300" />
+                <p className="text-xs font-medium text-slate-600">Your recorded responses will appear here</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Every response is stored in real-time for your verification.</p>
+              </div>
+            ) : (
+              <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
+                {qaHistory.map((item, idx) => (
+                  <div key={idx} className="border border-slate-200/90 rounded-2xl p-3.5 bg-white shadow-2xs">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1.5">
+                      <span className="text-indigo-600 font-bold">Response #{idx + 1}</span>
+                      <span className="text-slate-400">{item.timestamp}</span>
                     </div>
-                  )}
-                </div>
-              )}
-
-              {/* Live extractions */}
-              <div className="flex-1">
-                <h4 className="text-xs font-bold text-gray-900 uppercase tracking-[0.11em] mb-3">
-                  Live Extractions ({totalCaptured})
-                </h4>
-                {extractions.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-48 border border-dashed border-gray-200 rounded-2xl p-4 text-center">
-                    <Sparkles className="w-4 h-4 text-gray-300 mb-2" />
-                    <p className="text-[11px] text-gray-500 max-w-[200px]">Requirements will appear here in real-time as you speak.</p>
+                    <p className="text-xs text-slate-600 font-medium mb-1.5 line-clamp-2">
+                      <strong className="text-slate-700">Q:</strong> {item.question}
+                    </p>
+                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-2 text-xs text-slate-900 font-semibold flex items-start gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                      <span>{item.answer}</span>
+                    </div>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    {extractions.map((ext, i) => (
-                      <div key={i} className="border border-gray-100 rounded-xl p-4 hover:shadow-sm transition-shadow">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-semibold text-gray-500">Q{ext.q}</span>
-                          <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium">{ext.category || 'general'}</span>
-                        </div>
-                        {ext.key_points?.map((p, j)  => <p key={j} className="text-xs text-gray-700 mb-1">• {p}</p>)}
-                        {ext.requirements?.map((r, j) => <p key={j} className="text-xs text-blue-600 mt-1 font-medium">→ {r}</p>)}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
+            )}
+          </div>
 
-              {/* Generate button (after complete) */}
-              {callStatus === 'complete' && (
-                <div className="mt-6 pt-4 border-t border-gray-100">
-                  <button
-                    onClick={handleGenerateRequirements} disabled={processing}
-                    className="w-full flex items-center justify-center gap-2 bg-[#1E293B] text-white font-medium text-sm py-3.5 rounded-full disabled:opacity-50"
-                  >
-                    <ArrowRight className="w-4 h-4" /> Generate requirement form
-                  </button>
-                </div>
-              )}
-            </>
+          {/* Complete button */}
+          {callStatus === 'complete' && (
+            <button
+              onClick={() => {
+                if (user && appId) navigate(`/requirements/${appId}`);
+                else setShowPostModal(true);
+              }}
+              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold text-sm transition-all shadow-md flex items-center justify-center gap-2 mt-auto"
+            >
+              <FileText className="w-4 h-4" />
+              <span>View Generated Requirements</span>
+            </button>
           )}
-        </div>
-      </div>
+        </aside>
+      </main>
 
-      {/* ─── OTP Modal ──────────────────────────────────────────────────────── */}
-      {showOtp && (
-        <OtpModal
-          phone={otpPhone} name={otpName} simOtp={simOtp}
-          onSuccess={handleOtpSuccess}
-          onClose={() => setShowOtp(false)}
+      {/* Post-Interview Modal (Verify OTP / Sign In / Sign Up / Guest) */}
+      {showPostModal && (
+        <PostInterviewModal
+          appId={appId}
+          phone={capturedPhone}
+          name={capturedName}
+          simOtp={simOtp}
+          onGuestContinue={() => {
+            setShowPostModal(false);
+            if (appId) navigate(`/requirements/${appId}`);
+          }}
+          onOtpSuccess={() => {
+            setShowPostModal(false);
+            if (appId) navigate(`/requirements/${appId}`);
+            else navigate('/dashboard');
+          }}
+          onNavigateLogin={() => {
+            setShowPostModal(false);
+            navigate(`/login?claim_app=${appId}`);
+          }}
+          onNavigateRegister={() => {
+            setShowPostModal(false);
+            navigate(`/register?claim_app=${appId}`);
+          }}
         />
       )}
-
-      {/* ─── CSS for waveform animation ──────────────────────────────────── */}
-      <style>{`
-        @keyframes pulse {
-          from { opacity: 0.4; transform: scaleY(0.6); }
-          to   { opacity: 0.95; transform: scaleY(1.2); }
-        }
-      `}</style>
     </div>
   );
 }

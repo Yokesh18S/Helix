@@ -24,10 +24,11 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/"                element={<Landing />} />
+          <Route path="/interview"       element={<Interview />} />
+          <Route path="/landing"         element={<Landing />} />
           <Route path="/login"           element={<Login />} />
           <Route path="/register"        element={<Register />} />
           <Route path="/dashboard"       element={<Dashboard />} />
-          <Route path="/interview"       element={<Interview />} />
           <Route path="/requirements/:id" element={<Requirements />} />
           <Route path="/documents/:id"   element={<Documents />} />
           <Route path="/review/:id"      element={<ReviewSign />} />
