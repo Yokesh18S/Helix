@@ -399,9 +399,245 @@ Output ONLY valid JSON (no markdown, no backticks):
 
 
 
-# ═══════════════════════════════════════════════════════════════
-# REQUIREMENTS SUMMARY GENERATION
-# ═══════════════════════════════════════════════════════════════
+def synthesize_requirements_from_transcript(application_data: Dict, chosen_language: str = "English") -> Dict[str, Any]:
+    """
+    Intelligently synthesize structured requirements, domain info, features, tech stack,
+    timeline, budget, and business canvas from the user's actual spoken answers.
+    """
+    transcript = application_data.get("interview_transcript", [])
+    raw_answers = []
+    if isinstance(transcript, list):
+        for item in transcript:
+            if isinstance(item, dict) and item.get("answer"):
+                raw_answers.append(str(item["answer"]))
+            elif isinstance(item, str):
+                raw_answers.append(item)
+    
+    # Also check other merged fields
+    for k in ("vapi_summary", "ai_summary", "business_description", "key_points"):
+        v = application_data.get(k)
+        if v:
+            if isinstance(v, list):
+                raw_answers.extend([str(x) for x in v if str(x)])
+            elif isinstance(v, str):
+                raw_answers.append(v)
+                
+    full_text = " ".join(raw_answers)
+    text_lower = full_text.lower()
+
+    # 1. Detect Domain & Project Name
+    domain = "Custom Software Solution"
+    proj_name = "Business Solution Application"
+    app_type = "Web & Mobile Application"
+
+    if any(w in text_lower for w in ["restaurant", "food", "kitchen", "recipe", "dine", "menu", "cafe", "waiter"]):
+        domain = "Food & Beverage / Restaurant Hospitality"
+        proj_name = "Voice-Enabled Restaurant Operations Platform"
+        if "voice" in text_lower:
+            proj_name = "Voice-Driven Restaurant Web & Mobile Suite"
+    elif any(w in text_lower for w in ["hospital", "doctor", "clinic", "patient", "medical", "health", "pharma"]):
+        domain = "Healthcare & Medical Services"
+        proj_name = "Healthcare & Patient Care Management Portal"
+    elif any(w in text_lower for w in ["e-commerce", "ecommerce", "shop", "store", "product", "sell", "cart", "retail"]):
+        domain = "E-Commerce & Digital Retail"
+        proj_name = "Digital Commerce & Order Fulfillment Platform"
+    elif any(w in text_lower for w in ["school", "college", "student", "teacher", "course", "lms", "learning", "education"]):
+        domain = "Education & Learning Management (EdTech)"
+        proj_name = "Interactive Educational Management System"
+    elif any(w in text_lower for w in ["real estate", "property", "tenant", "rent", "broker", "apartment"]):
+        domain = "Real Estate & Property Management"
+        proj_name = "Smart Property & Tenant Management Portal"
+    elif any(w in text_lower for w in ["logistics", "fleet", "delivery", "tracking", "driver", "transport", "warehouse"]):
+        domain = "Logistics & Supply Chain Management"
+        proj_name = "Fleet Tracking & Supply Chain Hub"
+    elif any(w in text_lower for w in ["ai", "machine learning", "automation", "saas", "workflow"]):
+        domain = "AI & Enterprise SaaS Automation"
+        proj_name = "AI-Powered Business Automation Platform"
+
+    # Refine project name if user explicitly described their idea
+    for ans in raw_answers:
+        ans_clean = re.sub(r'^(i want to build|we want to create|i am building|we are building|it is a|i want a)\s+', '', ans, flags=re.IGNORECASE).strip()
+        if len(ans_clean) > 8 and any(w in ans_clean.lower() for w in ["app", "platform", "system", "website", "software", "portal"]):
+            candidate = ans_clean.split('.')[0].split(',')[0].strip()
+            if len(candidate) < 60:
+                proj_name = candidate.title()
+                break
+
+    # 2. Extract Features & Sub-modules
+    features_list = []
+    if "kitchen" in text_lower:
+        features_list.append("Kitchen Order Display & Workflow App")
+    if "inventory" in text_lower:
+        features_list.append("Real-Time Inventory & Stock Management")
+    if "recipe" in text_lower:
+        features_list.append("Recipe Database & Cost Calculation Module")
+    if "voice" in text_lower:
+        features_list.append("Voice-Activated Navigation & Fast Order Entry")
+    if "order" in text_lower or "ordering" in text_lower:
+        features_list.append("Live Customer Order Processing & Table Management")
+    if "bill" in text_lower or "payment" in text_lower or "invoice" in text_lower:
+        features_list.append("Automated Digital Billing & Invoicing")
+    if "dashboard" in text_lower or "analytics" in text_lower or "report" in text_lower:
+        features_list.append("Executive Analytics & Performance Dashboard")
+    
+    # Generic fallback features if none detected
+    if not features_list:
+        features_list = [
+            "User Authentication & Role Management",
+            "Interactive Operational Dashboard",
+            "Data Tracking & Real-Time Sync",
+            "Automated Notifications & Reports"
+        ]
+
+    # 3. Extract Target Audience
+    audience_parts = []
+    if any(w in text_lower for w in ["owner", "manager", "admin"]):
+        audience_parts.append("Business Owners & Managers")
+    if any(w in text_lower for w in ["kitchen", "chef", "staff", "employee", "waiter"]):
+        audience_parts.append("Kitchen Staff & Operational Employees")
+    if any(w in text_lower for w in ["customer", "client", "guest", "user", "diner"]):
+        audience_parts.append("End Customers & Diners")
+    if not audience_parts:
+        audience_parts = ["Operational Managers", "Team Staff", "End Customers"]
+    target_audience_str = ", ".join(audience_parts)
+
+    # 4. Extract Platforms
+    if "both" in text_lower or ("web" in text_lower and "mobile" in text_lower):
+        app_type = "Web Application & Mobile Apps (iOS / Android)"
+    elif "mobile" in text_lower or "app" in text_lower and "web" not in text_lower:
+        app_type = "Mobile Application (iOS / Android)"
+    elif "web" in text_lower:
+        app_type = "Web Application (Responsive Portal)"
+
+    # 5. Extract Integrations
+    integrations_list = []
+    if "whatsapp" in text_lower:
+        integrations_list.append("WhatsApp Business API (Alerts & Confirmations)")
+    if any(w in text_lower for w in ["payment", "stripe", "razorpay", "paypal", "upi"]):
+        integrations_list.append("Payment Gateway (UPI / Cards / Net Banking)")
+    if "sms" in text_lower:
+        integrations_list.append("SMS Notification Gateway")
+    if "email" in text_lower or "gmail" in text_lower:
+        integrations_list.append("Email Integration (SMTP/SendGrid)")
+    if not integrations_list:
+        integrations_list = ["WhatsApp API", "Secure Payment Gateway", "Automated SMS / Email Alerts"]
+
+    # 6. Extract Timeline
+    timeline_str = "8 to 12 weeks for MVP launch"
+    t_match = re.search(r'(\d+)\s*(month|week|day|year)s?', text_lower)
+    if t_match:
+        timeline_str = f"{t_match.group(1)} {t_match.group(2).capitalize()}{'s' if int(t_match.group(1)) > 1 else ''}"
+    elif "two months" in text_lower:
+        timeline_str = "2 Months"
+    elif "one month" in text_lower:
+        timeline_str = "1 Month"
+    elif "three months" in text_lower:
+        timeline_str = "3 Months"
+
+    # 7. Extract Budget
+    budget_str = "₹5,00,000 - ₹10,00,000 INR"
+    b_match = re.search(r'(\d+)\s*(lakh|lac|crore|thousand|k|cr|inr|rupee)s?', text_lower)
+    if "2 lakh" in text_lower or "two lakh" in text_lower:
+        budget_str = "₹2,00,000 INR (2 Lakhs)"
+    elif "5 lakh" in text_lower or "five lakh" in text_lower:
+        budget_str = "₹5,00,000 INR (5 Lakhs)"
+    elif "10 lakh" in text_lower or "ten lakh" in text_lower:
+        budget_str = "₹10,00,000 INR (10 Lakhs)"
+    elif b_match:
+        budget_str = f"₹{b_match.group(1)} {b_match.group(2).capitalize()} INR"
+
+    # 8. Extract Tech Stack
+    tech_parts = []
+    if "react" in text_lower:
+        tech_parts.append("Frontend: React.js")
+    elif "vue" in text_lower or "angular" in text_lower or "next" in text_lower:
+        tech_parts.append("Frontend: Modern Web Framework")
+    else:
+        tech_parts.append("Frontend: React.js (Tailwind CSS)")
+
+    if "node" in text_lower:
+        tech_parts.append("Backend: Node.js / Express")
+    elif "python" in text_lower or "fastapi" in text_lower or "django" in text_lower:
+        tech_parts.append("Backend: Python FastAPI")
+    else:
+        tech_parts.append("Backend: Node.js REST API")
+
+    if "postgres" in text_lower or "postgresql" in text_lower:
+        tech_parts.append("Database: PostgreSQL")
+    elif "mongodb" in text_lower:
+        tech_parts.append("Database: MongoDB")
+    elif "mysql" in text_lower:
+        tech_parts.append("Database: MySQL")
+    else:
+        tech_parts.append("Database: PostgreSQL")
+
+    tech_preferences_str = " | ".join(tech_parts)
+
+    # 9. Formulate Descriptions
+    desc_str = full_text[:250] if full_text else f"Comprehensive {domain} software solution designed to optimize daily workflows."
+    prob_str = f"Overcoming manual delays, operational miscommunications, and disconnected workflows in {domain} through automated digital tracking."
+    outcome_str = f"Achieve streamlined day-to-day operations, real-time status visibility, reduced overhead costs, and seamless customer interaction."
+
+    if "restaurant" in text_lower or "kitchen" in text_lower:
+        desc_str = "A voice-enabled restaurant management platform integrating kitchen order processing, inventory tracking, and recipe management."
+        prob_str = "Eliminate verbal miscommunication, kitchen order delays, and inventory wastage through synchronized voice and digital workflows."
+        outcome_str = "Accelerated table turnover, accurate real-time inventory control, zero recipe inconsistency, and enhanced diner satisfaction."
+
+    return {
+        "ai_summary": f"Business Requirements Specification for {proj_name}. {desc_str} Tailored for {target_audience_str} with {', '.join(features_list[:3])}.",
+        "project_name": proj_name,
+        "project_type": "Custom Enterprise Solution",
+        "business_domain": domain,
+        "application_type": app_type,
+        "target_audience": target_audience_str,
+        "business_description": desc_str,
+        "problem_statement": prob_str,
+        "desired_outcomes": outcome_str,
+        "key_features": ", ".join(features_list),
+        "integrations": ", ".join(integrations_list),
+        "timeline": timeline_str,
+        "budget_range": budget_str,
+        "tech_preferences": tech_preferences_str,
+        "scalability_needs": "Cloud auto-scaling with secure load-balanced architecture",
+        "security_requirements": "SSL/TLS encryption, JWT authentication, Role-based access control (RBAC)",
+        "total_requirements": len(features_list) + 5,
+        "business_model_canvas": {
+            "key_partners": ["Cloud Infrastructure Providers", "Payment Gateways", "WhatsApp Business Partners"],
+            "key_activities": ["Platform Development & Testing", "Staff Onboarding & Training", "System Monitoring"],
+            "key_resources": ["Proprietary Software Architecture", "Cloud Database", "Engineering Team"],
+            "value_propositions": [f"Streamlined {domain} Workflows", "Real-Time Operational Visibility", "Voice-Enabled Productivity"],
+            "customer_relationships": ["Self-Service Dashboard", "Automated Support", "Dedicated Technical Assistance"],
+            "channels": [app_type, "WhatsApp Alerts", "Web Management Portal"],
+            "customer_segments": audience_parts,
+            "cost_structure": ["Software Engineering", "Cloud Hosting Infrastructure", "Integration & Maintenance"],
+            "revenue_streams": ["SaaS Subscription License", "Transaction Processing Fee", "Custom Feature Add-ons"]
+        },
+        "budget_planner": {
+            "total_budget_inr": budget_str,
+            "development_cost_inr": "40% of Total Budget",
+            "marketing_budget_inr": "20% of Total Budget",
+            "operations_cost_inr": "20% of Total Budget",
+            "contingency_fund_inr": "20% of Total Budget",
+            "break_even_timeline": "4 to 6 months",
+            "expected_roi": "180% within first year",
+            "breakdown": [
+                {"category": "Core Architecture & Backend", "percentage": 35, "allocated_inr": "35%", "description": "API Services, DB Schema, Authentication"},
+                {"category": "Frontend UI/UX & Mobile Apps", "percentage": 25, "allocated_inr": "25%", "description": "Web App UI, Mobile Interfaces"},
+                {"category": "Third-Party Integrations & Voice", "percentage": 20, "allocated_inr": "20%", "description": "Voice Navigation, WhatsApp & Payment APIs"},
+                {"category": "QA & Security Audit", "percentage": 10, "allocated_inr": "10%", "description": "Automated Testing, Security Hardening"},
+                {"category": "Deployment & Buffer", "percentage": 10, "allocated_inr": "10%", "description": "Cloud DevOps Setup, Contingency Reserve"}
+            ]
+        },
+        "proportional_budget": [
+            {"category": "Core Architecture & Backend", "percentage": 35, "allocated_amount": "35% of Total Budget", "description": "API Services, DB Schema, Authentication"},
+            {"category": "Frontend UI/UX & Mobile Apps", "percentage": 25, "allocated_amount": "25% of Total Budget", "description": "Web App UI, Mobile Interfaces"},
+            {"category": "Third-Party Integrations & Voice", "percentage": 20, "allocated_amount": "20% of Total Budget", "description": "Voice Navigation, WhatsApp & Payment APIs"},
+            {"category": "Quality Assurance & Security Audit", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Automated Testing, Security Hardening"},
+            {"category": "Cloud Infrastructure & Contingency", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Cloud Deployment, CI/CD Pipeline"}
+        ],
+        "doc_language_prompt": f"Generated requirement specification in {chosen_language}."
+    }
+
 
 async def generate_requirements_summary(
     application_data: Dict,
@@ -422,143 +658,24 @@ async def generate_requirements_summary(
     else:
         chosen_language = target_lang
 
-    if not GEMINI_API_KEY:
-        return {
-            "ai_summary": "Comprehensive business requirements specification prepared by Helix AI Consultant.",
-            "project_name": application_data.get("project_name", "Untitled Project"),
-            "project_type": "Software Development",
-            "business_domain": "Technology",
-            "application_type": "Web & Mobile Application",
-            "target_audience": "Target Customers",
-            "business_description": "Custom business solution",
-            "problem_statement": "Operational workflow optimization",
-            "desired_outcomes": "Automated processes and higher revenue",
-            "key_features": "Core user management, tracking, billing",
-            "integrations": "Payment Gateway, SMS, Email",
-            "timeline": "3 to 6 months",
-            "budget_range": "Flexible startup budget",
-            "tech_preferences": "React, Python FastAPI, PostgreSQL",
-            "scalability_needs": "High scalability",
-            "security_requirements": "SSL, OAuth2, Data Encryption",
-            "total_requirements": 12,
-            "business_model_canvas": {
-                "key_partners": ["Technology Partners", "Payment Providers"],
-                "key_activities": ["Platform Development", "Customer Onboarding"],
-                "key_resources": ["Proprietary Software", "Engineering Team"],
-                "value_propositions": ["Streamlined Operations", "Scalable Growth"],
-                "customer_relationships": ["Self-service", "Automated Support"],
-                "channels": ["Web Portal", "Mobile Apps"],
-                "customer_segments": ["End Users & Businesses"],
-                "cost_structure": ["Engineering", "Cloud Infrastructure", "Marketing"],
-                "revenue_streams": ["Subscription Fees", "Transaction Commission"]
-            },
-            "proportional_budget": [
-                {"category": "Core Platform & Backend Architecture", "percentage": 35, "allocated_amount": "35% of Total Budget", "description": "API Services, DB Schema, Authentication"},
-                {"category": "Frontend UI/UX & Mobile Applications", "percentage": 25, "allocated_amount": "25% of Total Budget", "description": "Client Web App, Mobile Application UI"},
-                {"category": "AI / ML & Third-Party Integrations", "percentage": 20, "allocated_amount": "20% of Total Budget", "description": "Gemini Integration, Payment Gateway"},
-                {"category": "Quality Assurance & Compliance", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Automated Testing, Security Audit"},
-                {"category": "Deployment & Buffer Contingency", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Cloud DevOps, Contingency Reserve"}
-            ],
-            "doc_language_prompt": f"I can generate the report in {chosen_language}."
-        }
+    # Synthesize based on actual spoken transcript
+    synthesized = synthesize_requirements_from_transcript(application_data, chosen_language)
+
+    if not GEMINI_API_KEY or "your_gemini_api_key" in GEMINI_API_KEY:
+        return synthesized
 
     try:
         model = genai.GenerativeModel(GEMINI_MODEL)
 
         prompt = f"""You are an executive Business Analyst and native technical author generating a Business Requirement Specification (BRD / SRS), Business Model Canvas, and Detailed Budget Planner in Indian Rupees (INR ₹) in {chosen_language}.
 
-MANDATORY EXTRACTION & WRITING PRINCIPLES:
-1. DOMAIN IDENTIFICATION & ADAPTATION: Identify the user's business domain (e.g., AI Services, Restaurant, Hospital/Healthcare, Product Manufacturing, E-commerce, Education, Real Estate, SaaS). Adapt all terminology, workflows, features, and descriptions to match this domain.
-2. ACCURATE DOMAIN-BASED PROJECT NAME: Derive a concise, relevant project_name directly matching the user's business idea and domain (e.g. if user said "I provide AI services", project_name = "AI Services Platform"; if user said "restaurant ordering app", project_name = "Restaurant Order & Kitchen Management System"; if "hospital app", project_name = "Hospital & Patient Management Portal"). NEVER invent generic, unrelated corporate names like "SynergyFlow AI".
-3. STRICT FIDELITY TO USER STATEMENTS: Synthesize business_description, problem_statement, key_features, target_audience, timeline, budget_range, and integrations directly from the user's extracted facts and interview transcript.
-4. NATURAL NATIVE PROSE: Write in fluent, grammatically correct, native professional prose as if originally authored by a native speaker in {chosen_language}.
-5. TECHNICAL TERMINOLOGY PROTECTION: Preserve software & business domain terminology (e.g. API, AI, ML, UI/UX, CI/CD, DevOps, JWT, OTP, SQL, REST API, OAuth2, SSL, Cloud, React, Python FastAPI, PostgreSQL, Database, Mobile App, Web App).
-6. DOMAIN-TAILORED FORM FILLING: Fill all form fields, Business Model Canvas blocks, and budget items with specific features and requirements appropriate for the user's domain.
-7. BUDGET IN INR: All financial figures, budgets, and breakdowns MUST be calculated and displayed in Indian Rupees (INR ₹).
-
 Interview Data:
 {json.dumps(application_data, indent=2)}
 
-Generate a JSON response with the following exact keys:
-{{
-    "ai_summary": "Comprehensive 2-3 paragraph summary of the project requirements written naturally in {chosen_language}",
-    "project_name": "Suggested project name",
-    "project_type": "Type of project (e.g. Workflow Automation, E-commerce App)",
-    "business_domain": "Primary business domain/industry",
-    "application_type": "Application type (web, mobile app, both, etc.)",
-    "target_audience": "Target audience / customer segments",
-    "business_description": "Clear explanation of the business idea",
-    "problem_statement": "Problem statement being solved",
-    "desired_outcomes": "Desired business outcomes and vision",
-    "key_features": "List of core features comma separated",
-    "integrations": "Third party integrations list",
-    "timeline": "Estimated project timeline (e.g., 8-12 weeks for MVP launch)",
-    "budget_range": "Estimated budget range in INR (e.g., ₹10,00,000 - ₹25,00,000)",
-    "tech_preferences": "Recommended technology stack (e.g., React / Next.js, Python FastAPI, PostgreSQL, Redis)",
-    "scalability_needs": "Scalability requirements (e.g., Cloud containerized auto-scaling for 50,000 MAU)",
-    "security_requirements": "Security specifications (e.g., TLS/SSL encryption, OAuth2/JWT auth, PCI-DSS compliance)",
-    "total_requirements": 12,
-    "business_model_canvas": {{
-        "customer_segments": ["Target Customers & Enterprise Clients"],
-        "value_propositions": ["Streamlined Operations", "Automated Workflow", "Scalable Performance"],
-        "channels": ["Web Platform", "Mobile Applications", "REST API Integrations"],
-        "customer_relationships": ["Self-service Portal", "Automated Support", "Dedicated Success Manager"],
-        "revenue_streams": ["Subscription Plans", "Transaction Commission", "Premium Modules"],
-        "key_resources": ["Proprietary Architecture", "Engineering Team", "Customer Data"],
-        "key_activities": ["Platform Development", "User Acquisition", "Customer Support"],
-        "key_partnerships": ["Technology Partners", "Payment Providers", "Cloud Vendors"],
-        "cost_structure": ["Software Engineering", "Cloud Infrastructure Hosting", "Marketing & Security"]
-    }},
-    "budget_planner": {{
-        "total_budget_inr": "₹15,00,000",
-        "development_cost_inr": "₹6,00,000",
-        "marketing_budget_inr": "₹3,00,000",
-        "operations_cost_inr": "₹2,50,000",
-        "contingency_fund_inr": "₹1,50,000",
-        "break_even_timeline": "6 to 9 months",
-        "expected_roi": "150% over 18 months",
-        "breakdown": [
-            {{ "category": "Core Backend & Architecture", "percentage": 35, "allocated_inr": "₹5,25,000", "description": "API Services, DB Schema, Authentication" }},
-            {{ "category": "Frontend UI/UX & Mobile Apps", "percentage": 25, "allocated_inr": "₹3,75,000", "description": "Web App UI, Mobile Interfaces" }},
-            {{ "category": "AI / ML & Integrations", "percentage": 20, "allocated_inr": "₹3,00,000", "description": "Gemini Integration, Payment Gateways" }},
-            {{ "category": "QA & Security Audit", "percentage": 10, "allocated_inr": "₹1,50,000", "description": "Automated E2E Testing, Penetration Testing" }},
-            {{ "category": "Cloud DevOps & Contingency", "percentage": 10, "allocated_inr": "₹1,50,000", "description": "AWS/GCP Setup, CI/CD, Reserve Buffer" }}
-        ]
-    }},
-    "proportional_budget": [
-        {{
-            "category": "Core Architecture & Backend Development",
-            "percentage": 35,
-            "allocated_amount": "₹5,25,000 (35%)",
-            "description": "API Services, DB Schema, Authentication, Core Services"
-        }},
-        {{
-            "category": "Frontend UI/UX & Client Applications",
-            "percentage": 25,
-            "allocated_amount": "₹3,75,000 (25%)",
-            "description": "Web App UI, Mobile Interfaces, Responsive Design"
-        }},
-        {{
-            "category": "AI / ML & Third-Party Integrations",
-            "percentage": 20,
-            "allocated_amount": "20% of Total Budget",
-            "description": "Gemini Integration, Payment Gateways, Messaging APIs"
-        }},
-        {{
-            "category": "Quality Assurance & Security Compliance",
-            "percentage": 10,
-            "allocated_amount": "10% of Total Budget",
-            "description": "Automated End-to-End Testing, Security Audits, Encryption"
-        }},
-        {{
-            "category": "Cloud Infrastructure & Buffer Reserve",
-            "percentage": 10,
-            "allocated_amount": "10% of Total Budget",
-            "description": "Cloud DevOps Deployment, CI/CD Pipeline, Contingency Buffer"
-        }}
-    ],
-    "doc_language_prompt": "I can generate the report in {chosen_language}."
-}}"""
+Base Extracted Information:
+{json.dumps(synthesized, indent=2)}
+
+Refine and return a comprehensive JSON object matching the exact keys of the base extracted information, ensuring full fidelity to the user's spoken statements."""
 
         try:
             gen_config = genai.GenerationConfig(temperature=0.2, response_mime_type="application/json")  # type: ignore
@@ -574,46 +691,8 @@ Generate a JSON response with the following exact keys:
         res["doc_language_prompt"] = f"I can generate the report in {chosen_language}."
         return res
     except Exception as e:
-        print(f"Summary generation error: {e}")
-        # Fallback with complete field definitions
-        return {
-            "ai_summary": f"Comprehensive requirement specification generated in {chosen_language}.",
-            "project_name": application_data.get("project_name") or "Business Requirement Draft",
-            "project_type": "Custom Business Solution",
-            "business_domain": "Technology & Services",
-            "application_type": "Web & Mobile Application",
-            "target_audience": "Target Customers & Users",
-            "business_description": "End-to-end digital application workflow.",
-            "problem_statement": "Operational workflow optimization and process automation.",
-            "desired_outcomes": "Increased business efficiency, automation, and revenue growth.",
-            "key_features": "User authentication, interactive dashboard, billing, automated reports",
-            "integrations": "Payment Gateway, Email, SMS, Analytics",
-            "timeline": "8 to 12 weeks for MVP development",
-            "budget_range": "Flexible startup budget ($15,000 - $30,000)",
-            "tech_preferences": "React, Python FastAPI, PostgreSQL, Redis",
-            "scalability_needs": "High scalability auto-scaling cloud deployment",
-            "security_requirements": "HTTPS/TLS, OAuth2 authentication, AES-256 encryption",
-            "total_requirements": 12,
-            "business_model_canvas": {
-                "key_partners": ["Technology Partners", "Payment Gateways", "Cloud Hosting Vendors"],
-                "key_activities": ["Platform Development", "Customer Onboarding", "Support"],
-                "key_resources": ["Proprietary Architecture", "Engineering Team"],
-                "value_propositions": ["Streamlined Operations", "Scalable Business Growth"],
-                "customer_relationships": ["Self-service", "Automated Support"],
-                "channels": ["Web Portal", "Mobile Apps"],
-                "customer_segments": ["End Users & Business Clients"],
-                "cost_structure": ["Engineering", "Cloud Infrastructure", "Marketing"],
-                "revenue_streams": ["Subscription Fees", "Transaction Commission"]
-            },
-            "proportional_budget": [
-                {"category": "Core Architecture & Backend", "percentage": 35, "allocated_amount": "35% of Total Budget", "description": "APIs, Database, Auth"},
-                {"category": "Frontend UI/UX & Web/Mobile", "percentage": 25, "allocated_amount": "25% of Total Budget", "description": "User Interface & Dashboards"},
-                {"category": "AI & Third-Party Integrations", "percentage": 20, "allocated_amount": "20% of Total Budget", "description": "AI Pipeline & Integrations"},
-                {"category": "QA & Security Compliance", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Automated Testing & Security Audit"},
-                {"category": "DevOps & Cloud Deployment", "percentage": 10, "allocated_amount": "10% of Total Budget", "description": "Hosting & CI/CD Pipeline"}
-            ],
-            "doc_language_prompt": f"I can generate the report in {chosen_language}."
-        }
+        print(f"Summary generation error, returning synthesized data: {e}")
+        return synthesized
 
 
 # ═══════════════════════════════════════════════════════════════

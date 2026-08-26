@@ -2110,41 +2110,45 @@ async def update_vapi_server_url(request: Request):
 
 # ── Helix System Prompt for Vapi Assistant ─────────────────────────────────────
 _HELIX_VAPI_SYSTEM_PROMPT = """\
-You are Helix, an AI Business Requirements Companion. Your mission is to conduct a focused, friendly business requirements interview.
+You are Helix, an expert AI Business Requirements Consultant. Your mission is to conduct a structured, professional, and friendly requirements gathering consultation with the user.
 
-IMPORTANT: The user's name and phone number have ALREADY been collected before this call. You will receive them in variableValues as {{user_name}} and in the call metadata. Do NOT ask for name or phone again.
+MANDATORY STEP-BY-STEP SEQUENCE:
+STEP 1: FIRST / FULL NAME
+- When the call starts, your very first question MUST be asking for the user's name: "Hello! Welcome to Helix, your AI business consultant. Before we dive into your project, could you please tell me your name?"
+- DO NOT ask about their business idea or project yet.
+- Wait for the user to speak their name.
 
-INTERVIEW START:
-1. At the very start of the call, call getApplicationContext with application_id from metadata.
-2. Greet the user by name using {{user_name}}. Example: "Hi {{user_name}}, I'm Helix. Let's discuss your business idea — tell me what you're looking to build."
-3. If the user has already answered some questions (questions_answered > 0), acknowledge that and continue from where they left off.
+STEP 2: MOBILE PHONE NUMBER
+- As soon as the user shares their name, acknowledge them warmly by name and ask for their 10-digit mobile number: "Nice to meet you, [Name]! Could you also please share your 10-digit mobile phone number so we can securely store your project specifications?"
+- DO NOT ask about the business idea yet.
+- Wait for the user to provide their mobile number.
 
-BUSINESS INTERVIEW (6 to 8 questions):
-1. Ask 6 to 8 focused, domain-tailored business questions covering: business idea, problem, target audience, key features, platform, timeline, budget, security, integrations.
-2. Ask ONE question at a time. Keep questions short, clear, and conversational.
-3. After EVERY user response, immediately call saveInterviewAnswer with application_id, the exact question text, and the user's verbatim answer.
-4. saveInterviewAnswer returns questions_answered and should_complete. When should_complete is true OR questions_answered >= 8, call completeInterview.
+STEP 3: BUSINESS QUESTIONNAIRES (6 to 8 focused questions)
+- Only AFTER both name and mobile number are captured, transition into understanding their business idea: "Awesome! Let's get started. Tell me about your business idea or what you are looking to build."
+- Ask ONE question at a time in order:
+  1. Problem statement & target customers being served
+  2. Key must-have features & core functionality
+  3. Preferred platforms (Web, iOS, Android, or Cross-platform)
+  4. Timeline expectations and budget range
+  5. Integrations, payment gateways, or security requirements
+- After EVERY user answer, immediately execute the saveInterviewAnswer tool with the application_id, question text, and the user's verbatim answer.
 
-COMPLETION:
-1. When should_complete is true or 8+ questions answered, call completeInterview with application_id and a comprehensive summary of all requirements collected.
-2. After calling completeInterview, say: "Thank you! I've captured all your requirements. Please check your phone — a verification code has been sent. Enter it on screen to view your project requirements."
-3. Stop the interview after completeInterview. Do not ask more questions.
+STEP 4: COMPLETION
+- When should_complete is true OR when 6 to 8 questions have been answered, call the completeInterview tool with the application_id and a detailed summary of all requirements.
+- Conclude warmly: "Thank you so much! I have captured and structured all your business requirements. You can now review your verified responses and specifications on screen."
+- Stop after completeInterview.
 
-SPEAKING STYLE:
-- Speak like a friendly, expert business consultant — warm and natural.
-- Keep each question short (1-2 sentences max).
-- Do not use filler words like Great, Wonderful, or Fantastic.
-- Do not repeat the user's words back verbatim.
-- Never invent business details the user did not mention.
+SPEAKING GUIDELINES:
+- Friendly, conversational, professional, concise (1-2 sentences per response).
+- Never jump ahead to the business idea until Name and Mobile Number are collected.
+- Ask only ONE question at a time.
 """
 
 
 @app.post("/api/vapi/sync-assistant")
 async def sync_vapi_assistant(request: Request):
     """
-    Patch the Vapi assistant with the correct Helix system prompt and tool definitions.
-    This enforces the 8-10 question hard limit and enables extraction-to-requirements flow.
-    POST { "server_url": "https://your-backend.example.com" }  (optional — defaults to VAPI_SERVER_URL)
+    Patch the Vapi assistant with the correct Helix system prompt, firstMessage, and tool definitions.
     """
     body = {}
     try:
@@ -2160,11 +2164,11 @@ async def sync_vapi_assistant(request: Request):
     VAPI_API_KEY  = (
         body.get("api_key")
         or os.getenv("VAPI_PRIVATE_KEY", "")
-        or os.getenv("VAPI_PUBLIC_KEY", "")
+        or os.getenv("VAPI_PUBLIC_KEY", "a2c52ad5-6121-4de8-b339-3876c597e16e")
     )
     ASSISTANT_ID  = (
         body.get("assistant_id")
-        or os.getenv("VAPI_ASSISTANT_ID", "ff179db8-6206-4bfa-b8b0-241723e1ddab")
+        or os.getenv("VAPI_ASSISTANT_ID", "a2c52ad5-6121-4de8-b339-3876c597e16e")
     )
 
     tool_endpoint = f"{server_url_base}/api/vapi/tool-call"
@@ -2174,14 +2178,11 @@ async def sync_vapi_assistant(request: Request):
             "type": "function",
             "function": {
                 "name": "getApplicationContext",
-                "description": (
-                    "Call this at the START of the interview. Returns user info, number of questions already answered, "
-                    "and existing requirements so you can personalise and not repeat questions."
-                ),
+                "description": "Call this at the START of the interview to fetch existing context.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "application_id": {"type": "string", "description": "The application ID from call metadata."}
+                        "application_id": {"type": "string", "description": "The application ID."}
                     },
                     "required": ["application_id"]
                 }
@@ -2192,18 +2193,14 @@ async def sync_vapi_assistant(request: Request):
             "type": "function",
             "function": {
                 "name": "saveInterviewAnswer",
-                "description": (
-                    "Save a user's answer after EVERY question. Returns questions_answered count, should_complete boolean "
-                    "(true when ≥8 questions answered or coverage is sufficient), and coverage_percent. "
-                    "When should_complete is true, call completeInterview immediately."
-                ),
+                "description": "Save user answer after EVERY question.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "application_id": {"type": "string", "description": "Application ID."},
-                        "question":        {"type": "string", "description": "Exact question text that was asked."},
-                        "answer":          {"type": "string", "description": "User's verbatim spoken answer."},
-                        "language":        {"type": "string", "description": "Detected language code (e.g. en-US, ta-IN)."}
+                        "question":        {"type": "string", "description": "Exact question text."},
+                        "answer":          {"type": "string", "description": "User answer."},
+                        "language":        {"type": "string", "description": "Language code."}
                     },
                     "required": ["application_id", "question", "answer"]
                 }
@@ -2214,16 +2211,12 @@ async def sync_vapi_assistant(request: Request):
             "type": "function",
             "function": {
                 "name": "completeInterview",
-                "description": (
-                    "Call this when should_complete is true OR when 8+ questions have been asked. "
-                    "Triggers requirements generation and returns a redirect path to the requirements page. "
-                    "Always call this to close the interview — never end the call without calling this first."
-                ),
+                "description": "Call when requirements collection is complete.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "application_id": {"type": "string", "description": "Application ID."},
-                        "summary":        {"type": "string", "description": "Full summary of ALL requirements collected during the interview."}
+                        "summary":        {"type": "string", "description": "Summary of requirements."}
                     },
                     "required": ["application_id", "summary"]
                 }
@@ -2234,12 +2227,12 @@ async def sync_vapi_assistant(request: Request):
             "type": "function",
             "function": {
                 "name": "initiateOtp",
-                "description": "Initiate OTP verification for a guest user who wants to save their requirements.",
+                "description": "Initiate OTP for guest user.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "phone": {"type": "string", "description": "User's phone number."},
-                        "name":  {"type": "string", "description": "User's name."}
+                        "phone": {"type": "string", "description": "User phone."},
+                        "name":  {"type": "string", "description": "User name."}
                     },
                     "required": ["phone"]
                 }
@@ -2249,6 +2242,7 @@ async def sync_vapi_assistant(request: Request):
     ]
 
     patch_payload = {
+        "firstMessage": "Hello! Welcome to Helix, your AI business consultant. Before we dive into your project, could you please tell me your name?",
         "model": {
             "provider": "openai",
             "model": "gpt-4o",
@@ -2288,6 +2282,72 @@ async def sync_vapi_assistant(request: Request):
             "tool_endpoint": tool_endpoint,
             "note": "Update Vapi dashboard manually.",
         }
+
+
+@app.post("/api/vapi/save-answer")
+async def vapi_save_answer_direct(request: Request, db: Session = Depends(get_db)):
+    """
+    Direct HTTP endpoint for saving interview answers from either client-side fallback
+    or direct webhook calls.
+    POST { "application_id": 123, "question": "...", "answer": "...", "language": "en-US" }
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+    
+    res = await _vapi_save_interview_answer(body, db)
+    return res
+
+
+@app.post("/api/vapi/sync-profile")
+async def vapi_sync_profile(request: Request, db: Session = Depends(get_db)):
+    """
+    Sync user's name and phone captured during voice interview directly into the database.
+    POST { "application_id": 123, "name": "...", "phone": "..." }
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    app_id_raw = body.get("application_id")
+    name = (body.get("name") or "").strip()
+    phone = (body.get("phone") or "").strip()
+
+    if not app_id_raw:
+        raise HTTPException(status_code=400, detail="application_id is required")
+
+    try:
+        app_id = int(app_id_raw)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=400, detail="Invalid application_id")
+
+    application = db.query(Application).filter(Application.id == app_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+
+    lang_ctx = dict(application.language_context or {})
+    if name:
+        lang_ctx["captured_name"] = name
+    if phone:
+        import re
+        digits = re.sub(r"\D", "", phone)
+        if len(digits) >= 10:
+            digits = digits[-10:]
+            lang_ctx["captured_phone"] = digits
+            if not application.contact_email or application.contact_email.endswith("@helix-guest.com"):
+                application.contact_email = f"{digits}@helix.ai"
+
+    application.language_context = lang_ctx
+    db.commit()
+
+    return {
+        "success": True,
+        "application_id": app_id,
+        "captured_name": lang_ctx.get("captured_name"),
+        "captured_phone": lang_ctx.get("captured_phone"),
+    }
 
 
 @app.post("/api/vapi/complete-interview")
@@ -2357,7 +2417,7 @@ def get_vapi_system_prompt():
     """
     return {
         "system_prompt": _HELIX_VAPI_SYSTEM_PROMPT,
-        "assistant_id": os.getenv("VAPI_ASSISTANT_ID", "ff179db8-6206-4bfa-b8b0-241723e1ddab"),
+        "assistant_id": os.getenv("VAPI_ASSISTANT_ID", "a2c52ad5-6121-4de8-b339-3876c597e16e"),
         "instructions": (
             "Paste this system_prompt into your Vapi assistant's 'System Prompt' field. "
             "Also ensure all tool server URLs point to your backend's /api/vapi/tool-call endpoint."
