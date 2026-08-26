@@ -53,6 +53,64 @@ const SpeechRecognitionAPI =
     ? (window.SpeechRecognition || window.webkitSpeechRecognition || null)
     : null;
 
+// ── Browser TTS helper ────────────────────────────────────────────────────────
+function speakText(text, onEnd) {
+  if (!window.speechSynthesis || !text) { onEnd && onEnd(); return; }
+
+  const doSpeak = () => {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate  = 0.95;
+    utt.pitch = 1.05;
+    utt.volume = 1.0;
+    utt.lang  = 'en-US';
+
+    // Pick the best available English voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferred =
+      voices.find(v => v.lang.startsWith('en') && v.name.includes('Google US English')) ||
+      voices.find(v => v.lang.startsWith('en') && v.name.includes('Samantha')) ||
+      voices.find(v => v.lang === 'en-US') ||
+      voices.find(v => v.lang.startsWith('en')) ||
+      null;
+    if (preferred) utt.voice = preferred;
+
+    let finished = false;
+    const done = () => { if (!finished) { finished = true; onEnd && onEnd(); } };
+    utt.onend   = done;
+    utt.onerror = done;
+
+    // Chrome bug: speechSynthesis can pause mid-utterance — keep it alive
+    const keepAlive = setInterval(() => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.resume();
+      } else {
+        clearInterval(keepAlive);
+      }
+    }, 5000);
+    utt.onend = () => { clearInterval(keepAlive); done(); };
+
+    window.speechSynthesis.speak(utt);
+  };
+
+  // Voices may not be loaded yet on first call — wait for them
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length > 0) {
+    doSpeak();
+  } else {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.onvoiceschanged = null;
+      doSpeak();
+    };
+    // Fallback timeout if onvoiceschanged never fires
+    setTimeout(() => {
+      if (window.speechSynthesis.getVoices().length === 0) { onEnd && onEnd(); }
+      else doSpeak();
+    }, 1500);
+  }
+}
+
+
 function createRecognizer() {
   if (!SpeechRecognitionAPI) return null;
   try {
@@ -144,7 +202,7 @@ function OtpModal({ phone, name, simOtp, onSuccess, onClose }) {
 // ── Identity Collection Phase UI ──────────────────────────────────────────────
 function IdentityPhase({
   identityPhase, identityPrompt, identityInput, setIdentityInput,
-  identityListening, identityError, onSubmitText, capturedName, capturedPhone,
+  identityListening, isTTSSpeaking, identityError, onSubmitText, capturedName, capturedPhone,
   hasSpeechSupport
 }) {
   return (
@@ -177,8 +235,20 @@ function IdentityPhase({
         </div>
       )}
 
-      {/* Listening indicator */}
-      {identityListening && (
+      {/* Speaking / Listening indicator */}
+      {isTTSSpeaking ? (
+        <div className="flex items-center gap-2 mb-4 text-indigo-600 font-medium text-sm">
+          <div className="flex items-end gap-[2px] h-5">
+            {[4,7,5,9,6,8,4].map((h, i) => (
+              <div key={i} style={{
+                width: 3, height: `${h * 3}px`, backgroundColor: '#6366f1', borderRadius: 4,
+                animation: `pulse 0.5s ease-in-out ${i * 0.08}s infinite alternate`
+              }} />
+            ))}
+          </div>
+          <span>Helix is speaking...</span>
+        </div>
+      ) : identityListening ? (
         <div className="flex items-center gap-2 mb-4 text-green-600 font-medium text-sm">
           <div className="flex items-end gap-[2px] h-5">
             {[3,6,9,5,8].map((h, i) => (
@@ -190,7 +260,7 @@ function IdentityPhase({
           </div>
           <span>Listening...</span>
         </div>
-      )}
+      ) : null}
 
       {/* Error */}
       {identityError && (
@@ -205,10 +275,12 @@ function IdentityPhase({
           onChange={e => setIdentityInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') onSubmitText(); }}
           placeholder={
-            identityPhase === 'name'  ? 'Type your name...' :
-            identityPhase === 'phone' ? 'Type your phone number...' :
+            isTTSSpeaking     ? 'Helix is speaking...' :
+            identityPhase === 'name'  ? 'Type your name or speak...' :
+            identityPhase === 'phone' ? 'Type your phone number or speak...' :
             'Processing...'
           }
+          disabled={isTTSSpeaking}
           className="flex-1 rounded-full border border-gray-200 bg-white px-5 py-3 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
           maxLength={identityPhase === 'phone' ? 15 : 60}
           autoFocus
@@ -243,9 +315,10 @@ export default function Interview() {
 
   // ── Identity collection state ────────────────────────────────────────────────
   const [identityPhase,    setIdentityPhase]    = useState('name'); // 'name'|'phone'|'done'
-  const [identityPrompt,   setIdentityPrompt]   = useState("Welcome to Helix! Before we begin your business interview, could you please tell me your full name?");
+  const [identityPrompt,   setIdentityPrompt]   = useState("Welcome to Helix! Could you please tell me your full name?");
   const [identityInput,    setIdentityInput]    = useState('');
   const [identityListening, setIdentityListening] = useState(false);
+  const [isTTSSpeaking,    setIsTTSSpeaking]    = useState(false);
   const [identityError,    setIdentityError]    = useState('');
   const [capturedName,     setCapturedName]     = useState('');
   const [capturedPhone,    setCapturedPhone]    = useState('');
@@ -333,12 +406,54 @@ export default function Interview() {
     return () => { mounted.current = false; };
   }, []);
 
-  // ── Start speech recognition for identity phase ───────────────────────────────
+  // ── Speak identity prompt via browser TTS then start listening ───────────────
+  const speakAndListen = useCallback((text) => {
+    // Stop any current recognition
+    if (recognizerRef.current) {
+      try { recognizerRef.current.abort(); } catch (_) {}
+    }
+    setIdentityListening(false);
+    setIsTTSSpeaking(true);
+
+    speakText(text, () => {
+      if (!mounted.current) return;
+      setIsTTSSpeaking(false);
+      // Start speech recognition only after TTS finishes
+      setTimeout(() => {
+        if (mounted.current && interviewPhaseRef.current === 'identity') {
+          startIdentityListening();
+        }
+      }, 300);
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Ref so speakAndListen is accessible inside effects without stale closure
+  const speakAndListenRef = useRef(speakAndListen);
+  useEffect(() => { speakAndListenRef.current = speakAndListen; }, [speakAndListen]);
+
+  // Track interviewPhase in a ref for use inside speakAndListen closure
+  const interviewPhaseRef = useRef('identity');
+  useEffect(() => { interviewPhaseRef.current = interviewPhase; }, [interviewPhase]);
+
+  // ── Speak the greeting when identity phase first mounts ──────────────────────
+  useEffect(() => {
+    if (interviewPhase !== 'identity') return;
+    // Small delay so voices are loaded
+    const t = setTimeout(() => {
+      speakAndListenRef.current(identityPrompt);
+    }, 600);
+    return () => clearTimeout(t);
+  // Only fire on mount — identityPrompt change is handled separately
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interviewPhase]);
+
+  // ── Start speech recognition for identity phase (text fallback) ───────────────
   useEffect(() => {
     if (interviewPhase !== 'identity') return;
     if (!hasSpeechSupport) return; // text-only fallback
-
-    startIdentityListening();
+    // TTS handler above will call startIdentityListening after speaking.
+    // If no TTS support, start directly.
+    if (!window.speechSynthesis) startIdentityListening();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interviewPhase, identityPhase]);
 
@@ -447,19 +562,27 @@ export default function Interview() {
       if (nextPhase === 'questions') {
         // Both name and phone confirmed — start Vapi
         console.log('[Identity] COMPLETE. Starting Vapi interview...');
-        toast.success(`Welcome, ${newName}! Starting your business interview.`);
-        setInterviewPhase('vapi_starting');
-        startVapiInterview(newName, newPhone);
+        const firstName = newName.split(' ')[0];
+        // Speak farewell before Vapi starts
+        speakText(`Thank you, ${firstName}! Starting your business interview now.`, () => {
+          if (!mounted.current) return;
+          toast.success(`Welcome, ${newName}! Starting your business interview.`);
+          setInterviewPhase('vapi_starting');
+          startVapiInterview(newName, newPhone);
+        });
       } else {
         // Still need more info
+        const newPrompt = nextPrompt || (nextPhase === 'phone'
+          ? `Thank you, ${newName}! What is your 10-digit phone number?`
+          : 'Could you please tell me your name?');
         setIdentityPhase(nextPhase);
         identityPhaseRef.current = nextPhase;
-        setIdentityPrompt(nextPrompt || (nextPhase === 'phone'
-          ? `Thank you, ${newName}! What is your 10-digit phone number?`
-          : 'Could you please tell me your name?'));
+        setIdentityPrompt(newPrompt);
         setIdentityProcessing(false);
-        // Restart listening
-        setTimeout(() => { if (mounted.current) startIdentityListening(); }, 300);
+        // Speak the next prompt then start listening
+        setTimeout(() => {
+          if (mounted.current) speakAndListenRef.current(newPrompt);
+        }, 200);
       }
     } catch (err) {
       console.error('[Identity] parse-profile error:', err);
@@ -1019,6 +1142,7 @@ export default function Interview() {
               identityInput={identityInput}
               setIdentityInput={setIdentityInput}
               identityListening={identityListening}
+              isTTSSpeaking={isTTSSpeaking}
               identityError={identityError}
               onSubmitText={onIdentityTextSubmit}
               capturedName={capturedName}
