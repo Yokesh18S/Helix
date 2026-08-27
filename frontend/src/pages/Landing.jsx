@@ -30,13 +30,22 @@ export default function Landing() {
   const vapiRef = useRef(null);
   const mounted = useRef(true);
 
-  const startInterview = () => {
+  const isNavigatingRef = useRef(false);
+
+  const startInterview = async () => {
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
     if (vapiRef.current) {
-      try { vapiRef.current.stop(); } catch (_) {}
+      try {
+        await vapiRef.current.stop();
+      } catch (_) {}
       vapiRef.current = null;
     }
+    // Allow brief moment for browser audio hardware release
+    await new Promise((resolve) => setTimeout(resolve, 80));
     navigate('/interview');
   };
+
 
   // ── Initialize Vapi on Home Page for Live Greeting ──────────────────────────
   useEffect(() => {
@@ -115,8 +124,11 @@ export default function Landing() {
           console.warn('[Landing Vapi] notice:', err);
         });
 
-        // Start Vapi greeting
-        await vapi.start(VAPI_ASSISTANT_ID);
+        // Start Vapi greeting for Home Screen
+        await vapi.start(VAPI_ASSISTANT_ID, {
+          firstMessage: "Hi! I am Helix, your AI voice business consultant. Whenever you are ready, just say start or click start to begin your project interview."
+        });
+
 
       } catch (err) {
         console.warn('[Landing Vapi] init notice:', err);

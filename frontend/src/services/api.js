@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`)
+  : '/api';
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -9,6 +12,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {

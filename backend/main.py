@@ -2304,6 +2304,7 @@ async def vapi_save_answer_direct(request: Request, db: Session = Depends(get_db
 async def vapi_sync_profile(request: Request, db: Session = Depends(get_db)):
     """
     Sync user's name and phone captured during voice interview directly into the database.
+    Checks if the phone number already belongs to a registered user in Supabase.
     POST { "application_id": 123, "name": "...", "phone": "..." }
     """
     try:
@@ -2330,6 +2331,12 @@ async def vapi_sync_profile(request: Request, db: Session = Depends(get_db)):
     lang_ctx = dict(application.language_context or {})
     if name:
         lang_ctx["captured_name"] = name
+
+    user_exists = False
+    existing_user_name = None
+    existing_user_id = None
+    digits = ""
+
     if phone:
         import re
         digits = re.sub(r"\D", "", phone)
@@ -2339,15 +2346,41 @@ async def vapi_sync_profile(request: Request, db: Session = Depends(get_db)):
             if not application.contact_email or application.contact_email.endswith("@helix-guest.com"):
                 application.contact_email = f"{digits}@helix.ai"
 
+            # Check if this phone number already belongs to a registered user in Supabase
+            existing_user = db.query(User).filter(
+                (User.phone == digits) | 
+                (User.phone == f"+91{digits}") | 
+                (User.phone.endswith(digits))
+            ).first()
+
+            if existing_user:
+                user_exists = True
+                existing_user_name = existing_user.full_name
+                existing_user_id = existing_user.id
+                lang_ctx["existing_user"] = True
+                lang_ctx["existing_user_id"] = existing_user.id
+                lang_ctx["existing_user_name"] = existing_user.full_name
+
     application.language_context = lang_ctx
     db.commit()
+
+    message = ""
+    if user_exists and existing_user_name:
+        message = f"Welcome back, {existing_user_name}! You are already registered with phone {digits}. You can log in for the next steps."
+    else:
+        message = "Profile saved successfully."
 
     return {
         "success": True,
         "application_id": app_id,
-        "captured_name": lang_ctx.get("captured_name"),
-        "captured_phone": lang_ctx.get("captured_phone"),
+        "captured_name": lang_ctx.get("captured_name") or existing_user_name,
+        "captured_phone": digits,
+        "user_exists": user_exists,
+        "existing_user_name": existing_user_name,
+        "existing_user_id": existing_user_id,
+        "message": message,
     }
+
 
 
 @app.post("/api/vapi/complete-interview")
@@ -2426,20 +2459,13 @@ def get_vapi_system_prompt():
 
 
 
-# ============ SERVE FRONTEND (Production) ============
-# Serve React static files if the 'static' directory exists (Docker build)
-STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+# ============ ROOT API ENDPOINT ============
+@app.get("/")
+def root():
+    return {
+        "status": "healthy",
+        "service": "Helix Backend API",
+        "version": "1.0.0",
+        "documentation": "/docs"
+    }
 
-if os.path.isdir(STATIC_DIR):
-    # Serve static assets (JS, CSS, images)
-    app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
-
-    # Catch-all: serve index.html for any non-API route (SPA routing)
-    @app.get("/{full_path:path}")
-    async def serve_spa(full_path: str):
-        # If it's a file that exists in static dir, serve it
-        file_path = os.path.join(STATIC_DIR, full_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-        # Otherwise serve index.html (React Router handles routing)
-        return FileResponse(os.path.join(STATIC_DIR, "index.html"))

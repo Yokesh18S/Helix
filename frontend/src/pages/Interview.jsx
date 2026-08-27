@@ -32,7 +32,11 @@ const Vapi = VapiLib?.default ?? VapiLib;
 // ── Active credentials from .env:
 const VAPI_PUBLIC_KEY   = import.meta.env.VITE_VAPI_PUBLIC_KEY || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
 const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID || 'a2c52ad5-6121-4de8-b339-3876c597e16e';
-const API_BASE          = '/api';
+const rawApiUrl         = import.meta.env.VITE_API_URL || '';
+const API_BASE          = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`)
+  : '/api';
+
 
 // ── Guest token helper ────────────────────────────────────────────────────────
 function getOrCreateGuestToken() {
@@ -46,16 +50,19 @@ function getOrCreateGuestToken() {
   return t;
 }
 
-// ── Post-Interview Sign-In / Sign-Up / Claim Modal ────────────────────────────
 function PostInterviewModal({
   appId,
   phone,
   name,
   simOtp,
+  initialTab = 'login',
   onGuestContinue,
   onOtpSuccess,
+  onNavigateLogin,
+  onNavigateRegister,
 }) {
-  const [authTab, setAuthTab] = useState('register'); // 'register' | 'login' | 'otp'
+  const [authTab, setAuthTab] = useState(initialTab || 'login');
+
   const [formData, setFormData] = useState({
     full_name: name || '',
     phone: phone || '',
@@ -510,7 +517,10 @@ export default function Interview() {
   const [procStep, setProcStep] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showPostModal, setShowPostModal] = useState(false);
+  const [postModalTab, setPostModalTab] = useState('login');
+  const [existingUser, setExistingUser] = useState(null);
   const [simOtp, setSimOtp] = useState('');
+
 
   // ── Refs for Synchronous Live State (Guarantees Fresh Closures)
   const vapiRef = useRef(null);
@@ -542,15 +552,20 @@ export default function Interview() {
     mounted.current = true;
 
     async function initApp() {
+      // Start Vapi immediately so audio connection starts without waiting for API roundtrips
+      startVapi();
+
       try {
         const appRes = await applicationsAPI.createGuest(guestToken.current);
         if (!mounted.current) return;
-        const aid = appRes.data.id;
-        setAppId(aid);
-        appIdRef.current = aid;
-        localStorage.setItem('helix_pending_app_id', String(aid));
-        localStorage.setItem('helix_pending_guest_token', guestToken.current);
-        console.log('[Helix] Initialized Application ID in SQLite:', aid);
+        const aid = appRes.data?.id;
+        if (aid) {
+          setAppId(aid);
+          appIdRef.current = aid;
+          localStorage.setItem('helix_pending_app_id', String(aid));
+          localStorage.setItem('helix_pending_guest_token', guestToken.current);
+          console.log('[Helix] Initialized Application ID:', aid);
+        }
 
         if (user) {
           if (user.full_name) {
@@ -565,15 +580,8 @@ export default function Interview() {
             setCurrentStep('phone');
           }
         }
-
-        // Auto-start Vapi immediately on mount
-        startVapi(aid);
       } catch (err) {
-        console.error('[Helix] Init error:', err);
-        if (mounted.current) {
-          setCallStatus('error');
-          setErrorMsg('Failed to initialize session.');
-        }
+        console.warn('[Helix] Application ID background init warning:', err);
       }
     }
 
@@ -581,6 +589,7 @@ export default function Interview() {
 
     return () => {
       mounted.current = false;
+      if (connectingTimer.current) clearTimeout(connectingTimer.current);
       if (vapiRef.current) {
         try { vapiRef.current.stop(); } catch (_) {}
       }
@@ -589,7 +598,7 @@ export default function Interview() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── 2. Complete Interview & Finalize Requirements in SQLite
+  // ── 2. Complete Interview & Finalize Requirements in DB
   const handleCompleteInterview = useCallback(async () => {
     if (isCompletingRef.current) return;
     isCompletingRef.current = true;
@@ -618,7 +627,6 @@ export default function Interview() {
           }
         } catch (_) {}
       }
-
       if (user) {
         try {
           await authAPI.claimGuestSession({
@@ -640,87 +648,179 @@ export default function Interview() {
     }
   }, [user, navigate]);
 
-  // ── 3. Parse and Persist Every Answer to SQLite DB & Verification List
+  // ── Helper: Extract phone digits from both digits and spoken number words
+  const parsePhoneFromText = (text) => {
+    if (!text) return '';
+    const wordMap = {
+      zero: '0', oh: '0', one: '1', two: '2', three: '3',
+      four: '4', five: '5', six: '6', seven: '7', eight: '8', nine: '9'
+    };
+    const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/);
+    let digits = '';
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      if (w === 'double' && i + 1 < words.length && wordMap[words[i + 1]]) {
+        digits += wordMap[words[i + 1]];
+      } else if (w === 'triple' && i + 1 < words.length && wordMap[words[i + 1]]) {
+        digits += wordMap[words[i + 1]] + wordMap[words[i + 1]];
+      } else if (wordMap[w] !== undefined) {
+        digits += wordMap[w];
+      } else if (/^\d+$/.test(w)) {
+        digits += w;
+      }
+    }
+    return digits.length >= 10 ? digits.slice(-10) : '';
+  };
+
+  // ── 3. Parse and Persist Every Answer to DB & Live Verification Panel
   const handleUserSpokenAnswer = useCallback(async (text) => {
     if (!text || !text.trim()) return;
+    const cleanText = text.trim();
+    const lowerText = cleanText.toLowerCase();
     const aid = appIdRef.current;
     let name = capturedNameRef.current;
     let phone = capturedPhoneRef.current;
 
-    // Read the live synchronous question text from ref
+    // ── Voice Navigation Commands: User asks to Sign In / Sign Up / Login / Account
+    if (
+      lowerText === 'sign in' ||
+      lowerText === 'signin' ||
+      lowerText.includes('sign in') ||
+      lowerText.includes('signin') ||
+      lowerText.includes('log in') ||
+      lowerText.includes('login') ||
+      lowerText.includes('show sign in') ||
+      lowerText.includes('show login') ||
+      lowerText.includes('take me to login') ||
+      lowerText.includes('take me to sign in')
+    ) {
+      if (vapiRef.current) {
+        try { vapiRef.current.stop(); } catch (_) {}
+      }
+      setPostModalTab('login');
+      toast.success('Opening Sign In...', { icon: '🔐' });
+      handleCompleteInterview();
+      setShowPostModal(true);
+      return;
+    }
+
+    if (
+      lowerText === 'sign up' ||
+      lowerText === 'signup' ||
+      lowerText.includes('sign up') ||
+      lowerText.includes('signup') ||
+      lowerText.includes('register') ||
+      lowerText.includes('create account') ||
+      lowerText.includes('show sign up') ||
+      lowerText.includes('show register') ||
+      lowerText.includes('create an account')
+    ) {
+      if (vapiRef.current) {
+        try { vapiRef.current.stop(); } catch (_) {}
+      }
+      setPostModalTab('register');
+      toast.success('Opening Sign Up...', { icon: '✨' });
+      handleCompleteInterview();
+      setShowPostModal(true);
+      return;
+    }
+
+    // Read the active live question text from ref
     const currentQ = currentSpeechRef.current.trim() || currentQTextRef.current.trim() || 'Business Requirements Consultation';
 
-    // Step 1: Capture Name (only if not a business description)
-    if (!name && currentStepRef.current === 'name') {
-      const lower = text.toLowerCase().trim();
-      const isBusinessSentence = lower.startsWith('i want') || lower.startsWith('we want') || lower.startsWith('i am building') || lower.startsWith('we are building') || lower.startsWith('this is a') || lower.includes('restaurant') || lower.includes('app') || lower.includes('software');
+    // Step 1: Capture Name
+    if (!name && (currentStepRef.current === 'name' || currentQ.toLowerCase().includes('name'))) {
+      const isBusinessSentence = lowerText.startsWith('i want to build') || lowerText.startsWith('we are building') || lowerText.startsWith('this is a restaurant') || lowerText.startsWith('this is an app');
       
       if (!isBusinessSentence) {
-        const nameMatch = text.match(/(?:my name is|i am|i'm|this is|call me|name's)\s+([a-zA-Z\s]{2,25})/i);
+        const nameMatch = cleanText.match(/(?:my name is|i am|i'm|this is|call me|name's)\s+([a-zA-Z\s]{2,30})/i);
+        let parsed = '';
         if (nameMatch && nameMatch[1]) {
-          const parsed = nameMatch[1].trim();
+          parsed = nameMatch[1].trim();
+        } else if (cleanText.split(/\s+/).length <= 4 && !cleanText.includes('?')) {
+          parsed = cleanText.replace(/[^a-zA-Z\s]/g, '').trim();
+        }
+
+        if (parsed && parsed.length >= 2 && parsed.length <= 35) {
           name = parsed;
           setCapturedName(parsed);
           capturedNameRef.current = parsed;
           setCurrentStep('phone');
-          toast.success(`Name recorded: ${parsed}`, { icon: '✓' });
-        } else if (text.trim().split(/\s+/).length <= 3 && !text.includes('?')) {
-          const parsed = text.replace(/[^a-zA-Z\s]/g, '').trim();
-          if (parsed.length >= 2 && parsed.length <= 25) {
-            name = parsed;
-            setCapturedName(parsed);
-            capturedNameRef.current = parsed;
-            setCurrentStep('phone');
-            toast.success(`Name recorded: ${parsed}`, { icon: '✓' });
-          }
+          toast.success(`Name verified: ${parsed}`, { icon: '✓' });
         }
-      } else {
-        setCurrentStep('questions');
       }
     }
 
     // Step 2: Capture Phone
-    if (!phone) {
-      const phoneDigits = text.replace(/\D/g, '');
-      if (phoneDigits.length >= 10) {
-        const normalized = phoneDigits.slice(-10);
-        phone = normalized;
-        setCapturedPhone(normalized);
-        capturedPhoneRef.current = normalized;
+    if (!phone && (currentStepRef.current === 'phone' || currentQ.toLowerCase().includes('phone') || currentQ.toLowerCase().includes('mobile') || currentQ.toLowerCase().includes('number'))) {
+      const parsedPhone = parsePhoneFromText(cleanText) || cleanText.replace(/\D/g, '').slice(-10);
+      if (parsedPhone && parsedPhone.length === 10) {
+        phone = parsedPhone;
+        setCapturedPhone(parsedPhone);
+        capturedPhoneRef.current = parsedPhone;
         setCurrentStep('questions');
-        toast.success(`Mobile number recorded: ${normalized}`, { icon: '✓' });
+        toast.success(`Mobile verified: ${parsedPhone}`, { icon: '✓' });
       }
     }
 
-    // Add to recorded responses history for user verification
+
+    // Add immediately to Live Verification History list
     setQaHistory((prev) => [
       ...prev,
       {
         question: currentQ,
-        answer: text,
+        answer: cleanText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         verified: true,
       },
     ]);
 
-    // Sync profile to DB
+    // Sync profile to Supabase Database
     if (aid && (name || phone)) {
       try {
-        await axios.post(`${API_BASE}/vapi/sync-profile`, {
+        const syncRes = await axios.post(`${API_BASE}/vapi/sync-profile`, {
           application_id: aid,
           name: name,
           phone: phone,
         });
-      } catch (_) {}
+        const d = syncRes.data;
+        if (d?.user_exists && d?.existing_user_name) {
+          setExistingUser({
+            exists: true,
+            name: d.existing_user_name,
+            phone: d.captured_phone || phone,
+          });
+          if (d.captured_name && !name) {
+            setCapturedName(d.captured_name);
+            capturedNameRef.current = d.captured_name;
+          }
+          toast(
+            `Welcome back, ${d.existing_user_name}! You already have an account with mobile ${d.captured_phone || phone}.`,
+            {
+              icon: '👋',
+              duration: 7000,
+              style: {
+                background: '#1E293B',
+                color: '#fff',
+                fontSize: '13px',
+                fontWeight: '600'
+              }
+            }
+          );
+        }
+      } catch (e) {
+        console.warn('[Helix] Profile sync notice:', e);
+      }
     }
 
-    // Save Q&A pair to DB
+
+    // Save Q&A turn to Supabase Database
     if (aid) {
       try {
         const saveRes = await axios.post(`${API_BASE}/vapi/save-answer`, {
           application_id: aid,
           question: currentQ,
-          answer: text,
+          answer: cleanText,
           language: 'en-US',
         });
         const d = saveRes.data;
@@ -734,50 +834,44 @@ export default function Interview() {
           setTotalCaptured((prev) => prev + (ext.requirements?.length || ext.key_points?.length || 1));
         }
       } catch (ex) {
-        console.warn('[Helix] Error saving answer to DB:', ex);
+        console.warn('[Helix] Answer save notice:', ex);
       }
     }
   }, []);
 
-  // ── 4. Start Vapi Voice Assistant (1-Click Instant Mic Pre-Unlock)
+  const connectingTimer = useRef(null);
+
+  // ── 4. Start Vapi Voice Assistant (Instant Non-Blocking Voice Connection)
   const startVapi = async (targetAid) => {
-    let aid = targetAid || appIdRef.current;
-    if (!aid) {
-      try {
-        const appRes = await applicationsAPI.createGuest(guestToken.current);
-        aid = appRes.data.id;
-        setAppId(aid);
-        appIdRef.current = aid;
-      } catch (_) {}
-    }
+    const aid = targetAid || appIdRef.current;
 
     setCallStatus('connecting');
     setErrorMsg('');
     isCompletingRef.current = false;
 
-    try {
-      // Pre-unlock mic in 1 click
-      try {
-        if (navigator?.mediaDevices?.getUserMedia) {
-          const testStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          testStream.getTracks().forEach(t => t.stop());
-        }
-      } catch (micErr) {
-        console.warn('[Vapi] Mic access check:', micErr);
+    // Safety watchdog: never stay stuck on connecting forever
+    if (connectingTimer.current) clearTimeout(connectingTimer.current);
+    connectingTimer.current = setTimeout(() => {
+      if (mounted.current && vapiRef.current && callStatus !== 'active') {
+        console.log('[Vapi] Connection timeout fallback - ready for user interaction');
+        setCallStatus('ready');
       }
+    }, 6000);
 
-      // Destroy any previous instance
+    try {
+      // Destroy any previous instance safely
       if (vapiRef.current) {
         try { vapiRef.current.stop(); } catch (_) {}
         vapiRef.current = null;
       }
 
-      console.log('[Vapi] Starting instant Vapi connection with Key:', VAPI_PUBLIC_KEY.slice(0, 8) + '...');
+      console.log('[Vapi] Starting instant Vapi connection...');
       const vapi = new Vapi(VAPI_PUBLIC_KEY);
       vapiRef.current = vapi;
 
       vapi.on('call-start', () => {
         if (!mounted.current) return;
+        if (connectingTimer.current) clearTimeout(connectingTimer.current);
         console.log('[Vapi] Call connected successfully!');
         setCallStatus('active');
         setIsListening(true);
@@ -787,23 +881,11 @@ export default function Interview() {
         callTimer.current = setInterval(() => {
           if (mounted.current) setCallDuration(++secs);
         }, 1000);
-
-        // Auto-send start signal so assistant immediately asks for Name without requiring user to say start twice
-        setTimeout(() => {
-          try {
-            vapi.send({
-              type: 'add-message',
-              message: {
-                role: 'user',
-                content: 'Start the interview'
-              }
-            });
-          } catch (_) {}
-        }, 300);
       });
 
       vapi.on('call-end', () => {
         if (!mounted.current) return;
+        if (connectingTimer.current) clearTimeout(connectingTimer.current);
         console.log('[Vapi] Call ended');
         if (callTimer.current) clearInterval(callTimer.current);
         setIsListening(false);
@@ -821,24 +903,15 @@ export default function Interview() {
         if (!mounted.current) return;
         setIsSpeaking(false);
         setIsListening(true);
-        if (currentSpeechRef.current) {
-          currentQTextRef.current = currentSpeechRef.current;
-          setCurrentQText(currentSpeechRef.current);
-        }
       });
 
       vapi.on('message', (msg) => {
         if (!mounted.current) return;
 
         // 1. Assistant Speech Updates
-        if (msg.type === 'speech-update' && msg.text) {
-          const txt = msg.text.trim();
-          // If assistant says "say start", automatically trigger next question
-          if (txt.toLowerCase().includes('say "start"') || txt.toLowerCase().includes("say 'start'") || txt.toLowerCase().includes('just say start')) {
-            try {
-              vapi.send({ type: 'add-message', message: { role: 'user', content: 'Start' } });
-            } catch (_) {}
-          } else {
+        if (msg.type === 'speech-update') {
+          const txt = (msg.text || msg.transcript || '').trim();
+          if (txt && (msg.role === 'assistant' || !msg.role)) {
             currentSpeechRef.current = txt;
             currentQTextRef.current = txt;
             setCurrentSpeech(txt);
@@ -847,13 +920,13 @@ export default function Interview() {
           }
         }
 
-        // 2. Conversation Updates
-        if (msg.type === 'conversation-update') {
-          const msgs = msg.conversation || msg.messages || [];
+        // 2. Conversation & Model Output Updates
+        if (msg.type === 'conversation-update' || msg.type === 'model-output') {
+          const msgs = msg.conversation || msg.messages || (msg.output ? [{ role: 'assistant', content: msg.output }] : []);
           for (let i = msgs.length - 1; i >= 0; i--) {
-            if (msgs[i].role === 'assistant' && msgs[i].content) {
-              const txt = msgs[i].content.trim();
-              if (!txt.toLowerCase().includes('just say start') && !txt.toLowerCase().includes("say 'start'")) {
+            if (msgs[i].role === 'assistant' && (msgs[i].content || msgs[i].text)) {
+              const txt = (msgs[i].content || msgs[i].text || '').trim();
+              if (txt) {
                 currentSpeechRef.current = txt;
                 currentQTextRef.current = txt;
                 setCurrentSpeech(txt);
@@ -868,29 +941,23 @@ export default function Interview() {
         // 3. Transcript Updates
         if (msg.type === 'transcript') {
           if (msg.role === 'user') {
-            const txt = msg.transcript || '';
+            const txt = (msg.transcript || msg.text || '').trim();
             if (msg.transcriptType === 'final') {
               setLiveTranscript('');
-              if (txt.trim()) {
-                handleUserSpokenAnswer(txt.trim());
+              if (txt) {
+                handleUserSpokenAnswer(txt);
               }
-            } else {
+            } else if (txt) {
               setLiveTranscript(txt);
             }
           } else if (msg.role === 'assistant') {
-            const txt = (msg.transcript || '').trim();
+            const txt = (msg.transcript || msg.text || '').trim();
             if (txt) {
-              if (txt.toLowerCase().includes('say "start"') || txt.toLowerCase().includes("say 'start'") || txt.toLowerCase().includes('just say start')) {
-                try {
-                  vapi.send({ type: 'add-message', message: { role: 'user', content: 'Start' } });
-                } catch (_) {}
-              } else {
-                currentSpeechRef.current = txt;
-                currentQTextRef.current = txt;
-                setCurrentSpeech(txt);
-                setCurrentQText(txt);
-                checkIfInterviewDone(txt);
-              }
+              currentSpeechRef.current = txt;
+              currentQTextRef.current = txt;
+              setCurrentSpeech(txt);
+              setCurrentQText(txt);
+              checkIfInterviewDone(txt);
             }
           }
         }
@@ -931,9 +998,9 @@ export default function Interview() {
         }
       });
 
-      // Start call with direct firstMessage override asking for name
+      // Start call with direct firstMessage asking for name
       await vapi.start(VAPI_ASSISTANT_ID, {
-        firstMessage: "Hello! Welcome to Helix. Before we dive into your project, could you please tell me your name?"
+        firstMessage: "Hello! Welcome to Helix. Before we dive into your project specifications, could you please tell me your full name?"
       });
 
     } catch (err) {
@@ -956,9 +1023,7 @@ export default function Interview() {
       lower.includes('congratulations! your requirements') ||
       lower.includes('all your requirements are captured')
     ) {
-      setTimeout(() => {
-        handleCompleteInterview();
-      }, 1500);
+      handleCompleteInterview();
     }
   };
 
@@ -971,6 +1036,14 @@ export default function Interview() {
     setProcStep('Recording...');
 
     try {
+      if (vapiRef.current && callStatus === 'active') {
+        try {
+          vapiRef.current.send({
+            type: 'add-message',
+            message: { role: 'user', content: t }
+          });
+        } catch (_) {}
+      }
       await handleUserSpokenAnswer(t);
       toast.success('Response recorded!');
     } catch (_) {
@@ -1209,10 +1282,40 @@ export default function Interview() {
 
           {/* Captured User Profile Verification Card */}
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-indigo-600" />
-              <span>Verified Profile Details</span>
-            </h4>
+            <div className="flex items-center justify-between mb-2.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-indigo-600" />
+                <span>Verified Profile Details</span>
+              </h4>
+              {existingUser?.exists && (
+                <span className="text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">
+                  Account Found
+                </span>
+              )}
+            </div>
+
+            {existingUser?.exists && (
+              <div className="mb-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl">
+                <p className="text-xs font-bold text-indigo-950">
+                  Welcome back, {existingUser.name}!
+                </p>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  You are already registered with this mobile number.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPostModalTab('login');
+                    setShowPostModal(true);
+                  }}
+                  className="mt-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Log In for Next Steps</span>
+                </button>
+              </div>
+            )}
+
             <div className="space-y-2">
               <div className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs ${capturedName ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-white border-slate-200 text-slate-500'}`}>
                 <div className="flex items-center gap-2">
@@ -1233,6 +1336,7 @@ export default function Interview() {
               </div>
             </div>
           </div>
+
 
           {/* Live Recorded Responses History (User Verification) */}
           <div className="flex-1 flex flex-col">
@@ -1296,6 +1400,7 @@ export default function Interview() {
           phone={capturedPhone}
           name={capturedName}
           simOtp={simOtp}
+          initialTab={postModalTab}
           onGuestContinue={() => {
             setShowPostModal(false);
             if (appId) navigate(`/requirements/${appId}`);
@@ -1315,6 +1420,7 @@ export default function Interview() {
           }}
         />
       )}
+
     </div>
   );
 }
