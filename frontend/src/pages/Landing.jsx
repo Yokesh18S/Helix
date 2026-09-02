@@ -32,19 +32,18 @@ export default function Landing() {
 
   const isNavigatingRef = useRef(false);
 
-  const startInterview = async () => {
+  const startInterview = () => {
     if (isNavigatingRef.current) return;
     isNavigatingRef.current = true;
     if (vapiRef.current) {
       try {
-        await vapiRef.current.stop();
+        vapiRef.current.stop();
       } catch (_) {}
       vapiRef.current = null;
     }
-    // Allow brief moment for browser audio hardware release
-    await new Promise((resolve) => setTimeout(resolve, 80));
     navigate('/interview');
   };
+
 
 
   // ── Initialize Vapi on Home Page for Live Greeting ──────────────────────────

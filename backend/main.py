@@ -1801,13 +1801,14 @@ async def _vapi_save_interview_answer(args: dict, db: Session) -> dict:
             "domain_label":     cov.get("domain_label"),
         }
         critical_missing = [f for f in cov.get("missing_critical", []) if f in CRITICAL_FIELDS]
-        # should_complete when: answered ≥8 questions OR (≥6 and no critical gaps and coverage ≥65%)
-        if final_count >= 8:
+        # should_complete when: answered ≥5 questions OR (≥3 and coverage ≥40%)
+        if final_count >= 5:
             should_complete = True
-        elif final_count >= 6 and not critical_missing and coverage_pct >= 65:
+        elif final_count >= 3 and (not critical_missing or coverage_pct >= 40):
             should_complete = True
     except Exception as ex:
         print(f"[Vapi] Coverage calc warning: {ex}")
+
 
     print(f"[Vapi][Q{q_number}] saved. questions_answered={final_count}, coverage={coverage_pct:.0f}%, should_complete={should_complete}")
 

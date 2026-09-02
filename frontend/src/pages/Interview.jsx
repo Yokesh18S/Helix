@@ -487,9 +487,9 @@ export default function Interview() {
   const [callDuration, setCallDuration] = useState(0);
 
   // Spoken transcripts
-  const [currentSpeech, setCurrentSpeech] = useState('');
+  const [currentSpeech, setCurrentSpeech] = useState("Hello! Welcome to Helix. Before we dive into your project specifications, could you please tell me your full name?");
   const [liveTranscript, setLiveTranscript] = useState('');
-  const [currentQText, setCurrentQText] = useState('Hello! Welcome to Helix. What is your name?');
+  const [currentQText, setCurrentQText] = useState("Hello! Welcome to Helix. Before we dive into your project specifications, could you please tell me your full name?");
   const [typedText, setTypedText] = useState('');
 
   // Recorded Q&A items for user verification
@@ -531,9 +531,10 @@ export default function Interview() {
   const capturedNameRef = useRef('');
   const capturedPhoneRef = useRef('');
   const currentStepRef = useRef('name');
-  const currentQTextRef = useRef('Hello! Welcome to Helix. What is your name?');
-  const currentSpeechRef = useRef('');
+  const currentQTextRef = useRef("Hello! Welcome to Helix. Before we dive into your project specifications, could you please tell me your full name?");
+  const currentSpeechRef = useRef("Hello! Welcome to Helix. Before we dive into your project specifications, could you please tell me your full name?");
   const isCompletingRef = useRef(false);
+
 
   useEffect(() => { appIdRef.current = appId; }, [appId]);
   useEffect(() => { capturedNameRef.current = capturedName; }, [capturedName]);
@@ -833,11 +834,15 @@ export default function Interview() {
           setExtractions((prev) => [...prev, ext]);
           setTotalCaptured((prev) => prev + (ext.requirements?.length || ext.key_points?.length || 1));
         }
+        if (d?.should_complete) {
+          console.log('[Helix] Backend signaled should_complete - finalizing interview');
+        }
       } catch (ex) {
         console.warn('[Helix] Answer save notice:', ex);
       }
     }
   }, []);
+
 
   const connectingTimer = useRef(null);
 
@@ -1013,15 +1018,36 @@ export default function Interview() {
   };
 
   // Helper to detect completion speech
+  // Helper to detect completion speech across all concluding variations
   const checkIfInterviewDone = (text) => {
     if (!text) return;
     const lower = text.toLowerCase();
     if (
       lower.includes('requirements have been captured') ||
       lower.includes('please sign in') ||
-      lower.includes('sign in to view your full requirements') ||
+      lower.includes('sign in to view') ||
       lower.includes('congratulations! your requirements') ||
-      lower.includes('all your requirements are captured')
+      lower.includes('all your requirements are captured') ||
+      lower.includes('thank you for sharing your project details') ||
+      lower.includes('thank you for sharing these details') ||
+      lower.includes('thank you for providing all the details') ||
+      lower.includes('thank you for sharing your requirements') ||
+      lower.includes('that is all the information i need') ||
+      lower.includes('that gives me everything i need') ||
+      lower.includes('i have captured all the necessary details') ||
+      lower.includes('i have all the information i need') ||
+      lower.includes('i have everything i need') ||
+      lower.includes('we have captured your requirements') ||
+      lower.includes('we have gathered all the details') ||
+      lower.includes('ready to generate your') ||
+      lower.includes('generating your requirements document') ||
+      lower.includes('generating your business specification') ||
+      lower.includes('you can now sign in') ||
+      lower.includes('you can now log in') ||
+      lower.includes('sign in or create an account') ||
+      lower.includes('sign in to access your dashboard') ||
+      lower.includes('have a great day') ||
+      lower.includes('thank you for choosing helix')
     ) {
       handleCompleteInterview();
     }
@@ -1070,7 +1096,11 @@ export default function Interview() {
     handleCompleteInterview();
   };
 
-  const progressPercent = coverage.overall_percent || Math.min(questionsAnswered * 12, 100);
+  const progressPercent = Math.max(
+    coverage.overall_percent || 0,
+    Math.min(questionsAnswered * 20, 100)
+  );
+
 
   const statusConfig = {
     ready:        { dot: 'bg-indigo-400', label: 'Helix Voice AI Ready' },
